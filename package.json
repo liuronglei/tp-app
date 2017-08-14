@@ -1,0 +1,16 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+  },
+  "devDependencies": {},
+  "scripts": {
+  	"package": "electron-packager ./ my-app --win --out my-app --arch=x64 --version 1.4.13 --overwrite --ignore=node_modules --ignore=my-app --ignore=.idea",
+    "config": "node-gyp configure build",
+    "rebuild": "node-gyp rebuild --target=1.7.5 --arch=x64 --dist-url=https://atom.io/download/atom-shell"
+  },
+  "author": "",
+  "license": "ISC"
+}

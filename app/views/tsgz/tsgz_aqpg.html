@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../controllers/meta.js" ></script>
+    <script type="text/javascript" src="../../controllers/tsgz/tsgz_aqpg.js" ></script>
+    <link rel="stylesheet" type="text/css" href="../../../public/css/easyui-tabs-right.css"/>
+</head>
+<body class="box-margin-all-2">
+    <div class="menu-left box-margin-right">
+        <div class="button-menu-left">
+            <a id="btn_tab_wdwDiv" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',iconCls:'icon-sjcd',selected:true">微电网</a>
+            <a id="btn_tab_sywwDiv" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',iconCls:'icon-sjcd'">商业微网</a>
+            <a id="btn_tab_gywwDiv" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',iconCls:'icon-sjcd'">工业微网</a>
+        </div>
+    </div>
+    <div class="panel-surround menu-right nomargin-height-1">
+        <div id="topTabs" class="easyui-tabs" style="width:100%;height:100%;">
+            <div title="安全运行评估" style="background-color: #1D212A">
+                <div class="search-jdbh">
+                    <div class="aqpg-search-box float-left">
+                        <intput id="search_jdbh" class="easyui-searchbox" prompt="请输入节点编号" data-options="searcher:searchIdDy" name="searchText" style="width:250px;"></intput>
+                        <a href="#" id="btn_dycx" class="easyui-linkbutton" style="width:150px;height:30px;margin-left: 20px;">电压查询</a>
+                    </div>
+                    <div class="data-box">
+                        <input id="dd" type="text"  class="easyui-datebox">
+                    </div>
+                </div>
+                <div class="aqpg-img margin-bottom">
+                    <div id="pie_gjddyqxt" style="width:100%;height:100%;"></div>
+                </div>
+                <div class="search-jdbh">
+                    <div class="aqpg-search-box float-left">
+                        <intput id="search_jdbh1" class="easyui-searchbox" prompt="请输入节点编号" data-options="searcher:searchIdDl" name="searchText" style="width:250px;"></intput>
+                        <a href="#" id="btn_dlcx" class="easyui-linkbutton" style="width:150px;height:30px;margin-left: 20px;">电流查询</a>
+                    </div>
+                </div>
+                <div class="aqpg-img">
+                    <div id="pie_gjddlqxt" style="width:100%;height:100%;"></div>
+                </div>
+            </div>
+            <div title="预想事故评估与控制" style="background-color: #1D212A">
+                <div class="search-jdbh">
+                    <div class="aqpg-combobox-box">
+                        <p class="combox-text">预想事故:</p>
+                        <input id="combobox_yxsg" class="easyui-combobox float-left" name="state" style="height:30px;width:200px;"></input>
+                    </div>
+                    <div class="aqpg-combobox-box">
+                        <p class="combox-text">故障时间:</p>
+                        <input id="combobox_gzsj" class="easyui-combobox" name="state" style="height:30px;width:200px;"></input>
+                    </div>
+                    <div class="aqph-button-box">
+                        <a id="btn_aqpg-zx" href="#" class="easyui-linkbutton" style="width:150px;height:30px;">执行</a>
+                    </div>
+                    <hr id="center_hr" class="tsgz-hr" />
+                    <div id="div_aqpg_jjkz" class="aqpg-combobox-box">
+                        <p class="combox-text">控制措施:</p>
+                        <input id="combobox_kzcs" class="easyui-combobox" name="state" style="height:30px;width:200px;" />
+                    </div>
+                    <div class="aqph-button-box" id="btn_aqpg_jjkz">
+                        <a href="#" class="easyui-linkbutton" style="width:150px;height:30px;">紧急控制</a>
+                    </div>
+                </div>
+                <div class="aqpg-canvas-style" id="canvas" ></div>
+                <div id="gzcxqx"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

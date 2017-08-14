@@ -1,0 +1,6 @@
+{
+  "PRINT_PORT" : "COM1",
+  "PRINT_BAUDRATE" : 19200,
+  "PRINT_DATABITS" : 8,
+  "PRINT_STOPBITS" : 1
+}

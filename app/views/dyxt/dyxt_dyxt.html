@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="../../controllers/meta.js" ></script>
+		<script type="text/javascript" src="../../controllers/dyxt/dyxt_dyxt.js" ></script>
+	</head>
+	<body class="box-margin-all-2">
+		<div class="menu-left box-margin-right">
+			<div class="button-menu-left">
+				<a id="btn_sjcd_long" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',iconCls:'icon-sjcd',selected:true">长时间尺度优化</a>
+				<a id="btn_sjcd_short" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',iconCls:'icon-sjcd'">短时间尺度优化</a>
+				<div class="button-action" style="float:right; margin-right:40px;">
+					<a id="btn_zxyh" href="#" class="easyui-linkbutton" data-options="toggle:false,iconCls:'icon-sjcdyh'">执行优化</a>
+				</div>
+			</div>
+		</div>
+		<div class="panel-surround menu-right nomargin-height-1">
+			<div class="easyui-panel" title="多源协同" style="height:100%;">
+				<div class="button-inside-left nomargin-height-2">
+					<a id="btn_clfs_cn_soc" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2',iconCls:'icon-cn-soc',selected:true">
+						储能SOC：<span id="span_cn_soc_h"></span></a>
+					<a id="btn_clfs_ljfsfd" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2',iconCls:'icon-ljfsfd'">
+						垃圾焚烧发电出力：<span id="span_ljfsfd_q"></span></a>
+					<!-- <a id="btn_clfs_ljtmfd" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2',iconCls:'icon-ljtmfd'">
+						垃圾填埋发电出力：<span id="span_ljtmfd_h"></span></a> -->
+					<a id="btn_clfs_cdzcfdgl" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2',iconCls:'icon-cdzcfdgl'">
+						充电桩充放电功率：<span id="span_cdzcfdgl_h"></span></a>
+					<!-- <a id="btn_clfs_rqljcl" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g2',iconCls:'icon-rqljcl'">
+						燃气轮机出力：<span id="span_rqljcl_h"></span></a> -->
+				</div>
+				<div class="button-inside-left-content nomargin-height-2" id="zhexian1"></div>
+				<div class="box-width-1 nomargin-height-2" style="float:left;">
+					<div class="title-vertical">
+						<div></div><a>系统负荷变化情况</a>
+					</div>
+					<div class="pie-fix" id="zhexian2"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

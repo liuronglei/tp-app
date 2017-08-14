@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../controllers/meta.js" ></script>
+    <link rel="stylesheet" type="text/css" href="../../../public/css/easyui-tabs-right.css"/>
+    <script type="text/javascript" src="../../controllers/ssjk/ssjk_ssjk.js" ></script>
+</head>
+<body  class="box-margin-all-2">
+<div class="menu-left box-margin-right">
+    <div class="button-menu-left">
+        <a id="btn_tab_wdwDiv" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',iconCls:'icon-sjcd',selected:true">微电网</a>
+        <a id="btn_tab_sywwDiv" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',iconCls:'icon-sjcd'">商业微网</a>
+        <a id="btn_tab_gywwDiv" href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',iconCls:'icon-sjcd'">工业微网</a>
+    </div>
+</div>
+<div class="panel-surround menu-right nomargin-height-1">
+    <div id="topTabs" class="easyui-tabs" style="width:100%;height:100%;">
+        <div title="示意图" style="background-color: #1D212A">
+            <div class="ssjk-panel">
+                <div class="easyui-panel" title="示范区基本概况" data-options="iconCls:'icon-zyfhjk'" style="height:100%;">
+                    <div class="blank"></div>
+                    <div class="ssjk-jbgk-content">
+                        <div class="jbgk-content-left">
+                            <div class="jbgk-content-left-img float-left">
+                                <img class="img-positon" src="../../../public/img/icon/icon-03/3_10.png">
+                            </div>
+                            <div class="jbgk-content-left-text float-left">
+                                <div class="jbgk-content-right-small">最大负荷</div>
+                                <div class="jbgk-content-right-big">40MW</div>
+                            </div>
+                        </div>
+                        <hr class="hr-upright-setting" />
+                        <div class="jbgk-content-left margin-left-20">
+                            <div class="jbgk-content-left-img float-left">
+                                <img class="img-positon" src="../../../public/img/icon/icon-03/3_12.png">
+                            </div>
+                            <div class="float-left jbgk-content-left-text">
+                                <div class="jbgk-content-right-small">10Kv变电站</div>
+                                <div class="jbgk-content-right-big">2座</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ssjk-jbgk-content">
+                        <div class="jbgk-content-left">
+                            <div class="jbgk-content-left-img float-left">
+                                <img class="img-positon" src="../../../public/img/icon/icon-03/3_17.png">
+                            </div>
+                            <div class="jbgk-content-left-text float-left">
+                                <div class="jbgk-content-right-small">光伏发电</div>
+                                <div class="jbgk-content-right-big">1305.92kWp</div>
+                            </div>
+                        </div>
+                        <hr class="hr-upright-setting" />
+                        <div class="jbgk-content-left margin-left-20">
+                            <div class="jbgk-content-left-img float-left">
+                                <img class="img-positon" src="../../../public/img/icon/icon-03/3_19.png">
+                            </div>
+                            <div class="float-left jbgk-content-left-text">
+                                <div class="jbgk-content-right-small">风力发电</div>
+                                <div class="jbgk-content-right-big">4*300kW</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ssjk-jbgk-content">
+                        <div class="jbgk-content-left">
+                            <div class="jbgk-content-left-img float-left">
+                                <img class="img-positon" src="../../../public/img/icon/icon-03/3_24.png">
+                            </div>
+                            <div class="jbgk-content-left-text float-left">
+                                <div class="jbgk-content-right-small">储能</div>
+                                <div class="jbgk-content-right-big">2*500kWh</div>
+                            </div>
+                        </div>
+                        <hr class="hr-upright-setting" />
+                        <div class="jbgk-content-left margin-left-20">
+                            <div class="jbgk-content-left-img float-left">
+                                <img class="img-positon" src="../../../public/img/icon/icon-03/3_27.png">
+                            </div>
+                            <div class="float-left jbgk-content-left-text">
+                                <div class="jbgk-content-right-small">冰储冷</div>
+                                <div class="jbgk-content-right-big">2MW</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ssjk-jbgk-content">
+                        <div class="jbgk-content-left">
+                            <div class="jbgk-content-left-img float-left">
+                                <img class="img-positon" src="../../../public/img/icon/icon-03/3_32.png">
+                            </div>
+                            <div class="jbgk-content-left-text float-left">
+                                <div class="jbgk-content-right-small">直流充电桩</div>
+                                <div class="jbgk-content-right-big">2*60kW</div>
+                            </div>
+                        </div>
+                        <hr class="hr-upright-setting" />
+                        <div class="jbgk-content-left margin-left-20">
+                            <div class="jbgk-content-left-img float-left">
+                                <img class="img-positon" src="../../../public/img/icon/icon-03/3_34.png">
+                            </div>
+                            <div class="float-left jbgk-content-left-text">
+                                <div class="jbgk-content-right-small">交流充电桩</div>
+                                <div class="jbgk-content-right-big">8*7.5kW</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ssjk-jbgk-content">
+                        <div class="jbgk-content-left">
+                            <div class="jbgk-content-left-img float-left">
+                                <img class="img-positon" src="../../../public/img/icon/icon-03/3_38.png">
+                            </div>
+                            <div class="jbgk-content-left-text float-left">
+                                <div class="jbgk-content-right-small">电锅炉</div>
+                                <div class="jbgk-content-right-big">5kW</div>
+                            </div>
+                        </div>
+                        <hr class="hr-upright-setting" />
+                        <div class="jbgk-content-left margin-left-20">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas-style" id="canvas-1" style="background-color:rgb(29, 33, 42)"></div>
+        </div>
+        <div title="拓扑图" style="background-color: #1D212A">
+            <div class="box-gwcz">
+                <div class="easyui-panel" title="并网操作" data-options="iconCls:'icon-zyfhjk'" style="height:100%;">
+                    <div id="wzxDiv" class="ssjk-left">
+                        <div class="wzx-box-style">
+                            <img class="float-left margin-right-20" src="../../../public/img/icon/icon-04~8/4-8_10.png">
+                            <p class="float-left text-color">未执行</p>
+                        </div>
+                        <div class="top-border"></div>
+                        <div class="bwd-box-style margin-top-10">
+                            <img class="float-left margin-right-10 margin-left-20" src="../../../public/img/icon/icon-04~8/4-8_14.png">
+                            <p class="float-left">并网点主网侧电压幅值:402.4V</p>
+                        </div>
+                        <div class="bwd-box-style">
+                            <img class="float-left margin-right-10 margin-left-20" src="../../../public/img/icon/icon-04~8/4-8_14.png">
+                            <p class="float-left">并网点主网侧电压相角:12.5°</p>
+                        </div>
+                        <div class="bwd-box-style">
+                            <img class="float-left margin-right-10 margin-left-20" src="../../../public/img/icon/icon-04~8/4-8_14.png">
+                            <p class="float-left">并网点微网侧电压幅值:401.8V</p>
+                        </div>
+                        <div class="bwd-box-style">
+                            <img class="float-left margin-right-10 margin-left-20" src="../../../public/img/icon/icon-04~8/4-8_14.png">
+                            <p class="float-left">并网点微网侧电压相角:15.8°</p>
+                        </div>
+                        <div class="bottom-border"></div>
+                    </div>
+                    <div id="yzxDiv" class="ssjk-left">
+                        <div class="wzx-box-style">
+                            <img class="float-left margin-right-20" src="../../../public/img/icon/icon-04~8/4-8_02.png">
+                            <p class="float-left text-color">已完成</p>
+                        </div>
+                        <div class="top-border"></div>
+                        <div class="bwd-box-style margin-top-10">
+                            <img class="float-left margin-right-10 margin-left-20" src="../../../public/img/icon/icon-04~8/4-8_14.png">
+                            <p class="float-left">并网点主网侧电压幅值:402.1V</p>
+                        </div>
+                        <div class="bwd-box-style">
+                            <img class="float-left margin-right-10 margin-left-20" src="../../../public/img/icon/icon-04~8/4-8_14.png">
+                            <p class="float-left">并网点主网侧电压相角:13.5°</p>
+                        </div>
+                        <div class="bwd-box-style">
+                            <img class="float-left margin-right-10 margin-left-20" src="../../../public/img/icon/icon-04~8/4-8_14.png">
+                            <p class="float-left">并网点微网侧电压幅值:402.1V</p>
+                        </div>
+                        <div class="bwd-box-style">
+                            <img class="float-left margin-right-10 margin-left-20" src="../../../public/img/icon/icon-04~8/4-8_14.png">
+                            <p class="float-left">并网点微网侧电压相角:13.5°</p>
+                        </div>
+                        <div class="bwd-box-style">
+                            <img class="float-left margin-right-10 margin-left-20" src="../../../public/img/icon/icon-04~8/4-8_14.png">
+                            <p class="float-left">耗时:150~170ms</p>
+                        </div>
+                        <div class="bottom-border"></div>
+                    </div>
+                    <div class="button-gwcz">
+                        <a id="btn_gwcz" href="#" class="easyui-linkbutton" data-options="toggle:true,iconCls:'icon-gwcz'" style="width:80%;height:30%;">并网操作</a>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas-style" id="canvas-2" style="background-color:rgb(29, 33, 42)"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

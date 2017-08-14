@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="../../controllers/meta.js" ></script>
+		<script type="text/javascript" src="../../controllers/tptj/tptj_kqsf.js" ></script>
+	</head>
+	<body>
+		<div class="right-action">
+			<div class="easyui-panel" title="快切操作区" style="width:100%; height:100%;">
+				<div id="completeDiv" style="text-align:center;height:10%;visibility:hidden;">
+					<a><img src="../../../public/img/kqsf_06.png"/></a>
+					<p>完成快切操作！</p>
+				</div>
+				<div class="span-kqcz" style="visibility:hidden;">
+					<div class="topFontFrame"></div>
+					<div class="fontFrameContent">
+						<div id="startDiv" style="display: none;">
+							正在进行快切操作……
+						</div>
+						<div id="descDiv" style="height:200px;display: none;">
+							<div class="span-desc">
+								<a><img src="../../../public/img/kqsf_10.png"/></a>
+								<p><span>断开开关：</span><span id="openSpan"></span></p>
+							</div>
+							<div class="span-desc">
+								<a><img src="../../../public/img/kqsf_13.png"/></a>
+								<p><span>闭合开关：</span><span id="closeSpan"></span></p>
+							</div>
+							<div class="span-desc">
+								<a><img src="../../../public/img/kqsf_16.png"/></a>
+								<p><span>耗时：</span><span id="timeSpan"></span></p>
+							</div>
+						</div>
+					</div>
+					<div class="bottomFontFrame"></div>
+				</div>
+				<div class="button-action" style="position: absolute;bottom: 4%;margin-left:35px;">
+					<a id="btn_zxkq" href="#" class="easyui-linkbutton" data-options="toggle:false,iconCls:'icon-kqcz'">执行快切</a>
+				</div>
+			</div>
+		</div>
+		<div id="canvas"></div>
+	</body>
+</html>
