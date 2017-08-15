@@ -4,7 +4,6 @@
 var tab;
 var c_page = require('../app/controllers/c_page');
 $(document).ready(function(){
-    temp();
     initMenu();
     c_page.regPageToEvent(function(arg){pageTo(arg.title, arg.url);}); //注册新建页签事件监听
     c_page.regNewWinEvent(function(arg){openNewWin(arg.url, arg.width, arg.height);}); //注册打开新页面事件监听
@@ -23,7 +22,7 @@ function pageTo(title, url) {
  */
 function initMenu() {
     //内容初始化
-    /*
+
     var menu = [{
         title:'首页',
         url:'views/sy/sy_yizhuang.html'
@@ -52,8 +51,8 @@ function initMenu() {
             url:'views/tsld/tsld_dsxn.html'
         }]
     }];
-    */
-    var menu = [{
+
+    /*var menu = [{
         title:'首页',
         url:'views/wwsy/wwsy_sy.html'
     },{
@@ -86,7 +85,7 @@ function initMenu() {
     },{
         title:'运行控制',
         url:'views/yxkz/yxkz_yxkz.html'
-    }];
+    }];*/
     for(var key in menu) {
         var menu_id = 'menu_' + key;
         $('#nav').append('<li id="' + menu_id + '_li"><a id="' + menu_id + '" href="#">' + menu[key].title + '</a></li>');
@@ -144,74 +143,3 @@ function hideMenu() {
 function showMenu() {
     $('#menuDiv, .tabs-header').show();
 }
-function temp() {
-    var InDataSet = {
-        "Table1":[
-            {
-                "RltBillNo": "SXTZ004339",
-                "CaseNo": "02265133",
-                "CapSubGrade": "9,6",
-                "PdtGrade": "A5X",
-                "MachineNo": "1#",
-                "WorkerNo": "0055;8888;"
-            }
-        ]
-    }
-
-
-    $.ajax({
-         url: "http://221.178.135.214:8099/Service1.asmx?op=MESWebService",
-        data: {
-            Key : '',
-            Role : '',
-            TransactionType : 'SX_CHECK',
-            StartDate : '',
-            EndDate : '',
-            InDataSet:InDataSet
-            },
-         type: 'post',
-        cache: false,
-        contentType: "application/json; charset=utf-8",
-        dataType: 'jsonp',
-        jsonp: 'jsoncallback',//和服务端对应，如果没有此函数，则默认执行success的函数
-        success: function (data) {
-            var r = data; //此处data为json结构的服务端返回数据结果，而非执行代码
-            alert(r);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            //alert(XMLHttpRequest.status);
-            //alert(XMLHttpRequest.readyState);
-            //alert(textStatus);
-        },
-        complete: function (XMLHttpRequest, textStatus) {
-
-        }
-    });
-}
-
-/*
-function temp() {
-    $.ajax({
-            url: "http://域名/服务名.asmx/方法名",
-            data: {},
-            type: 'post',
-            cache: false,
-            contentType: "application/json; charset=utf-8",
-            dataType: 'jsonp',
-            jsonp: 'jsoncallback',//和服务端对应，如果没有此函数，则默认执行success的函数
-            success: function (data) {
-                var r = data; //此处data为json结构的服务端返回数据结果，而非执行代码
-                alert(r);
-            },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            //alert(XMLHttpRequest.status);
-            //alert(XMLHttpRequest.readyState);
-            //alert(textStatus);
-        },
-        complete: function (XMLHttpRequest, textStatus) {
-
-        }
-    });
-}
-    */
-

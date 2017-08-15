@@ -1,7 +1,7 @@
 /**
  * 模型_优化调度
  */
-const query = require("../lib/mysql.js");
+const query = require("./mysql.js");
 const m_yhdd = {
     queryCdyh_line : function(startNum, endNum, currentClfs, callBack) {
         query('SELECT case when sjd <' + startNum + ' then concat(\'next-\',time_format(rq,\'%H:%i\')) else time_format(rq,\'%H:%i\') end as sjd,'

@@ -16,3 +16,5 @@ serialPort.open(function(error){
         console.log('dataShow:' + data);
     })
 });
+var aa = 15;
+console.log(aa.toString(16));

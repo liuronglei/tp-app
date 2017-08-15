@@ -1,7 +1,7 @@
 /**
  * 模型_态势联动
  */
-const query = require("../lib/mysql.js");
+const query = require("./mysql.js");
 const m_yxkz = {
     querySbList : function(sjlx,sbid,callBack) {
         if(sbid!==""){
