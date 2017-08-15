@@ -1,7 +1,7 @@
 /**
  * 模型_态势联动
  */
-const query = require("../lib/mysql.js");
+const query = require("./mysql.js");
 const m_tsld = {
     querySbList : function(callBack) {
         query('SELECT * FROM t_sb', callBack);

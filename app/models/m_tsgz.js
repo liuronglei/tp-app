@@ -2,7 +2,7 @@
  * 模型_态势感知
  */
 
-const query = require("../lib/mysql.js");
+const query = require("./mysql.js");
 const m_tsgz = {
     queryFydgl : function(callBack) {
         query('SELECT time_format(t_dsxn_ww.rq,\'%H:%i\') AS sjd,lsfh_gzr AS fdgl FROM t_dsxn_ww', callBack);

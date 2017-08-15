@@ -1,0 +1,7 @@
+{
+  "HOST": "120.26.111.85",
+  "USER": "zjdb",
+  "PASSWORD": "db20160529",
+  "DATABASE": "simpletest",
+  "PORT": "3306"
+}

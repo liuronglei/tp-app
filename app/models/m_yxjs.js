@@ -1,7 +1,7 @@
 /**
  * 模型_态势联动
  */
-const query = require("../lib/mysql.js");
+const query = require("./mysql.js");
 const m_yxjs = {
     queryYxjs : function(startNum, endNum, currentClfs, callBack) {
         query('SELECT time_format(rq,\'%H:%i\') as sjd,' + currentClfs + ' FROM t_yxjs WHERE t_yxjs.sjd>='

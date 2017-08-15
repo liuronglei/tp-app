@@ -24,6 +24,24 @@ const c_page = {
         ipc.send('newWin-ping-event', arg);
         //easyui窗口组件方式
     },
+    regMes : function (err,callBack) {
+        ipc.on('xh-pong-event', function(event, arg) {
+            callBack(err,arg);
+        });
+    },
+    doValue_dx_isOcv : function (arg,value_rl,value_dy,value_dyc,value_nz) {
+        ipc.send('value-ping-event', arg,value_rl,value_dy,value_dyc,value_nz);
+    },
+    regValue : function (err,callBack) {
+        ipc.on('valueTo-pong-event', function(event,dxArr,dyArr,nzArr,ng_reason) {
+            callBack(err,dxArr,dyArr,nzArr,ng_reason);
+        });
+    },
+    regValue_casenum :function (err,callBack) {
+        ipc.on('valueCaseTo-pong-event', function(event,casenum,dxArr) {
+            callBack(err,casenum,dxArr);
+        });
+    },
 
     /*
      * 打开万克LOGO指定的页面

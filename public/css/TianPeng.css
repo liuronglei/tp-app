@@ -1,0 +1,129 @@
+/* 首页 */
+.wrap-box {
+    width: 99%;
+    height:100%;
+    background-color: #e9e9e9;
+}
+.level-div {
+    width: 100%;
+    height: 50px;
+    background-color: #4887e6;
+    text-align: center;
+}
+.level-div img{
+    float:left;margin-left:40%;
+}
+.level-div p{
+    float:left;font-size: 20px;color:#fff;position: relative;top:-10%;
+}
+.left-content {
+    float:left;
+    margin:1% 1% 0 10%;
+    width:49%;
+    height:620px;
+}
+.right-content{
+    float:left;
+    margin-top: 1%;
+    width:30%;
+    height:620px;
+}
+.jbcs-div{
+    text-align: center;
+    vertical-align: middle;
+}
+.jbcs-content{
+    padding: 4% 0 4% 0;
+}
+.left-img{
+    float: left;
+    margin-top:1%;
+}
+.left-text{
+    float:left;
+    text-align: left;
+    width:20%;
+}
+.button-div{
+    padding-top: 1%;
+    padding-left:10%;
+}
+.zc-div{
+    padding: 27% 40% 27% 40%;
+}
+.zc-div p{
+    color:#51eb67;
+    font-size:20px;
+    position: relative;
+    left:35%;
+}
+.full{
+    width:100%;
+    height:100%;
+}
+.bottom-div{
+    margin-top:650px;
+    width:100%;
+    height:100px;
+    background-color: #707070;
+}
+
+/* 参数设置 */
+.content-box{
+    padding-top: 2%;
+    width: 100%;
+    height: 97%;
+}
+.line-div{
+    margin-left:1%;
+    margin-bottom: 10px;
+}
+.cssz-text{
+    float:left;
+    width:120px;
+    text-align: left;
+    margin-left:5%;
+}
+.level-hr{
+    float: left;
+    margin-left:5px;
+    margin-right:5px;
+    width:10px;
+}
+.textbox-div{
+    float:left;
+}
+.checkbox{
+    margin-left: 60%;
+}
+.cssz-button{
+    padding-top: 1%;
+    padding-left:7%;
+}
+
+
+/* ng数据查询 */
+.top-function{
+    float:none;
+    margin-bottom: 50px;
+    height:5%;
+    width:100%;
+}
+.combobox-div{
+    float:left;
+    padding-left:5%;
+}
+.sjcx-button{
+    float:left;
+    margin-left:5%;
+}
+.table-display{
+    height:80%;
+    width:90%;
+    margin-left:5%;
+}
+.table-style{
+    margin-top:50px;
+    width:100%;
+    height:100%;
+}
