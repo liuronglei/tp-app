@@ -43,24 +43,35 @@ function csszInit(){
            console.log(err);
            return;
        }
+        console.log(result.recordset.length);
        for(var i = result.recordset.length-1; i >= 0; i--){
            var record = result.recordset[i];
            var value = record.value;
+           console.log(record);
            if(record.type == 1 || record.type == 2){
-               $('#cssz_div').prepend('<div class="line-div">\n' +
-                   '<span class="cssz-text">'+record.title+'：</span>\n' +
-                   '<div class="text-div">\n' +
-                   '<input name="'+record.name+'" id="'+record.name+'" value="' + value + '" class="easyui-textbox" style="width:150px;height:25px;" />\n' +
-                   '</div>\n' +
-                   '</div>');
+               if(value == null){
+                   $('#cssz_div').prepend('<div class="line-div">\n' +
+                       '<span class="cssz-text">'+record.title+'：</span>\n' +
+                       '<div class="text-div">\n' +
+                       '<input name="'+record.name+'" id="'+record.name+'" value=" " class="easyui-textbox" style="width:150px;height:25px;" />\n' +
+                       '</div>\n' +
+                       '</div>');
+               }
+               else{
+                   $('#cssz_div').prepend('<div class="line-div">\n' +
+                       '<span class="cssz-text">'+record.title+'：</span>\n' +
+                       '<div class="text-div">\n' +
+                       '<input name="'+record.name+'" id="'+record.name+'" value="' + value + '" class="easyui-textbox" style="width:150px;height:25px;" />\n' +
+                       '</div>\n' +
+                       '</div>');
+               }
            }
            else if(record.type == 3){
-               var valueArr =  value.split(";");
-               if(valueArr[1] == null){
+               if(value == null){
                    $('#cssz_div').prepend('<div class="line-div">\n' +
                        '<span class="cssz-text">'+record.title+'：</span>\n' +
                        '<div class="textbox-div">\n' +
-                       '<input name="'+record.name+'" id="'+record.name+'_min" value="' + valueArr[0] + '" class="easyui-textbox" style="width:60px;height:25px;" />\n' +
+                       '<input name="'+record.name+'" id="'+record.name+'_min" value=" " class="easyui-textbox" style="width:60px;height:25px;" />\n' +
                        '</div>\n' +
                        '<hr class="level-hr"/>\n' +
                        '<div class="textbox-div" style="float:none">\n' +
@@ -68,7 +79,8 @@ function csszInit(){
                        '</div>\n' +
                        '</div>');
                }
-               else {
+               else{
+                   var valueArr =  value.split(";");
                    $('#cssz_div').prepend('<div class="line-div" id="' + record.title + '">\n' +
                        '<span class="cssz-text">' + record.title + '：</span>\n' +
                        '<div class="textbox-div">\n' +

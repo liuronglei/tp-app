@@ -23,7 +23,7 @@ const m_sjcx = {
             'resistance,(Convert(nvarchar(50),resistance_min)+\'——\'+Convert(nvarchar(50),resistance_max)) as resistance_range,volume,\n' +
             '(Convert(nvarchar(50),volume_min)+\'——\'+Convert(nvarchar(50),volume_max)) as volume_range,ocv4,\n' +
             '(Convert(nvarchar(50),volumedifference_min)+\'——\'+Convert(nvarchar(50),volumedifference_max)) as volumedifference_range, \n' +
-            'grade,(Convert(nvarchar(50),grade_min)+\'——\'+Convert(nvarchar(50),grade_max)) as grade_range,Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng where batch =2 and ng_reason like \'%'+ng_reason+'%\' ',callback);
+            'grade,(Convert(nvarchar(50),grade_min)+\'——\'+Convert(nvarchar(50),grade_max)) as grade_range,Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng where batch =\''+batch+'\' and ng_reason like \'%'+ng_reason+'%\' ',callback);
     },
     query_selectAll_batch :function (callback) {
         query('select batch from d_cell_ng',callback);

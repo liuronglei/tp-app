@@ -15,7 +15,7 @@ document.write('<script type="text/javascript" src="' + path.join(__rootdir, 'pu
 document.write('<script type="text/javascript" src="' + path.join(__rootdir, 'public/js/dthree/bputils.js') + '"></script>');
 */
 
-var __rootdir = "E:/mytemp/upper_monitor/";
+var __rootdir = "D:\\公司\\tianpeng\\upper_monitor\\";
 document.write('<link rel="stylesheet" type="text/css" href="' + __rootdir + 'public/js/easyui/themes/wanke_swj/easyui.css' + '">');
 document.write('<link rel="stylesheet" type="text/css" href="' + __rootdir +  'public/js/easyui/themes/icon.css' + '">');
 document.write('<link rel="stylesheet" type="text/css" href="' + __rootdir +  'public/css/TianPeng.css' + '">');

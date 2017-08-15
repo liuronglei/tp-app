@@ -11,7 +11,7 @@
     text-align: center;
 }
 .level-div img{
-    float:left;margin-left:40%;
+    float:left;margin-left:40%;position: relative;top:8px;
 }
 .level-div p{
     float:left;font-size: 20px;color:#fff;position: relative;top:-10%;

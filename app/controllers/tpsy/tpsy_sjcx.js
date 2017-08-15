@@ -2,7 +2,7 @@ var m_sjcx = require('../../controllers/tpsy/m_sjcx');
 var fs = require("fs");
 
 $(document).ready(function () {
-    window.setTimeout('comboboxInit();',500);
+    window.setTimeout('comboboxInit();select_All();',500);
     $('#btn_qd').click(select_All);
     $('#btn_dc').click(dcCsv);
 });

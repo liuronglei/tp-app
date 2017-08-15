@@ -95,7 +95,7 @@ function getValue_db(callback) {
 //保存全局变量
 global.sharedObject = {
   rootdir: __dirname,
-  excelMap:fileread.readData('E:\\天鹏\\app\\data\\Detail_01.csv')
+  excelMap:fileread.readData('D:\\公司\\tianpeng\\文档数据\\Detail_01.csv')
 };
 
 //
