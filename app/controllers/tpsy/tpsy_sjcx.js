@@ -23,13 +23,11 @@ function comboboxInit() {
     });
     m_sjcx.query_select_dqbatch(function (err,result) {
         if(err) throw err;
-        if(result.recordset[0] == null){
-            $('#combobox_pc').combobox({value : "没有当前批次的NG数据"})
+        var defaultValue = "没有当前批次的NG数据";
+        if(result.recordset[0] != null && result.recordset[0] != "") {
+            defaultValue = result.recordset[0].batch;
         }
-        else{
-            var defaultValue = result.recordset[0].batch;
-            $('#combobox_pc').combobox({value : defaultValue})
-        }
+        $('#combobox_pc').combobox({value: defaultValue});
     });
     m_sjcx.query_selectAll_ng_reason(function (err,result) {
         if (err) throw err;
@@ -65,27 +63,16 @@ function comboboxInit() {
 function select_All(){
     var batch = $('#combobox_pc').combobox('getValue');
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
-    if(batch != "" && ng_reason == ""){
-        m_sjcx.query_selectBatch(batch,function (error,result) {
-            if(error){
-                console.log(error);
-                return;
-            }
-            dataGrid_Init(result.recordset);
-        });
-    }
-    else if(batch != "" && ng_reason != "") {
+    m_sjcx.query_selectBatch(batch,function (error,result) {
+        if(error){
+            console.log(error);
+            return;
+        }
+        dataGrid_Init(result.recordset);
+    });
+    if(batch != "" && ng_reason != "") {
         batch =$('#combobox_pc').combobox('getValue');
         m_sjcx.query_select(ng_reason,batch,function (error,result) {
-            if(error){
-                console.log(error);
-                return;
-            }
-            dataGrid_Init(result.recordset);
-        });
-    }
-    else{
-        m_sjcx.query_selectAll(function (error,result) {
             if(error){
                 console.log(error);
                 return;
@@ -137,82 +124,42 @@ function pagerFilter(data){
 function dcCsv() {
     var batch = $('#combobox_pc').combobox('getValue');
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
-    if(batch != "" && ng_reason == ""){
-        m_sjcx.query_selectBatch(batch,function (error,result) {
-            if(error){
+    if (batch != "" && ng_reason == "") {
+        m_sjcx.query_selectBatch(batch, function (error, result) {
+            if (error) {
                 console.log(error);
                 return;
             }
             dataGrid_Init(result.recordset);
-            var str = "电芯条码"+","+"设备号"+","+"操作人员工号"+","+"生产工单"+","+"批次"+","+"电压"+","+"电压范围"+","+"内阻"+","+"内阻范围"+","+"容量"+","+"容量范围"+","+"Ocv4"+","+"电压差范围"+","+"等级"+","+"等级范围"+","+"创建时间"+","+"NG原因"+","+"检测次数"+"\n";
-            for(var i = 0; i < result.recordset.length; i++){
-                for(var key in result.recordset[i]){
-                    str = str + (result.recordset[i][key])+",";
+            var str = "电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "电压范围" + "," + "内阻" + "," + "内阻范围" + "," + "容量" + "," + "容量范围" + "," + "Ocv4" + "," + "电压差范围" + "," + "等级" + "," + "等级范围" + "," + "创建时间" + "," + "NG原因" + "," + "检测次数" + "\n";
+            for (var i = 0; i < result.recordset.length; i++) {
+                for (var key in result.recordset[i]) {
+                    str = str + (result.recordset[i][key]) + ",";
                 }
                 str = str + "\n";
             }
-            fs.writeFile('../../../天鹏/tp/tianpeng/text1.csv',str, function (err) {
+            fs.writeFile('./upper_monitor/text1.csv', str, function (err) {
                 if (err) throw err;
                 alert('数据导出成功');
             });
         });
     }
-    else if(batch != "" && ng_reason != "") {
-        batch =$('#combobox_pc').combobox('getValue');
-        m_sjcx.query_select(ng_reason,batch,function (error,result) {
-            if(error){
+    else if (batch != "" && ng_reason != "") {
+        batch = $('#combobox_pc').combobox('getValue');
+        m_sjcx.query_select(ng_reason, batch, function (error, result) {
+            if (error) {
                 console.log(error);
                 return;
             }
             dataGrid_Init(result.recordset);
-            var str = "电芯条码"+","+"设备号"+","+"操作人员工号"+","+"生产工单"+","+"批次"+","+"电压"+","+"电压范围"+","+"内阻"+","+"内阻范围"+","+"容量"+","+"容量范围"+","+"Ocv4"+","+"电压差范围"+","+"等级"+","+"等级范围"+","+"创建时间"+","+"NG原因"+","+"检测次数"+"\n";
-            for(var i = 0; i < result.recordset.length; i++){
-                for(var key in result.recordset[i]){
-                    str = str + (result.recordset[i][key])+",";
+            var str = "电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "电压范围" + "," + "内阻" + "," + "内阻范围" + "," + "容量" + "," + "容量范围" + "," + "Ocv4" + "," + "电压差范围" + "," + "等级" + "," + "等级范围" + "," + "创建时间" + "," + "NG原因" + "," + "检测次数" + "\n";
+            for (var i = 0; i < result.recordset.length; i++) {
+                for (var key in result.recordset[i]) {
+                    str = str + (result.recordset[i][key]) + ",";
                 }
                 str = str + "\n";
             }
-            fs.writeFile('../../../天鹏/tp/tianpeng/text1.csv',str, function (err) {
-                if (err) throw err;
-                alert('数据导出成功');
-            });
-        });
-    }
-    else if(batch == "" && ng_reason != "") {
-        m_sjcx.query_selectNg(ng_reason,function (error,result) {
-            if(error){
-                console.log(error);
-                return;
-            }
-            dataGrid_Init(result.recordset);
-            var str = "电芯条码"+","+"设备号"+","+"操作人员工号"+","+"生产工单"+","+"批次"+","+"电压"+","+"电压范围"+","+"内阻"+","+"内阻范围"+","+"容量"+","+"容量范围"+","+"Ocv4"+","+"电压差范围"+","+"等级"+","+"等级范围"+","+"创建时间"+","+"NG原因"+","+"检测次数"+"\n";
-            for(var i = 0; i < result.recordset.length; i++){
-                for(var key in result.recordset[i]){
-                    str = str + (result.recordset[i][key])+",";
-                }
-                str = str + "\n";
-            }
-            fs.writeFile('../../../天鹏/tp/tianpeng/text1.csv',str, function (err) {
-                if (err) throw err;
-                alert('数据导出成功');
-            });
-        });
-    }
-    else{
-        m_sjcx.query_selectAll(function (error,result) {
-            if(error){
-                console.log(error);
-                return;
-            }
-            dataGrid_Init(result.recordset);
-            var str = "电芯条码"+","+"设备号"+","+"操作人员工号"+","+"生产工单"+","+"批次"+","+"电压"+","+"电压范围"+","+"内阻"+","+"内阻范围"+","+"容量"+","+"容量范围"+","+"Ocv4"+","+"电压差范围"+","+"等级"+","+"等级范围"+","+"创建时间"+","+"NG原因"+","+"检测次数"+"\n";
-            for(var i = 0; i < result.recordset.length; i++){
-                for(var key in result.recordset[i]){
-                    str = str + (result.recordset[i][key])+",";
-                }
-                str = str + "\n";
-            }
-            fs.writeFile('../../../天鹏/tp/tianpeng/text1.csv',str, function (err) {
+            fs.writeFile('./upper_monitor/text1.csv', str, function (err) {
                 if (err) throw err;
                 alert('数据导出成功');
             });

@@ -21,7 +21,6 @@ var fileread = {
                 }
             }
             return hashMap;
-            console.log(hashMap.size());
         }
         else if(SUFFIX == "csv"){
             var buffer = fs.readFileSync(filePath);

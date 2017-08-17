@@ -1,38 +1,82 @@
 var soap = require('soap');
 var HashMap = require('../../utils/hashmap');
-var m_tpsy = require("../../controllers/tpsy/m_tpsy");
+var m_cssz = require("../../controllers/tpsy/m_cssz");
 var c_page = require("../../controllers/c_page");
 var webService = require("../../controllers/tpsy/webservice");
-
+var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var url = 'http://221.178.135.214:8099/Service1.asmx?wsdl';
-
+/*var dataObj_ng = {
+    sbh : "2",
+    czrygh : "null",
+    scgd : "null",
+    pc :　"null",
+    dx : "KA2GA18 101005",
+    dy : "2000",
+    dy_min : "null",
+    dy_max : "null",
+    nz : "100",
+    nz_min : "null",
+    nz_max : "null",
+    rl : "null",
+    rl_min: "null",
+    rl_max: "null",
+    ocv4 : "null",
+    dyc_min : "null",
+    dyc_max : "null",
+    dj : "null",
+    dj_min: "null",
+    dj_max: "null",
+    zxs : "null",
+    ng_reason : "NG1"
+};*/
+/*var dataObj_normal = {
+    xh : "",
+    sbh : "2",
+    czrygh : "null",
+    scgd : "null",
+    pc :　"null",
+    dx : "KA2GA18 101005",
+    dy : "2000",
+    dy_min : "null",
+    dy_max : "null",
+    nz : "100",
+    nz_min : "null",
+    nz_max : "null",
+    rl : "null",
+    rl_min: "null",
+    rl_max: "null",
+    ocv4 : "null",
+    dyc_min : "null",
+    dyc_max : "null",
+    dj : "null",
+    dj_min: "null",
+    dj_max: "null",
+    zxs : "null"
+};
+var dataArr = [dataObj_normal];*/
 $(document).ready(function () {
-    argArrive();
-    Webservice();
+    judgeNormal();
     sycsInit();
     $('#zc').hide();
     $('#yc').hide();
     $("#btn_cssz").click(CreatWindows_cssz);
     $("#btn_ngsjcx").click(CreatWindows_ngsjcx);
+    add_NG_DB();
+    sealing_dispose();
 });
 
 
-function argArrive() {
-    c_page.regValue(function (err,dxArr,dyArr,nzArr,ng_reasonArr) {
+function add_NG_DB() {
+    c_page.regValue_ng(function (err,dataArr_addNG) {
         if(err) throw err;
-        var check_ocv = $('#sjsx').attr("checked") ? 1 : 0;
-        if(check_ocv == 1){
-            getValue_plc.isOcv(dxArr,dyArr,nzArr,ng_reasonArr);
-        }
-        else { getValue_plc.noOcv(dxArr,dyArr,nzArr,ng_reasonArr); }
+        getValue_plc.add_NG(dataArr_addNG);
     });
-    c_page.regValue_casenum(function (err,casenum,dxArr) {
+}
+
+function sealing_dispose() {
+    c_page.regValue_casenum(function (err,dataArr_addNoraml) {
         if(err) throw err;
-        var check_ocv = $('#sjsx').attr("checked") ? 1 : 0;
-        if(check_ocv == 1){
-            getValue_plc.getCase(casenum,dxArr);
-        }
-        else { getValue_plc.getCase(casenum,dxArr); }
+        getValue_plc.add_normal(dataArr_addNoraml);
         var Json_Upload = {
             Key: "",      //未使用，为空字符串
             Role: "",      //未使用，为空字符串
@@ -64,6 +108,8 @@ function argArrive() {
         });
     });
 }
+
+
 function CreatWindows_cssz() {
     $('#win_cssz').window({
         title:'参数设置',
@@ -98,7 +144,7 @@ function CreatWindows_ngsjcx() {
 }
 
 function sycsInit() {
-    m_tpsy.query_sycsInit(function (err,result) {
+    m_cssz.query_csszInit(function (err,result) {
         if(err){
             console.log(err);
             return;
@@ -122,10 +168,10 @@ function sycsInit() {
     })
 }
 
-function Webservice() {
-    c_page.regMes(function (err,arg) {
+function judgeNormal() {
+    c_page.regXh(function (err,arg) {
         if(err) throw err;
-        m_tpsy.query_sycsInit(function (err,result) {
+        m_cssz.query_csszInit(function (err,result) {
             if (err) {
                 console.log(err);
                 return;

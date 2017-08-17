@@ -2,7 +2,7 @@ var mssql = require('mssql');
 const config = {
     user: 'sa',
     password: '123456',
-    server: '192.168.2.235',
+    server: '192.168.43.143',
     database: 'tianpeng',
     port:1433
 };
@@ -16,7 +16,7 @@ const query = function (sql, callBack) {
         }
         var ps = new mssql.PreparedStatement(connection);
         ps.prepare(sql, function (err) {
-            //console.log(sql);
+            //alert(sql);
             if (err){
                 console.log(err);
                 return;

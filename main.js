@@ -70,18 +70,18 @@ ipcMain.on('newWin-ping-event', (event, arg) => {
 ipcMain.on('xh-ping-event',(event, arg) => {
   win.webContents.send('xh-pong-event', arg)
 })
-//plc发送电芯条码，实际电压，实际内阻，ng原因给渲染进程
-ipcMain.on('valueTo-ping-event',(event, dxArr, dyArr, nzArr, ng_reason) => {
-  win.webContents.send('valueTo-pong-event',dxArr, dyArr, nzArr, ng_reason);
+//plc发送电芯条码，实际容量，实际OCV4实际电压，实际内阻，ng原因给渲染进程
+ipcMain.on('add_ng-ping-event',(event, dataArr_addNG) => {
+  win.webContents.send('add_ng-pong-event',dataArr_addNG);
 })
 //plc发送箱号，电芯条码
-ipcMain.on('valueCaseTo-ping-event',(event,casenum,dxArr) => {
-  win.webContents.send('valueCaseTo-pong-event',casenum,dxArr);
+ipcMain.on('sealing_dispose-ping-event',(event,dataArr_addNoraml) => {
+  win.webContents.send('sealing_dispose-pong-event',dataArr_addNoraml);
 })
 
 //plc从渲染进程接受参数
 function getValue_ym(callback) {
-  ipcMain.on('value-ping-event',(event,arg,value_rl,value_dy,value_dyc,value_nz) => {
+  ipcMain.on('value_fw-ping-event',(event,arg,value_rl,value_dy,value_dyc,value_nz) => {
   })
 }
 //plc从数据库接受参数
@@ -94,9 +94,13 @@ function getValue_db(callback) {
 
 //保存全局变量
 global.sharedObject = {
-  rootdir: __dirname,
-  excelMap:fileread.readData('D:\\公司\\tianpeng\\文档数据\\Detail_01.csv')
+    rootdir: __dirname,
+    excelMap:fileread.readData('D:\\公司\\tianpeng\\文档数据\\Detail_01.csv'),
 };
+
+m_cssz.fillCsszMap(function (hashmap) {
+    global.sharedObject.csszMap = hashmap;
+});
 
 //
 //require('./app/communication/plc_service');

@@ -1,8 +1,7 @@
 var m_cssz = require('../../controllers/tpsy/m_cssz');
 var HashMap = require('../../utils/hashmap');
-var getValue_plc = require('../../controllers/tpsy/getValue_plc');
 var c_page =require("../../controllers/c_page");
-//var choose_dx = require('../../controllers/tpsy/choose_dx');
+
 $(document).ready(function () {
     csszInit();
     $('#btn_qd').click(csszSave);
@@ -24,9 +23,17 @@ function csszSave() {
         }
         hashMap.put(name, '\'' + value + '\'');
     });
-    var check_ocv = $('#sjsx').attr("checked") ? 1 : 0;
-    c_page.doValue_dx_isOcv(check_ocv,hashMap.get('rlfw'),hashMap.get('dyfw'),hashMap.get('dycfw'),hashMap.get('nzfw'),hashMap.get('djfw'));
-    m_cssz.query_csszSave(hashMap.keySet(),hashMap.values(),function (error) {
+    var dataObj_toPlc = {
+        sjsx : hashMap.get("'sjsx'").replace('\'', '').replace('\'', ''),
+        rlfw : hashMap.get("'rlfw'").replace('\'', '').replace('\'', ''),
+        dyfw : hashMap.get("'dyfw'").replace('\'', '').replace('\'', ''),
+        dycfw : hashMap.get("'dycfw'").replace('\'', '').replace('\'', ''),
+        nzfw : hashMap.get("'nzfw'").replace('\'', '').replace('\'', ''),
+        djfw : hashMap.get("'djfw'").replace('\'', '').replace('\'', '')
+    };
+    var dataArr_toPlc = [dataObj_toPlc];
+    c_page.doValue_fw(dataArr_toPlc);
+    m_cssz.csszSave(hashMap.keySet(),hashMap.values(),function (error) {
         if (error){
             alert(error);
             return;
@@ -43,11 +50,9 @@ function csszInit(){
            console.log(err);
            return;
        }
-        console.log(result.recordset.length);
        for(var i = result.recordset.length-1; i >= 0; i--){
            var record = result.recordset[i];
            var value = record.value;
-           console.log(record);
            if(record.type == 1 || record.type == 2){
                if(value == null){
                    $('#cssz_div').prepend('<div class="line-div">\n' +
