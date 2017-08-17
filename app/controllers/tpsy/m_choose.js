@@ -38,6 +38,9 @@ const m_choose = {
     deleteNG : function (dataArr,callBack) {
         query('delete  from d_cell_ng where cellnum = \''+dataArr[1]+'\'',callBack);
     },
+    query_normal : function (callback) {
+        query('select * from d_cell_normal',callback);
+    }
 };
 
 

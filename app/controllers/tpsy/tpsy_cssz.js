@@ -31,8 +31,7 @@ function csszSave() {
         nzfw : hashMap.get("'nzfw'").replace('\'', '').replace('\'', ''),
         djfw : hashMap.get("'djfw'").replace('\'', '').replace('\'', '')
     };
-    var dataArr_toPlc = [dataObj_toPlc];
-    c_page.doValue_fw(dataArr_toPlc);
+    c_page.doValue_fw(dataObj_toPlc);
     m_cssz.csszSave(hashMap.keySet(),hashMap.values(),function (error) {
         if (error){
             alert(error);

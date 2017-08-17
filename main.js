@@ -81,8 +81,9 @@ ipcMain.on('sealing_dispose-ping-event',(event,dataArr_addNoraml) => {
 
 //plc从渲染进程接受参数
 function getValue_ym(callback) {
-  ipcMain.on('value_fw-ping-event',(event,arg,value_rl,value_dy,value_dyc,value_nz) => {
-  })
+    ipcMain.on('value_fw-ping-event',(event,dataObj_toPlc) => {
+    })
+    callback(dataObj_toPlc);
 }
 //plc从数据库接受参数
 function getValue_db(callback) {

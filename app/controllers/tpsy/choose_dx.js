@@ -13,6 +13,12 @@ const choose_dx = {
                 if(err) throw err;
             })
         });
+    },
+    select_normal : function (callback) {
+        m_choose.query_normal(function (err,result) {
+            if(err) throw err;
+            callback(result);
+        })
     }
 };
 

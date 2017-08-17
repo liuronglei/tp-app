@@ -65,51 +65,6 @@ $(document).ready(function () {
     sealing_dispose();
 });
 
-
-function add_NG_DB() {
-    c_page.regValue_ng(function (err,dataArr_addNG) {
-        if(err) throw err;
-        getValue_plc.add_NG(dataArr_addNG);
-    });
-}
-
-function sealing_dispose() {
-    c_page.regValue_casenum(function (err,dataArr_addNoraml) {
-        if(err) throw err;
-        getValue_plc.add_normal(dataArr_addNoraml);
-        var Json_Upload = {
-            Key: "",      //未使用，为空字符串
-            Role: "",      //未使用，为空字符串
-            TransactionType: 1,     //校验check:0   数据上传：1
-            StartDate: "",//未使用，空字符串
-            EndDate: "", //未使用，空字符串
-            InDataSet :[{
-                LotNo: "TC02 SXTZ004980 1284",     // 批号
-                RltBillNo: "SXTZ004980",   //筛选单号
-                MachineNo: "6#",  //机台号
-                WorkerNo: "1759",  // 工号
-                Qty: "228",          //数量
-                LevelGrade: "4",         //档位
-                CapSubGrade: "8",      //容量档
-                Voltage: "3.74-3.78",  //电压
-                InterResist: "10-16",       //内阻
-                RecordTime: RecordTime,      //时间
-                ReTest: "1",      // 二次筛选
-                Remark: "XXX"           //    备注
-            }]
-        };
-        var json = JSON.stringify(Json_Upload);
-        webService.upload(url,json,function (err,result) {
-            if (err) throw  err;
-            if(result != 0){
-                alert("上传失败")
-            }
-            else { alert("上传成功") }
-        });
-    });
-}
-
-
 function CreatWindows_cssz() {
     $('#win_cssz').window({
         title:'参数设置',
@@ -215,6 +170,55 @@ function judgeNormal() {
                     $('#yc').show();
                 }
             });
+        });
+    });
+}
+
+function add_NG_DB() {
+    c_page.regValue_ng(function (err,dataArr_addNG) {
+        if(err) throw err;
+        getValue_plc.add_NG(dataArr_addNG);
+    });
+}
+
+function sealing_dispose() {
+    c_page.regValue_casenum(function (err,dataArr_addNoraml) {
+        if(err) throw err;
+        getValue_plc.add_normal(dataArr_addNoraml);
+        getValue_plc.select_normal(function (dataArr) {
+            var dataArr_upload = dataArr;
+            for(var i = 0; i < dataArr_upload.length; i++){
+                var upload = dataArr_upload[i];
+                var Json_Upload = {
+                    Key: "",      //未使用，为空字符串
+                    Role: "",      //未使用，为空字符串
+                    TransactionType: 1,     //校验check:0   数据上传：1
+                    StartDate: "",//未使用，空字符串
+                    EndDate: "", //未使用，空字符串
+                    InDataSet :[{
+                        LotNo: upload.batch,     // 批号
+                        RltBillNo: upload.productionorder,   //筛选单号
+                        MachineNo: upload.equiptmentnum,  //机台号
+                        WorkerNo: upload.workernum,  // 工号
+                        Qty: upload.binningnum,          //数量
+                        LevelGrade: "4",         //档位
+                        CapSubGrade: "8",      //容量档
+                        Voltage: upload.voltage_min+"-"+upload.voltage_max,  //电压
+                        InterResist: upload.resistance_min+"-"+upload.resistance_max,       //内阻
+                        RecordTime: upload.creattime,      //时间
+                        ReTest: upload.checknum,      // 二次筛选
+                        Remark: "XXX"           //    备注
+                    }]
+                };
+                var json = JSON.stringify(Json_Upload);
+                webService.upload(url,json,function (err,result) {
+                    if (err) throw  err;
+                    if(result != 0){
+                        alert("上传失败")
+                    }
+                    else { alert("上传成功") }
+                });
+            }
         });
     });
 }

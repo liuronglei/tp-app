@@ -24,6 +24,21 @@ const getValue_plc = {
             ];
             choose_dx.add_normal(dataArr);
         }
+    },
+    select_normal : function(callback){
+        choose_dx.select_normal(function (result) {
+            var record = {};
+            var dataArr_upload = new Array();
+            var dataObj_upload = {};
+            for(var i = 0 ; i < result.recordset.length; i++){
+                record = result.recordset[i];
+                for( var key in record){
+                    dataObj_upload[key] = record[key];
+                }
+                dataArr_upload.push(dataObj_upload);
+            }
+            callback(dataArr_upload);
+        })
     }
 };
 
