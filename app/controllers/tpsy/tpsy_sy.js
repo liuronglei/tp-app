@@ -1,10 +1,12 @@
 var soap = require('soap');
+var fs = require('fs');
 var HashMap = require('../../utils/hashmap');
 var m_cssz = require("../../models/m_cssz");
 var c_page = require("../../controllers/c_page");
 var webService = require("../../controllers/tpsy/webservice");
 var getValue_plc = require("../../controllers/tpsy/getValue_plc");
-var url = 'http://221.178.135.214:8099/Service1.asmx?wsdl';
+var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
+var url = property.URL;
 /*var dataObj_ng = {
     sbh : "2",
     czrygh : "null",
