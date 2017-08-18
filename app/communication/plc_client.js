@@ -6,7 +6,6 @@ var net = require('net');
 var path = require('path');
 var dataformat = require('app/utils/dataformat');
 var property = JSON.parse(fs.readFileSync('config/config_plc.json', 'utf8'));
-var dataFlag =
 var client= new net.Socket();
 client.setEncoding('binary');
 //连接到服务端
