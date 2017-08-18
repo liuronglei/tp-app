@@ -1,4 +1,4 @@
-var m_choose = require("./m_choose");
+var m_choose = require("../../models/m_choose");
 
 const choose_dx = {
     add_ng : function (dataArr) {

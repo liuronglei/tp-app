@@ -1,5 +1,5 @@
 var fs = require("fs");
-var m_sjcx = require('../../controllers/tpsy/m_sjcx');
+var m_sjcx = require('../../models/m_sjcx');
 var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 
 $(document).ready(function () {

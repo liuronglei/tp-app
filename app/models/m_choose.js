@@ -1,4 +1,4 @@
-var query = require("./sqlserver");
+var query = require("../utils/sqlserver");
 
 const m_choose = {
     addNG :function (dataArr,callBack) {

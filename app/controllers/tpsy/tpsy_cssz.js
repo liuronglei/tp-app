@@ -1,4 +1,4 @@
-var m_cssz = require('../../controllers/tpsy/m_cssz');
+var m_cssz = require('../../models/m_cssz');
 var HashMap = require('../../utils/hashmap');
 var c_page =require("../../controllers/c_page");
 

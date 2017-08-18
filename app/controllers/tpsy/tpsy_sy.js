@@ -1,6 +1,6 @@
 var soap = require('soap');
 var HashMap = require('../../utils/hashmap');
-var m_cssz = require("../../controllers/tpsy/m_cssz");
+var m_cssz = require("../../models/m_cssz");
 var c_page = require("../../controllers/c_page");
 var webService = require("../../controllers/tpsy/webservice");
 var getValue_plc = require("../../controllers/tpsy/getValue_plc");

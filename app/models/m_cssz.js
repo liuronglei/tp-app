@@ -1,5 +1,5 @@
-var query = require("./sqlserver");
-var Hashmap = require("../../utils/hashmap");
+var query = require("../utils/sqlserver");
+var Hashmap = require("../utils/hashmap");
 const m_cssz = {
     csszSave :function (keyArr,valueArr,callback) {
         cssz_update(keyArr,valueArr,0,callback);

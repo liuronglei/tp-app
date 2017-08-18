@@ -1,4 +1,4 @@
-var query = require("./sqlserver");
+var query = require("../utils/sqlserver");
 
 const m_sjcx = {
     query_selectBatch : function (batch,callback) {
