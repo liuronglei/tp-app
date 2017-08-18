@@ -69,7 +69,7 @@ function CreatWindows_cssz() {
     $('#win_cssz').window({
         title:'参数设置',
         left:500,
-        top:100,
+        top:80,
         collapsible:false,
         minimizable:false,
         maximizable:false,
@@ -85,7 +85,7 @@ function CreatWindows_ngsjcx() {
     $('#win_cssz').window({
         title: 'NG数据查询',
         left:150,
-        top:100,
+        top:80,
         collapsible:false,
         minimizable:false,
         maximizable:false,

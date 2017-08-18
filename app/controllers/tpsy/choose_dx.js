@@ -19,6 +19,12 @@ const choose_dx = {
             if(err) throw err;
             callback(result);
         })
+    },
+    select_casenum :function (callback) {
+        m_choose.query_xh(function (err,result) {
+            if(err) throw err;
+            callback(result);
+        })
     }
 };
 

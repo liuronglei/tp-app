@@ -40,6 +40,9 @@ const m_choose = {
     },
     query_normal : function (callback) {
         query('select * from d_cell_normal',callback);
+    },
+    query_xh : function (callback) {
+        query('select top 1 casenum from d_cell_normal order by casenum desc',callback);
     }
 };
 

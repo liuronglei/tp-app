@@ -29,8 +29,8 @@ const c_page = {
             callBack(err,arg);
         });
     },
-    doValue_fw : function (dataObj_toPlc) {
-        ipc.send('value_fw-ping-event', dataObj_toPlc);
+    doValue_fw : function () {
+        ipc.send('value_fw-ping-event');
     },
     regValue_ng : function (err,callBack) {
         ipc.on('add_ng-pong-event', function(event,dataArr_addNG) {

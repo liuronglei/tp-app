@@ -93,6 +93,8 @@ function getValue_db(callback) {
   })
 }
 
+
+
 //保存全局变量
 global.sharedObject = {
     rootdir: __dirname,

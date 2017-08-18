@@ -39,6 +39,11 @@ const getValue_plc = {
             }
             callback(dataArr_upload);
         })
+    },
+    select_casenum : function (callback) {
+        choose_dx.select_casenum(function (result) {
+            callback(result.recordset[0].casenum);
+        })
     }
 };
 
