@@ -1,8 +1,8 @@
 const path = require('path')
 var __rootdir = require('electron').remote.getGlobal('sharedObject').rootdir;
-document.write('<link rel="stylesheet" type="text/css" href="' + path.join(__rootdir, 'public/js/easyui/themes/wanke_red/easyui.css') + '">');
+document.write('<link rel="stylesheet" type="text/css" href="' + path.join(__rootdir, 'public/js/easyui/themes/wanke_swj/easyui.css') + '">');
 document.write('<link rel="stylesheet" type="text/css" href="' + path.join(__rootdir, 'public/js/easyui/themes/icon.css') + '">');
-document.write('<link rel="stylesheet" type="text/css" href="' + path.join(__rootdir, 'public/css/new.css') + '">');
+document.write('<link rel="stylesheet" type="text/css" href="' + path.join(__rootdir, 'public/css/TianPeng.css') + '">');
 document.write('<script type="text/javascript" src="' + path.join(__rootdir, 'public/js/jquery.min.js') + '"></script>');
 document.write('<script type="text/javascript" src="' + path.join(__rootdir, 'public/js/echarts.min.js') + '"></script>');
 document.write('<script type="text/javascript" src="' + path.join(__rootdir, 'public/js/easyui/jquery.easyui.min.js') + '"></script>');
