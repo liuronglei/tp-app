@@ -1,8 +1,9 @@
-var m_sjcx = require('../../controllers/tpsy/m_sjcx');
 var fs = require("fs");
+var m_sjcx = require('../../controllers/tpsy/m_sjcx');
+var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 
 $(document).ready(function () {
-    window.setTimeout('comboboxInit();select_All();',500);
+    window.setTimeout('comboboxInit();',500);
     $('#btn_qd').click(select_All);
     $('#btn_dc').click(dcCsv);
 });
@@ -57,11 +58,19 @@ function comboboxInit() {
         }
         $('#combobox_ngyy').combobox("loadData",data1);
     });
+    var batch = csszMap.get("pc");
+    m_sjcx.query_selectBatch(batch,function (error,result) {
+        if(error){
+            console.log(error);
+            return;
+        }
+        dataGrid_Init(result.recordset);
+    });
 }
 
 /* 查询数据 */
 function select_All(){
-    var batch = $('#combobox_pc').combobox('getValue');
+    var batch =$('#combobox_pc').combobox('getValue');
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
     m_sjcx.query_selectBatch(batch,function (error,result) {
         if(error){
