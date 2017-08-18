@@ -25,12 +25,12 @@ const c_page = {
         //easyui窗口组件方式
     },
     regXh : function (err,callBack) {
-        ipc.on('xh-pong-event', function(event, arg) {
+        ipc.on('scanBarCode-pong-event', function(event, arg) {
             callBack(err,arg);
         });
     },
-    doValue_fw : function () {
-        ipc.send('value_fw-ping-event');
+    updateCssz : function () {
+        ipc.send('updateCssz-ping-event');
     },
     regValue_ng : function (err,callBack) {
         ipc.on('add_ng-pong-event', function(event,dataArr_addNG) {
