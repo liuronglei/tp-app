@@ -2,8 +2,6 @@ const {app, globalShortcut, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
 const ipcMain = require('electron').ipcMain;
-const fileread = require('./app/controllers/tpsy/fileread.js')
-const m_cssz = require('./app/controllers/tpsy/m_cssz');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -67,8 +65,8 @@ ipcMain.on('newWin-ping-event', (event, arg) => {
 })
 
 //串口发送箱号给渲染进程
-ipcMain.on('xh-ping-event',(event, arg) => {
-  win.webContents.send('xh-pong-event', arg)
+function scanBarCode(arg) {
+    win.webContents.send('scanBarCode-pong-event', arg)
 })
 //plc发送电芯条码，实际容量，实际OCV4实际电压，实际内阻，ng原因给渲染进程
 ipcMain.on('add_ng-ping-event',(event, dataArr_addNG) => {
@@ -108,9 +106,16 @@ m_cssz.fillCsszMap(function (hashmap) {
 //
 //require('./app/communication/plc_service');
 //require('./app/communication/plc_process');
-require('./app/communication/scanner_process');
-//var print_process = require('./app/communication/print_process');
-//print_process.write();
-
+//require('./app/communication/scanner_process');
+//var plc_process = require('./app/controllers/comm_tp/plc_process');
+//plc_process.readCheckInfo();
+//开始标签打印
+/*
+const print = require('./app/communication/comm_print');
+function boxLablePrint(data) {
+  print.write(data);
+}
+boxLablePrint(print.getData_TP({sxdh:1, rld:2, dw:3, dyfw:4, nzfw:5, sl:6, tm:'123456678'}));
+*/
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
