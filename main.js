@@ -64,44 +64,72 @@ ipcMain.on('newWin-ping-event', (event, arg) => {
   win.webContents.send('newWin-pong-event', arg)
 })
 
+
+
 //串口发送箱号给渲染进程
 function scanBarCode(arg) {
     win.webContents.send('scanBarCode-pong-event', arg)
-})
+}
+const scanner = require('./app/communication/comm_scanner');
+scanner.receive(function(barCode) {
+    scanBarCode(barCode);
+});
+
 //plc发送电芯条码，实际容量，实际OCV4实际电压，实际内阻，ng原因给渲染进程
-ipcMain.on('add_ng-ping-event',(event, dataArr_addNG) => {
+function addNgData(dataArr_addNG) {
   win.webContents.send('add_ng-pong-event',dataArr_addNG);
-})
+}
+//封箱处理
+function sealingDispose(dataArr_addNoraml) {
+    //获得箱号
+    var getValue_plc = require('./app/controllers/tpsy/getValue_plc');
+    getValue_plc.select_casenum(function(casenum) {
+        //封箱处理
+        var xh = parseInt(casenum) + 1;
+        for(var key in dataArr_addNoraml) {
+            dataArr_addNoraml[key].xh = xh;
+        }
+        win.webContents.send('sealing_dispose-pong-event',dataArr_addNoraml);
+        //打印标签
+        var csszMap = global.sharedObject.csszMap;
+        var scgd = csszMap.get("scgd");
+        var dyfwStr = csszMap.get("dyfw");
+        var nzfwStr = csszMap.get("nzfw");
+        var zxs = csszMap.get("zxs");
+        const print = require('./app/communication/comm_print');
+        print.write(print.getData_TP({sxdh:scgd, rld:"", dw:"", dyfw:dyfwStr.replace(";","-"), nzfw:nzfwStr.replace(";","-"), sl:zxs, tm:xh}));
+    });
+}
+
+//参数设置全局变量保存
+function updateCssz() {
+    m_cssz.fillCsszMap(function (hashmap) {
+        global.sharedObject.csszMap = hashmap;
+        //同时设置PLC参数
+        var plc_process = require('./app/controllers/comm_tp/plc_process');
+        plc_process.setCssz(hashmap);
+        //如果勾选了ocv数据筛选，则读取对应ocv文件数据
+        if(hashmap.get("sjsx") == "1") {
+            saveOcvData();
+        }
+    });
+}
+//ocv勾选后，保存ocv数据
+function saveOcvData() {
+    var property = JSON.parse(fs.readFileSync('app/config/config_ocv.json', 'utf8'));
+    global.sharedObject.excelMap = fileread.readData(property.FILE_PATH);
+}
+updateCssz();
+
 //plc发送箱号，电芯条码
-ipcMain.on('sealing_dispose-ping-event',(event,dataArr_addNoraml) => {
-  win.webContents.send('sealing_dispose-pong-event',dataArr_addNoraml);
+ipcMain.on('updateCssz-ping-event',(event) => {
+    updateCssz();
 })
-
-//plc从渲染进程接受参数
-function getValue_ym(callback) {
-    ipcMain.on('value_fw-ping-event',(event,dataObj_toPlc) => {
-    })
-    callback(dataObj_toPlc);
-}
-//plc从数据库接受参数
-function getValue_db(callback) {
-  m_cssz.query_csszInit(function (err,result) {
-    if(err) throw err;
-    callback(result.recordset[10].value,result.recordset[4].value,result.recordset[5].value,result.recordset[6].value,result.recordset[7].value);
-  })
-}
-
-
 
 //保存全局变量
 global.sharedObject = {
     rootdir: __dirname,
-    excelMap:fileread.readData('D:\\公司\\tianpeng\\文档数据\\Detail_01.csv'),
 };
-
-m_cssz.fillCsszMap(function (hashmap) {
-    global.sharedObject.csszMap = hashmap;
-});
 
 //
 //require('./app/communication/plc_service');
@@ -119,3 +147,13 @@ boxLablePrint(print.getData_TP({sxdh:1, rld:2, dw:3, dyfw:4, nzfw:5, sl:6, tm:'1
 */
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+//箱号扫码
+//天鹏MES
+//显示到界面
+//取到外观数据（条码）
+//（获取PCI标记）根据条码获取到PLC检测数据
+//NG数据入库
+//（获取PCI标记）封箱
+//生成箱号
+//正常数据入库，天鹏MES

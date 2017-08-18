@@ -124,52 +124,33 @@ function sycsInit() {
 }
 
 function judgeNormal() {
-    c_page.regXh(function (err,arg) {
+    c_page.regScanBarCode(function (err,arg) {
         if(err) throw err;
-        m_cssz.query_csszInit(function (err,result) {
-            if (err) {
-                console.log(err);
-                return;
+        var hashMap = require('electron').remote.getGlobal('sharedObject').csszMap;
+        var Json_Check = {
+            Key : "",
+            Role : "",
+            TransactionType: 0,
+            StarData : "",
+            EndData : "",
+            InDataSet :[{
+                RltBillNo : hashMap.get("scgd"),                //数据库查询
+                CaseNo : arg,                            //扫码得到
+                CapSubGrade : hashMap.get("rlfw"),
+                PdtGrade : "",
+                MachineNo : hashMap.get("sbh"),
+                WorkerNo : hashMap.get("czrygh")
+            }]
+        };
+        var json = JSON.stringify(Json_Check);
+        webService.check(url,json,function (err,result) {
+            if(err) throw  err;
+            if(result == 0){
+                $('#zc').show();
             }
-            var key = "";
-            var value = "";
-            var hashMap = new HashMap.Map();
-            for (var i = 0; i < result.recordset.length; i++) {
-                var record = result.recordset[i];
-                key = record.name;
-                value = record.value;
-                // 得到容量范围的前一个值
-                if(record.type == 3){
-                    var valueArr = value.split(";");
-                    value = valueArr[0];
-                }
-                hashMap.put(key, value);
+            else{
+                $('#yc').show();
             }
-            var Json_Check = {
-                Key : "",
-                Role : "",
-                TransactionType: 0,
-                StarData : "",
-                EndData : "",
-                InDataSet :[{
-                    RltBillNo : hashMap.get("scgd"),                //数据库查询
-                    CaseNo : arg,                            //扫码得到
-                    CapSubGrade : hashMap.get("rlfw"),
-                    PdtGrade : "",
-                    MachineNo : hashMap.get("sbh"),
-                    WorkerNo : hashMap.get("czrygh")
-                }]
-            };
-            var json = JSON.stringify(Json_Check);
-            webService.check(url,json,function (err,result) {
-                if(err) throw  err;
-                if(result == 0){
-                    $('#zc').show();
-                }
-                else{
-                    $('#yc').show();
-                }
-            });
         });
     });
 }
