@@ -23,20 +23,12 @@ function csszSave() {
         }
         hashMap.put(name, '\'' + value + '\'');
     });
-    var dataObj_toPlc = {
-        sjsx : hashMap.get("'sjsx'").replace('\'', '').replace('\'', ''),
-        rlfw : hashMap.get("'rlfw'").replace('\'', '').replace('\'', ''),
-        dyfw : hashMap.get("'dyfw'").replace('\'', '').replace('\'', ''),
-        dycfw : hashMap.get("'dycfw'").replace('\'', '').replace('\'', ''),
-        nzfw : hashMap.get("'nzfw'").replace('\'', '').replace('\'', ''),
-        djfw : hashMap.get("'djfw'").replace('\'', '').replace('\'', '')
-    };
-    c_page.doValue_fw(dataObj_toPlc);
     m_cssz.csszSave(hashMap.keySet(),hashMap.values(),function (error) {
         if (error){
             alert(error);
             return;
         }
+        c_page.updateCssz();
         alert("参数设置成功！");
         window.parent.sycsInit();
         window.parent.closeCsszWin();
