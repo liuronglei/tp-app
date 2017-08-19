@@ -1,10 +1,11 @@
 /**
  * Created by liurong on 2017/8/10.
  */
-
-const service = require("../communication/plc_service");
-const client = require("../communication/plc_client");
-var dataformat = require('../utils/dataformat');
+var path = require('path');
+var __rootdir = global.sharedObject.rootdir;
+//const service = require(path.join(__rootdir,"app/communication/plc_service"));
+const client = require(path.join(__rootdir,"app/communication/plc_client"));
+var dataformat = require(path.join(__rootdir,'app/utils/dataformat'));
 const message_base_write = [
     0x50,0x00,//副帧头 0-1
     0x00,//网络编号 2
@@ -114,13 +115,15 @@ const plc = {
         var set = message_base_write.slice(0);
         set[area] = getArea(Area);
         setAddress(Address, set);
-        var volume_min = dataformat.float2bytes(data);
-        //var volume_min2 = dataformat.float2bytes2(data);
-        console.log(volume_min);
-        set[set.length]=volume_min[0];
-        set[set.length]=volume_min[1];
-        set[set.length]=volume_min[2];
-        set[set.length]=volume_min[3];
+        for(var i=0; i<data.length; i++) {
+            var data_byte = dataformat.float2bytes(data[i]);
+            //var data_byte2 = dataformat.float2bytes2(data[i]);
+            console.log(data_byte);
+            set[set.length]=data_byte[0];
+            set[set.length]=data_byte[1];
+            set[set.length]=data_byte[2];
+            set[set.length]=data_byte[3];
+        }
         console.log(new Buffer(set));
         client.write(set);
     },
@@ -136,7 +139,7 @@ const plc = {
         */
         console.log(new Buffer(read));
         client.write(read);
-        client.receive(callBack);
+        client.receiveInfo(len,callBack);
     },
     getFlag : function(Area,Address,callBack) {
         var read = message_base_flag.slice(0);  //克隆报文
@@ -149,7 +152,7 @@ const plc = {
         */
         console.log(new Buffer(read));
         client.write(read);
-        client.receive(callBack);
+        client.receiveFlag(1,callBack);
     }
 }
 module.exports = plc;

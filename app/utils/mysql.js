@@ -1,10 +1,10 @@
 const mysql = require("mysql");
 
 const pool = mysql.createPool({
-    host: '120.26.111.85',
-    user: 'zjdb',
-    password: 'db20160529',
-    database: 'simpletest',
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'root',
+    database: 'barcode',
     port: '3306'
 });
 const query = function(sql,callback){

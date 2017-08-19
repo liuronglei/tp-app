@@ -49,8 +49,9 @@ const dataformat = {
     float2bytes : function(value){
         return SingleToHex(value.toString());
     },
-
-
+    bytes2float : function(value){
+        return HexToSingle(value.join(" "));
+    },
     float2bytes2 : function(value){
         return get_float_hex(value.toString());
     }
@@ -337,6 +338,22 @@ function Right(String, Length)
 
     return dest;
 }
+
+
+
+/*
+function getFloat(b, index) {
+    var l;
+    l = b[index + 0];
+    l &= 0xff;
+    l |= ( b[index + 1] << 8);
+    l &= 0xffff;
+    l |= ( b[index + 2] << 16);
+    l &= 0xffffff;
+    l |= ( b[index + 3] << 24);
+    return Float.intBitsToFloat(l);
+}
+*/
 
 
 

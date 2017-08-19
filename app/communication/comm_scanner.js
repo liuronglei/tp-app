@@ -4,7 +4,9 @@
  */
 var SerialPort = require("serialport");  //引入模块
 var fs = require('fs');
-var property = JSON.parse(fs.readFileSync('app/config/config_scanner.json', 'utf8'));
+var path = require('path');
+var __rootdir = global.sharedObject.rootdir;
+var property = JSON.parse(fs.readFileSync(path.join(__rootdir,'app/config/config_scanner.json'), 'utf8'));
 var serialPort = new SerialPort(property.PRINT_PORT, {
     baudRate: property.PRINT_BAUDRATE,  //波特率
     dataBits: property.PRINT_DATABITS,    //数据位

@@ -2,7 +2,7 @@ const {app, globalShortcut, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
 const ipcMain = require('electron').ipcMain;
-const m_cssz = require('./app/models/m_cssz')
+const m_cssz = require(path.join(__dirname, 'app/models/m_cssz'))
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -65,13 +65,19 @@ ipcMain.on('newWin-ping-event', (event, arg) => {
   win.webContents.send('newWin-pong-event', arg)
 })
 
+//保存全局变量
+global.sharedObject = {
+    rootdir: __dirname,
+    barCodeArr: new Array(),
+    checkInfoArr: new Array(),
+};
 
 
 //串口发送箱号给渲染进程
 function scanBarCode(arg) {
     win.webContents.send('scanBarCode-pong-event', arg)
 }
-const scanner = require('./app/communication/comm_scanner');
+const scanner = require(path.join(__dirname, 'app/communication/comm_scanner'));
 scanner.receive(function(barCode) {
     scanBarCode(barCode);
 });
@@ -83,7 +89,7 @@ function addNgData(dataArr_addNG) {
 //封箱处理
 function sealingDispose(dataArr_addNoraml) {
     //获得箱号
-    var getValue_plc = require('./app/controllers/tpsy/getValue_plc');
+    var getValue_plc = require(path.join(__dirname, 'app/controllers/tpsy/getValue_plc'));
     getValue_plc.select_casenum(function(casenum) {
         //封箱处理
         var xh = parseInt(casenum) + 1;
@@ -97,7 +103,7 @@ function sealingDispose(dataArr_addNoraml) {
         var dyfwStr = csszMap.get("dyfw");
         var nzfwStr = csszMap.get("nzfw");
         var zxs = csszMap.get("zxs");
-        const print = require('./app/communication/comm_print');
+        const print = require(path.join(__dirname, 'app/communication/comm_print'));
         print.write(print.getData_TP({sxdh:scgd, rld:"", dw:"", dyfw:dyfwStr.replace(";","-"), nzfw:nzfwStr.replace(";","-"), sl:zxs, tm:xh}));
     });
 }
@@ -107,7 +113,7 @@ function updateCssz() {
     m_cssz.fillCsszMap(function (hashmap) {
         global.sharedObject.csszMap = hashmap;
         //同时设置PLC参数
-        var plc_process = require('./app/controllers/comm_tp/plc_process');
+        var plc_process = require(path.join(__dirname, 'app/communication/plc_process'));
         plc_process.setCssz(hashmap);
         //如果勾选了ocv数据筛选，则读取对应ocv文件数据
         if(hashmap.get("sjsx") == "1") {
@@ -117,7 +123,7 @@ function updateCssz() {
 }
 //ocv勾选后，保存ocv数据
 function saveOcvData() {
-    var property = JSON.parse(fs.readFileSync('app/config/config_ocv.json', 'utf8'));
+    var property = JSON.parse(fs.readFileSync(path.join(__dirname, 'app/config/config_ocv.json'), 'utf8'));
     global.sharedObject.excelMap = fileread.readData(property.FILE_PATH);
 }
 updateCssz();
@@ -127,32 +133,48 @@ ipcMain.on('updateCssz-ping-event',(event) => {
     updateCssz();
 })
 
-//保存全局变量
-global.sharedObject = {
-    rootdir: __dirname,
-};
-
-//定时取PLC数据（每500ms）
+//定时取PLC数据（每200ms）
 function schedulePLC(time) {
-    var plc_process = require('./app/controllers/comm_tp/plc_process');
+    var plc_process = require(path.join(__dirname, 'app/communication/plc_process'));
     setInterval(function() {
         //获取条码数据
-        plc_process.readBarCodeInfo(function(data) {
-
+        plc_process.readBarCodeInfo(function (error, results, fields) {
+            if (error) throw error;
+            //保存电芯条码列表
+            var barCodeArr = global.sharedObject.barCodeArr;
+            for(var i=0; i<results.length; i++) {
+                barCodeArr[barCodeArr.length] = results[i].barcode;
+                console.log('barCode:' + results[i].barcode);
+            }
+            //如果参数设置勾选了OCV筛选，则需要传递OCV数据给PLC
+            var csszMap = global.sharedObject.csszMap;
+            if(csszMap.get("sjsx") == "1") {
+                var excelMap = global.sharedObject.excelMap;
+                var rlArr = new Array();
+                var ocv4Arr = new Array();
+                for(var i=0; i<results.length; i++) {
+                    var barObj = excelMap.get(barcode);
+                    rlArr[rlArr.length] = barObj[1];
+                    ocv4Arr[ocv4Arr.length] = barObj[2];
+                }
+                plc_process.writeBarInfo(rlArr,ocv4Arr);
+            }
         });
         //获得检测数据
         plc_process.readCheckInfo(function(data) {
-
+            //保存电性能能检测结果列表
+            var checkInfoArr = global.sharedObject.barCodeArr;
+            console.log('checkInfo:');
+            console.log(data);
         });
     }, time);
 }
-schedulePLC(500);
+schedulePLC(200);
 
 /*
 const print = require('./app/communication/comm_print');
 print.write(print.getData_TP({sxdh:12414241, rld:"", dw:"", dyfw:552111212, nzfw:715341, sl:141414, tm:71414123}));
 */
-
 //
 //require('./app/communication/plc_service');
 //require('./app/communication/plc_process');
@@ -161,7 +183,7 @@ print.write(print.getData_TP({sxdh:12414241, rld:"", dw:"", dyfw:552111212, nzfw
 //plc_process.readCheckInfo();
 //开始标签打印
 /*
-const print = require('./app/communication/comm_print');
+const print = require(path.join(__dirname, 'app/communication/comm_print'));
 function boxLablePrint(data) {
   print.write(data);
 }
