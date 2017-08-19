@@ -4,7 +4,9 @@
  */
 var SerialPort = require("serialport");  //引入模块
 var fs = require('fs');
-var property = JSON.parse(fs.readFileSync('app/config/config_print.json', 'utf8'));
+var path = require('path');
+var __rootdir = global.sharedObject.rootdir;
+var property = JSON.parse(fs.readFileSync(path.join(__rootdir,'app/config/config_print.json'), 'utf8'));
 
 const lineStart = 10;
 const lineStep = 48;
@@ -21,7 +23,19 @@ const printSet = 'REFERENCE 0,10\n'    //打印起始位置参考坐标，单位
     + 'DENSITY 8\n'                 //打印浓度，从0~15
     + 'SPEED 3\n'
     + 'CLS\n';
+ const printTcx ='D:\>COPY CON LPT1\n'
+     + 'DOWNLOAD "PRINT.PCX",10871,^Z\n'
+     + 'COPY PRINT.PCX /B LPT1\n'
+     + 'COPY CON LPT1\n'
+     + 'MOVE\n'
+     + '＾Z\n';
+const printTcx_fixed ='D:\>COPY CON LPT1\n'
+    + 'DOWNLOAD F,"PRINT.PCX",10871,^Z\n'
+    + 'COPY PRINT.PCX /B LPT1\n'
+    + 'COPY CON LPT1\n';
 const printData = ''
+    //背景图
+//    + 'PUTPCX 0,0,"PRINT.PCX"\n'
     //横线
     + 'BAR 10, ' + lineStart + ', 770, 3\n'
     + 'BAR 10, ' + (lineStart + lineStep) + ', 770, 3\n'
