@@ -120,7 +120,7 @@ function sycsInit() {
         $('#sy_czrygh').text(hashMap.get("czrygh"));
         $('#sy_scgd').text(hashMap.get("scgd"));
         $('#sy_pc').text(hashMap.get("pc"));
-        $('#sy_rlfw').text(hashMap.get("rlfw"));
+        $('#sy_rlfw').text(hashMap.get("rlfw").replace(";","-"));
         $('#sy_zxs').text(hashMap.get("zxs"));
         $('#sy_sjsx').text(hashMap.get("sjsx")==1 ? " 是" : "否");
     })
@@ -207,15 +207,22 @@ function sealing_dispose() {
     });
 }
 
-function filltable(){
-    c_page.regFilltable(function (dataArr) {
-        dataGrid_Init(dataArr);
-    });
-}
 /* datagrid 初始化  */
 function dataGrid_Init(dataArr) {
-    $('#ng_table').datagrid({loadFilter:pagerFilter}).datagrid({
-        data : dataArr
+    var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
+    $('#ng_table_sy').datagrid({
+        columns: [[
+            {field:'cellnum',title:'电芯条码'},
+            {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
+            {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
+            {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
+            {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
+            {field:'creattime',title:'创建时间'},
+            {field:'result',title:'结果'}
+        ]]
+    });
+    $('#ng_table_sy').datagrid({loadFilter:pagerFilter}).datagrid({
+        data : dataArr,
     });
 }
 
@@ -248,6 +255,12 @@ function pagerFilter(data){
     var end = start + parseInt(opts.pageSize);
     data.rows = (data.originalRows.slice(start, end));
     return data;
+}
+
+function filltable(){
+    c_page.regFilltable(function (dataArr) {
+        dataGrid_Init(dataArr);
+    });
 }
 
 function closeCsszWin(){
