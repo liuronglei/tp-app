@@ -133,13 +133,13 @@ function pagerFilter(data){
 function dcCsv() {
     var batch = $('#combobox_pc').combobox('getValue');
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
+    var property = JSON.parse(fs.readFileSync('app/config/config_filesave.json', 'utf8'));
     if (batch != "" && ng_reason == "") {
         m_sjcx.query_selectBatch(batch, function (error, result) {
             if (error) {
                 console.log(error);
                 return;
             }
-            dataGrid_Init(result.recordset);
             var str = "电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "电压范围" + "," + "内阻" + "," + "内阻范围" + "," + "容量" + "," + "容量范围" + "," + "Ocv4" + "," + "电压差范围" + "," + "等级" + "," + "等级范围" + "," + "创建时间" + "," + "NG原因" + "," + "检测次数" + "\n";
             for (var i = 0; i < result.recordset.length; i++) {
                 for (var key in result.recordset[i]) {
@@ -147,7 +147,7 @@ function dcCsv() {
                 }
                 str = str + "\n";
             }
-            fs.writeFile('./upper_monitor/text1.csv', str, function (err) {
+            fs.writeFile(property.FILESAVE_PATH, str, function (err) {
                 if (err) throw err;
                 alert('数据导出成功');
             });
@@ -160,7 +160,6 @@ function dcCsv() {
                 console.log(error);
                 return;
             }
-            dataGrid_Init(result.recordset);
             var str = "电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "电压范围" + "," + "内阻" + "," + "内阻范围" + "," + "容量" + "," + "容量范围" + "," + "Ocv4" + "," + "电压差范围" + "," + "等级" + "," + "等级范围" + "," + "创建时间" + "," + "NG原因" + "," + "检测次数" + "\n";
             for (var i = 0; i < result.recordset.length; i++) {
                 for (var key in result.recordset[i]) {
@@ -168,7 +167,7 @@ function dcCsv() {
                 }
                 str = str + "\n";
             }
-            fs.writeFile('./upper_monitor/text1.csv', str, function (err) {
+            fs.writeFile(property.FILESAVE_PATH, str, function (err) {
                 if (err) throw err;
                 alert('数据导出成功');
             });
