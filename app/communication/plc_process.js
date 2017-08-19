@@ -42,7 +42,6 @@ const plc_process = {
         plc.getFlag("M", 511, 1, function(data) {
             if(data == 1) {
                 plc.read("D", 4000, 116, function(data) {
-                    bytes2float
                     callBack(data);
                 });
             }
