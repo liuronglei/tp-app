@@ -132,6 +132,27 @@ global.sharedObject = {
     rootdir: __dirname,
 };
 
+//定时取PLC数据（每500ms）
+function schedulePLC(time) {
+    var plc_process = require('./app/controllers/comm_tp/plc_process');
+    setInterval(function() {
+        //获取条码数据
+        plc_process.readBarCodeInfo(function(data) {
+
+        });
+        //获得检测数据
+        plc_process.readCheckInfo(function(data) {
+
+        });
+    }, time);
+}
+schedulePLC(500);
+
+/*
+const print = require('./app/communication/comm_print');
+print.write(print.getData_TP({sxdh:12414241, rld:"", dw:"", dyfw:552111212, nzfw:715341, sl:141414, tm:71414123}));
+*/
+
 //
 //require('./app/communication/plc_service');
 //require('./app/communication/plc_process');

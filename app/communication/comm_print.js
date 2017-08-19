@@ -36,12 +36,12 @@ const printData = ''
     + 'BAR 410, 10, 3, 290\n'
     + 'BAR 780, 10, 3, 290\n'
     //内容标题
-    + 'TEXT 20,' + (lineStart + 10) + ',"TSS24.BF2",0,1,1,"筛选单号："\n'
-    + 'TEXT 20,' + (lineStart + lineStep + 10) + ',"TSS24.BF2",0,1,1,"容量档："\n'
-    + 'TEXT 20,' + (lineStart + 2*lineStep + 10) + ',"TSS24.BF2",0,1,1,"档位："\n'
+    + 'TEXT 20,' + (lineStart + 10) + ',"Font001",0,1,1,"筛选单号："\n'
+    + 'TEXT 20,' + (lineStart + lineStep + 10) + ',"Arial",0,1,1,"容量档："\n'
+    + 'TEXT 20,' + (lineStart + 2*lineStep + 10) + ',"3",0,1,1,"档位："\n'
     + 'TEXT 20,' + (lineStart + 3*lineStep + 10) + ',"TSS24.BF2",0,1,1,"电压范围："\n'
-    + 'TEXT 20,' + (lineStart + 4*lineStep + 10) + ',"TSS24.BF2",0,1,1,"内阻范围："\n'
-    + 'TEXT 20,' + (lineStart + 5*lineStep + 10) + ',"TSS24.BF2",0,1,1,"数量："\n'
+    + 'TEXT 20,' + (lineStart + 4*lineStep + 10) + ',"TST16.BF2",0,1,1,"内阻范围："\n'
+    + 'TEXT 20,' + (lineStart + 5*lineStep + 10) + ',"TST16.BF2",0,1,1,"数量："\n'
     //内容
     + 'TEXT 210,' + (lineStart + 13) + ',"3",0,1,1,"data_sxdh"\n'
     + 'TEXT 210,' + (lineStart + lineStep + 13) + ',"3",0,1,1,"data_rld"\n'
@@ -60,15 +60,27 @@ function getNowFormatDate() {
     var seperator2 = ":";
     var month = date.getMonth() + 1;
     var strDate = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getHours();
+    var seconds = date.getSeconds();
     if (month >= 1 && month <= 9) {
         month = "0" + month;
     }
     if (strDate >= 0 && strDate <= 9) {
         strDate = "0" + strDate;
     }
+    if (hours >= 0 && hours <= 9) {
+        hours = "0" + hours;
+    }
+    if (minutes >= 0 && minutes <= 9) {
+        minutes = "0" + minutes;
+    }
+    if (seconds >= 0 && seconds <= 9) {
+        seconds = "0" + seconds;
+    }
+
     var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
-        + " " + date.getHours() + seperator2 + date.getMinutes()
-        + seperator2 + date.getSeconds();
+        + " " + hours + seperator2 + minutes + seperator2 + seconds;
     return currentdate;
 }
 var serialPort = new SerialPort(property.PRINT_PORT, {
@@ -97,7 +109,6 @@ const print = {
             returnData = returnData.replace('data_' + key, dataJson[key]);
         }
         returnData = returnData.replace('data_sj', getNowFormatDate());
-        //console.log(printSet + returnData);
         return printSet + returnData;
     }
 }

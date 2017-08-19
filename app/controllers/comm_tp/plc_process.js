@@ -25,9 +25,27 @@ const plc_process = {
         plc.write("D", 2626, parseFloat(zxs)); //正常装箱数
         plc.write("M", 2530, parseFloat(sjsx)); //OCV勾选
     },
-    readCheckInfo : function() {
-        plc.getFlag("M", 511, 1);
-        plc.read("D", 4000, 116);
+    readCheckInfo : function(callBack) {
+        /*
+        plc.getFlag("M", 511, 1, function(data) {
+            if(data == 1) {
+                plc.read("D", 4000, 116, function(data) {
+                    callBack(data);
+                });
+            }
+        });
+        */
+    },
+    readBarCodeInfo : function(callBack) {
+        /*
+        plc.getFlag("M", 511, 1, function(data) {
+            if(data == 1) {
+                plc.read("D", 4000, 116, function(data) {
+                    callBack(data);
+                });
+            }
+        });
+        */
     }
 }
 module.exports = plc_process;

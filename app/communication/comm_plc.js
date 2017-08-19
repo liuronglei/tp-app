@@ -77,7 +77,7 @@ function setAddress(address,read) {
     }
     var temp = dataformat.hex2bytes(tempaddress);
     for(var i=0;i<temp.length;i++){
-        console.log("当前访问地址:"+temp[i].toString(16));
+        console.log("current address:"+temp[i].toString(16));
     }
     if(temp.length==1){
         read[address_1]=temp[0];
@@ -109,45 +109,47 @@ function setBit(len,arr) {
     }
 }
 
-
-
 const plc = {
     write : function(Area,Address,data) {
         var set = message_base_write.slice(0);
         set[area] = getArea(Area);
         setAddress(Address, set);
         var volume_min = dataformat.float2bytes(data);
-        var volume_min2 = dataformat.float2bytes2(data);
+        //var volume_min2 = dataformat.float2bytes2(data);
         console.log(volume_min);
         set[set.length]=volume_min[0];
         set[set.length]=volume_min[1];
         set[set.length]=volume_min[2];
         set[set.length]=volume_min[3];
-        console.log(set);
-        console.log(volume_min);
-        console.log(volume_min2);
-        client.write(new Buffer(set));
+        console.log(new Buffer(set));
+        client.write(set);
     },
-    read : function(Area,Address,len) {
-        var hex = new Array(len*2);
+    read : function(Area,Address,len,callBack) {
         var read = message_base_read.slice(0);
         read[area] = getArea(Area);
         setAddress(Address, read);
         setBit(len, read);
+        /*
         for(var i=0;i<read.length;i++){
             console.log((read[i]&0xFF).toString(16));
         }
-        client.write(new Buffer(read));
-        return hex;
+        */
+        console.log(new Buffer(read));
+        client.write(read);
+        client.receive(callBack);
     },
-    getFlag : function(Area,Address) {
+    getFlag : function(Area,Address,callBack) {
         var read = message_base_flag.slice(0);  //克隆报文
         read[area] = getArea(Area);
         setAddress(Address, read);
+        /*
         for(var i=0;i<read.length;i++){
             console.log((read[i]&0xFF).toString(16));
         }
-        client.write(new Buffer(read));
+        */
+        console.log(new Buffer(read));
+        client.write(read);
+        client.receive(callBack);
     }
 }
 module.exports = plc;
