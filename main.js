@@ -171,6 +171,11 @@ function schedulePLC(time) {
 }
 schedulePLC(200);
 
+//填充首页表格数据
+function filltable(dataArr_addNG) {
+    win.webContents.send('filltable-pong-event',dataArr_addNG);
+}
+
 /*
 const print = require('./app/communication/comm_print');
 print.write(print.getData_TP({sxdh:12414241, rld:"", dw:"", dyfw:552111212, nzfw:715341, sl:141414, tm:71414123}));

@@ -57,6 +57,7 @@ var url = property.URL;
 };
 var dataArr = [dataObj_normal];*/
 $(document).ready(function () {
+    filltable();
     judgeNormal();
     sycsInit();
     $('#zc').hide();
@@ -204,6 +205,49 @@ function sealing_dispose() {
             }
         });
     });
+}
+
+function filltable(){
+    c_page.regFilltable(function (dataArr) {
+        dataGrid_Init(dataArr);
+    });
+}
+/* datagrid 初始化  */
+function dataGrid_Init(dataArr) {
+    $('#ng_table').datagrid({loadFilter:pagerFilter}).datagrid({
+        data : dataArr
+    });
+}
+
+/* easyui 分页  */
+function pagerFilter(data){
+    if (typeof data.length == 'number' && typeof data.splice == 'function'){	// is array
+        data = {
+            total: data.length,
+            rows: data
+        }
+    }
+    var dg = $(this);
+    var opts = dg.datagrid('options');
+    var pager = dg.datagrid('getPager');
+    pager.pagination({
+        onSelectPage:function(pageNum, pageSize){
+            opts.pageNumber = pageNum;
+            opts.pageSize = pageSize;
+            pager.pagination('refresh',{
+                pageNumber:pageNum,
+                pageSize:pageSize
+            });
+            dg.datagrid('loadData',data);
+        }
+    });
+    if (!data.originalRows){
+        data.originalRows = (data.rows);
+    }
+    var start = (opts.pageNumber-1)*parseInt(opts.pageSize);
+    var end = start + parseInt(opts.pageSize);
+    data.rows = (data.originalRows.slice(start, end));
+    return data;
 }
 
 function closeCsszWin(){

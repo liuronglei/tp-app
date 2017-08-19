@@ -42,7 +42,11 @@ const c_page = {
             callBack(err,dataArr_addNoraml);
         });
     },
-
+    regFilltable : function (err,callback) {
+        ipc.on('filltable-pong-event', function(event,dataArr_filltable) {
+            callBack(err,dataArr_filltable);
+        });
+    },
     /*
      * 打开万克LOGO指定的页面
      */
