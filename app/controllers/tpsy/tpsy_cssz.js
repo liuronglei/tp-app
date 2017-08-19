@@ -1,7 +1,6 @@
 var m_cssz = require('../../models/m_cssz');
 var HashMap = require('../../utils/hashmap');
 var c_page =require("../../controllers/c_page");
-
 $(document).ready(function () {
     csszInit();
     $('#btn_qd').click(csszSave);
@@ -47,7 +46,7 @@ function csszInit(){
            if(record.type == 1 || record.type == 2){
                if(value == null){
                    $('#cssz_div').prepend('<div class="line-div">\n' +
-                       '<span class="cssz-text">'+record.title+'：</span>\n' +
+                       '<span class="cssz-text" id="'+record.name+'">'+record.title+'：</span>\n' +
                        '<div class="text-div">\n' +
                        '<input name="'+record.name+'" id="'+record.name+'" value=" " class="easyui-textbox" style="width:150px;height:25px;" />\n' +
                        '</div>\n' +
@@ -55,7 +54,7 @@ function csszInit(){
                }
                else{
                    $('#cssz_div').prepend('<div class="line-div">\n' +
-                       '<span class="cssz-text">'+record.title+'：</span>\n' +
+                       '<span class="cssz-text" id="'+record.name+'">'+record.title+'：</span>\n' +
                        '<div class="text-div">\n' +
                        '<input name="'+record.name+'" id="'+record.name+'" value="' + value + '" class="easyui-textbox" style="width:150px;height:25px;" />\n' +
                        '</div>\n' +
@@ -65,7 +64,7 @@ function csszInit(){
            else if(record.type == 3){
                if(value == null){
                    $('#cssz_div').prepend('<div class="line-div">\n' +
-                       '<span class="cssz-text">'+record.title+'：</span>\n' +
+                       '<span class="cssz-text" id="'+record.name+'">'+record.title+'：</span>\n' +
                        '<div class="textbox-div">\n' +
                        '<input name="'+record.name+'" id="'+record.name+'_min" value=" " class="easyui-textbox" style="width:60px;height:25px;" />\n' +
                        '</div>\n' +
@@ -78,7 +77,7 @@ function csszInit(){
                else{
                    var valueArr =  value.split(";");
                    $('#cssz_div').prepend('<div class="line-div" id="' + record.title + '">\n' +
-                       '<span class="cssz-text">' + record.title + '：</span>\n' +
+                       '<span class="cssz-text" id="'+record.name+'">' + record.title + '：</span>\n' +
                        '<div class="textbox-div">\n' +
                        '<input name="' + record.name + '" id="' + record.name + '_min" value="' + valueArr[0] + '" class="easyui-textbox" style="width:60px;height:25px;" />\n' +
                        '</div>\n' +
@@ -91,23 +90,34 @@ function csszInit(){
            }
            else if(record.type == 4){
                $('#cssz_div').prepend('<div class="checkbox">\n' +
-                   '<input name="'+record.name+'" id="'+record.name+'" type="checkbox" name="checkbox" ' + (value == 1 ? 'checked' : '') + '/>'+record.title+'\n' +
+                   '<input name="'+record.name+'" id="'+record.name+'" type="checkbox" onclick=isChecked() name="checkbox" ' + (value == 1 ? 'checked' : '') + '/>'+record.title+' \n' +
                    '</div>');
            }
-           var check_ocv = $('#sjsx').attr("checked") ? 1 : 0;
-           if(check_ocv == 0){
-               $('#电压差范围').css({color:"#ddd"});
-               $('#容量范围').css({color:"#ddd"});
-               $('#等级范围').css({color:"#ddd"});
-           }
        }
+        var check_ocv = $('#sjsx').attr("checked") ? 1 : 0;
+        if(check_ocv == 0){
+            $('#dycfw').css({color:"#ddd"});
+            $('#rlfw').css({color:"#ddd"});
+            $('#djfw').css({color:"#ddd"});
+        }
     });
 }
 
-
-
-
-
 function CloseWin(){
     window.parent.closeCsszWin();
+}
+
+
+function isChecked(){
+    var isChecked = $('#sjsx').attr('checked') ? 1 : 0;
+    if(isChecked){
+        $('#dycfw').css({color:"black"});
+        $('#rlfw').css({color:"black"});
+        $('#djfw').css({color:"black"});
+    }
+    else{
+        $('#dycfw').css({color:"#ddd"});
+        $('#rlfw').css({color:"#ddd"});
+        $('#djfw').css({color:"#ddd"});
+    }
 }

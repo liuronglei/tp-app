@@ -20,8 +20,8 @@
     position: relative;
     z-index: 1;
     float:left;
-    margin:1% 1% 0 10%;
-    width:45%;
+    margin:1% 1% 0 1%;
+    width:29%;
     height:620px;
 }
 .right-content{
@@ -29,38 +29,41 @@
     z-index: 1;
     float:left;
     margin-top: 1%;
-    width:30%;
+    width:15%;
     height:620px;
-
 }
 .jbcs-div{
     text-align: center;
-    vertical-align: middle;
 }
 .jbcs-content{
-    padding: 4% 0 4% 0;
+    height:34px;
 }
 .left-img{
     float: left;
-    margin-top:1%;
+    margin-top:-10px;
 }
 .left-text{
     float:left;
     text-align: left;
     width:30%;
 }
+.left-text-value{
+    float:left;
+    text-align: left;
+    width:60%;
+}
 .button-div{
     padding-top: 1%;
     padding-left:10%;
 }
 .zc-div{
-    padding: 27% 40% 27% 40%;
+    padding: 0 40% 0 25%;
 }
 .zc-div p{
     color:#51eb67;
     font-size:20px;
     position: relative;
-    left:35%;
+    left:20%;
 }
 .full{
     width:100%;
@@ -78,7 +81,12 @@
 .tpsy-background{
     position: absolute;
     top : 127px;
-    left :-17px;
+    left :-21px;
+}
+.table-div{
+    float : left;
+    margin-left : 1%;
+    margin-top : 1%;
 }
 
 /* 参数设置 */

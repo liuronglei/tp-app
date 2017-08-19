@@ -24,44 +24,50 @@
                 <div class="jbcs-div">
                     <div class="jbcs-content">
                         <img class="left-img" src="../../../public/img/icon_tp/icon-SY-sb.png" />
-                        <p class="left-text">设备号：</p>
-                        <p style="float: left" id="sy_sbh"></p>
+                        <span class="left-text">设备号：</span>
+                        <span class ="left-text-value" id="sy_sbh"></span>
                     </div>
                     <div class="jbcs-content">
                         <img class="left-img" src="../../../public/img/icon_tp/icon-SY-czrygh.png" />
-                        <p class="left-text">操作人员工号：</p>
-                        <p style="float: left" id="sy_czrygh"></p>
+                        <span class="left-text">操作人员工号：</span>
+                        <span class ="left-text-value" id="sy_czrygh"></span>
                     </div>
                     <div class="jbcs-content">
                         <img class="left-img" src="../../../public/img/icon_tp/icon-SY-scgd.png" />
-                        <p class="left-text">生产工单：</p>
-                        <p style="float: left" id="sy_scgd"></p>
+                        <span class="left-text">生产工单：</span>
+                        <span class ="left-text-value" id="sy_scgd"></span>
                     </div>
                     <div class="jbcs-content">
                         <img class="left-img" src="../../../public/img/icon_tp/icon-SY-pc.png" />
-                        <p class="left-text">批次：</p>
-                        <p style="float: left" id="sy_pc"></p>
+                        <span class="left-text">批次：</span>
+                        <span class ="left-text-value" id="sy_pc"></span>
                     </div>
                     <div class="jbcs-content">
                         <img class="left-img" src="../../../public/img/icon_tp/icon-SY-rlfw.png" />
-                        <p class="left-text">容量范围：</p>
-                        <p style="float: left" id="sy_rlfw"></p>
+                        <span class="left-text">容量范围：</span>
+                        <span class ="left-text-value" id="sy_rlfw"></span>
                     </div>
                     <div class="jbcs-content">
                         <img class="left-img" src="../../../public/img/icon_tp/icon-SY-zxs.png" />
-                        <p class="left-text">装箱数：</p>
-                        <p style="float: left" id="sy_zxs"></p>
+                        <span class="left-text">装箱数：</span>
+                        <span class ="left-text-value" id="sy_zxs"></span>
                     </div>
                     <div class="jbcs-content">
                         <img class="left-img" src="../../../public/img/icon_tp/icon-SY-sjsx.png" />
-                        <p class="left-text">进行数据筛选：</p>
-                        <p style="float: left" id="sy_sjsx"></p>
+                        <span class="left-text">进行数据筛选：</span>
+                        <span style="float: left;width: 60%;text-align: left" id="sy_sjsx"></span>
+                    </div>
+                    <div class="jbcs-content">
+                        <img class="left-img" src="../../../public/img/icon_tp/icon-SY-zxs.png" />
+                        <span class="left-text">正常电芯数量：</span>
+                        <span class ="left-text-value" id="sy_dxsl"></span>
+                    </div>
+                    <div class="jbcs-content">
+                        <img class="left-img" src="../../../public/img/icon_tp/icon-SY-sjsx.png" />
+                        <span class="left-text">NG电芯数量：</span>
+                        <span style="float: left;width: 60%;text-align: left" id="sy_ngdxsl"></span>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="right-content">
-            <div class="easyui-panel" title="扫描结果" style="height:100%;">
                 <div class="zc-div">
                     <div id="zc" class="full">
                         <img src="../../../public/img/icon_tp/icon-big-zc.png" />
@@ -72,6 +78,53 @@
                         <p>异常</p>
                     </div>
                 </div>
+            </div>
+        </div>
+        <!--<div class="right-content">
+            <div class="easyui-panel" title="扫描结果" style="height:100%;">
+                <div class="zc-div">
+                    <div id="zc1" class="full">
+                        <img src="../../../public/img/icon_tp/icon-big-zc.png" />
+                        <p>正常</p>
+                    </div>
+                    <div id="yc1" class="full">
+                        <img src="../../../public/img/icon_tp/icon-big-yc.png" />
+                        <p>异常</p>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+        <div class="table-div">
+            <div class="full">
+                <table id="ng_table1" class="easyui-datagrid" title="NG数据查询表" data-options="
+                rownumbers:true,
+                singleSelect:true,
+                autoRowHeight:false,
+                pagination:true,
+                pageSize:20" style="width:1000px;height:620px">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'cellnum',width:80" >电芯条码</th>
+                            <th data-options="field:'equiptmentnum',width:80">设备号</th>
+                            <th data-options="field:'workernum',width:80">操作人员工号</th>
+                            <th data-options="field:'productionorder',width:80">生产工单</th>
+                            <th data-options="field:'batch',width:80">批次</th>
+                            <th data-options="field:'voltage',width:80" >电压</th>
+                            <th data-options="field:'voltage_range',width:80" >电压范围</th>
+                            <th data-options="field:'resistance',width:80" >内阻</th>
+                            <th data-options="field:'resistance_range',width:80">内阻范围</th>
+                            <th data-options="field:'volume',width:80" >容量</th>
+                            <th data-options="field:'volume_range',width:80" >容量范围</th>
+                            <th data-options="field:'ocv4',width:80" >Ocv4</th>
+                            <th data-options="field:'volumedifference_range',width:80" >电压差范围</th>
+                            <th data-options="field:'grade',width:80" >等级</th>
+                            <th data-options="field:'grade_range',width:80" >等级范围</th>
+                            <th data-options="field:'creattime',width:80" >创建时间</th>
+                            <th data-options="field:'ng_reason',width:80" >NG原因</th>
+                            <th data-options="field:'checknum',width:80">检测次数</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>

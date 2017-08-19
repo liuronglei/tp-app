@@ -184,8 +184,8 @@ function sealing_dispose() {
                         MachineNo: upload.equiptmentnum,  //机台号
                         WorkerNo: upload.workernum,  // 工号
                         Qty: upload.binningnum,          //数量
-                        LevelGrade: "4",         //档位
-                        CapSubGrade: "8",      //容量档
+                        LevelGrade: upload.grade,         //档位
+                        CapSubGrade: upload.volume_min+"-"+upload.volume_max,      //容量档
                         Voltage: upload.voltage_min+"-"+upload.voltage_max,  //电压
                         InterResist: upload.resistance_min+"-"+upload.resistance_max,       //内阻
                         RecordTime: upload.creattime,      //时间
