@@ -22,7 +22,8 @@ const webService = {
                     console.log(err);
                 } else {
                     console.log(result);
-                    callback(result.ret);
+                    var result_ret = JSON.parse(result.MESWebService0Result).ret;
+                    callback(result_ret);
                 }
             });
         })
