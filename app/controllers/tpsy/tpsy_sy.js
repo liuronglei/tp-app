@@ -8,6 +8,7 @@ var webService = require("../../controllers/tpsy/webservice");
 var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
 var url = property.URL;
+var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 /*var dataObj_ng = {
     sbh : "2",
     czrygh : "null",
@@ -124,7 +125,32 @@ function sycsInit() {
         $('#sy_rlfw').text(hashMap.get("rlfw").replace(";","-"));
         $('#sy_zxs').text(hashMap.get("zxs"));
         $('#sy_sjsx').text(hashMap.get("sjsx")==1 ? " 是" : "否");
-    })
+        m_tpsy.query_ngLength(function (err,result) {
+            if(err){
+                console.log(err);
+                return;
+            }
+            $('#sy_dxsl').text(result.recordset[0].length);
+        });
+        m_tpsy.query_normalLength(function (err,result) {
+            if(err){
+                console.log(err);
+                return;
+            }
+            $('#sy_ngdxsl').text(result.recordset[0].length);
+        });
+    });
+    $('#ng_table_sy').datagrid({
+        columns: [[
+            {field:'cellnum',title:'电芯条码'},
+            {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
+            {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
+            {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
+            {field:'ocv4',title:'ocv4'},
+            {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
+            {field:'result',title:'结果'}
+        ]],
+    });
 }
 
 function judgeNormal() {
@@ -209,7 +235,6 @@ function sealing_dispose() {
 
 /* datagrid 初始化  */
 function dataGrid_Init(dataArr) {
-    var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
     $('#ng_table_sy').datagrid({
         columns: [[
             {field:'cellnum',title:'电芯条码'},
