@@ -130,14 +130,18 @@ function sycsInit() {
                 console.log(err);
                 return;
             }
-            $('#sy_dxsl').text(result.recordset[0].length);
+            for(var i = 0;i < result.recordset.length; i++){
+                $('#sy_dxsl').text(result.recordset[i].length);
+            }
         });
         m_tpsy.query_normalLength(function (err,result) {
             if(err){
                 console.log(err);
                 return;
             }
-            $('#sy_ngdxsl').text(result.recordset[0].length);
+            for(var i = 0;i < result.recordset.length; i++){
+                $('#sy_ngdxsl').text(result.recordset[i].length);
+            }
         });
     });
     $('#ng_table_sy').datagrid({
@@ -149,7 +153,7 @@ function sycsInit() {
             {field:'ocv4',title:'ocv4'},
             {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
             {field:'result',title:'结果'}
-        ]],
+        ]]
     });
 }
 
@@ -173,7 +177,6 @@ function judgeNormal() {
         };
         var json = JSON.stringify(Json_Check);
         webService.check(url,json,function (result) {
-            alert(result);
             if(result == 0){
                 $('#zc').show();
             }
@@ -244,10 +247,10 @@ function dataGrid_Init(dataArr) {
             {field:'ocv4',title:'ocv4'},
             {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
             {field:'result',title:'结果'}
-        ]],
+        ]]
     });
     $('#ng_table_sy').datagrid({loadFilter:pagerFilter}).datagrid({
-        data : dataArr,
+        data : dataArr
     });
 }
 
@@ -283,6 +286,7 @@ function pagerFilter(data){
 }
 
 function filltable(){
+    /* dataArr格式 ： [{},{},...] 对象数组  */
     c_page.regFilltable(function (dataArr) {
         dataGrid_Init(dataArr);
         m_tpsy.query_ngLength(function (err,result) {
@@ -290,14 +294,18 @@ function filltable(){
                 console.log(err);
                 return;
             }
-            $('#sy_dxsl').text(result.recordset[0].length);
+            for(var i = 0;i < result.recordset.length; i++){
+                $('#sy_dxsl').text(result.recordset[i].length);
+            }
         });
         m_tpsy.query_normalLength(function (err,result) {
             if(err){
                 console.log(err);
                 return;
             }
-            $('#sy_ngdxsl').text(result.recordset[0].length);
+            for(var i = 0;i < result.recordset.length; i++){
+                $('#sy_ngdxsl').text(result.recordset[i].length);
+            }
         });
     });
 }
