@@ -127,8 +127,7 @@ function sycsInit() {
 }
 
 function judgeNormal() {
-    c_page.regScanBarCode(function (err,arg) {
-        if(err) throw err;
+    c_page.regScanBarCode(function (arg) {
         var hashMap = require('electron').remote.getGlobal('sharedObject').csszMap;
         var Json_Check = {
             Key : "",
@@ -146,8 +145,8 @@ function judgeNormal() {
             }]
         };
         var json = JSON.stringify(Json_Check);
-        webService.check(url,json,function (err,result) {
-            if(err) throw  err;
+        webService.check(url,json,function (result) {
+            alert(result);
             if(result == 0){
                 $('#zc').show();
             }
@@ -191,7 +190,7 @@ function sealing_dispose() {
                         InterResist: upload.resistance_min+"-"+upload.resistance_max,       //内阻
                         RecordTime: upload.creattime,      //时间
                         ReTest: upload.checknum,      // 二次筛选
-                        Remark: "XXX"           //    备注
+                        Remark: ""           //    备注
                     }]
                 };
                 var json = JSON.stringify(Json_Upload);
