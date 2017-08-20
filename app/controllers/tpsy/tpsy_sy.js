@@ -1,4 +1,3 @@
-var soap = require('soap');
 var fs = require('fs');
 var HashMap = require('../../utils/hashmap');
 var m_cssz = require("../../models/m_cssz");
@@ -59,8 +58,6 @@ var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 };
 var dataArr = [dataObj_normal];*/
 $(document).ready(function () {
-    filltable();
-    judgeNormal();
     sycsInit();
     $('#zc').hide();
     $('#yc').hide();
@@ -68,6 +65,8 @@ $(document).ready(function () {
     $("#btn_ngsjcx").click(CreatWindows_ngsjcx);
     add_NG_DB();
     sealing_dispose();
+    filltable();
+    judgeNormal();
 });
 
 function CreatWindows_cssz() {
@@ -238,7 +237,7 @@ function sealing_dispose() {
 
 /* datagrid 初始化  */
 function dataGrid_Init(dataArr) {
-    $('#ng_table_sy').datagrid({
+    $('#ng_table_sy').datagrid({loadFilter:pagerFilter}).datagrid({
         columns: [[
             {field:'cellnum',title:'电芯条码'},
             {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
@@ -247,9 +246,7 @@ function dataGrid_Init(dataArr) {
             {field:'ocv4',title:'ocv4'},
             {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
             {field:'result',title:'结果'}
-        ]]
-    });
-    $('#ng_table_sy').datagrid({loadFilter:pagerFilter}).datagrid({
+        ]],
         data : dataArr
     });
 }
