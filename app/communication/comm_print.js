@@ -24,19 +24,20 @@ const printSet = 'REFERENCE 0,10\n'    //打印起始位置参考坐标，单位
     + 'SPEED 3\n'
     + 'CLS\n';
  const printTcx ='D:\>COPY CON LPT1\n'
-     + 'DOWNLOAD "PRINT.PCX",10871,^Z\n'
+     + 'DOWNLOAD "PRINT.PCX",10188,^Z\n'
      + 'COPY PRINT.PCX /B LPT1\n'
      + 'COPY CON LPT1\n'
      + 'MOVE\n'
      + '＾Z\n';
 const printTcx_fixed ='D:\>COPY CON LPT1\n'
-    + 'DOWNLOAD F,"PRINT.PCX",10871,^Z\n'
+    + 'DOWNLOAD F,"PRINT.PCX",10188,^Z\n'
     + 'COPY PRINT.PCX /B LPT1\n'
     + 'COPY CON LPT1\n';
 const printData = ''
     //背景图
-//    + 'PUTPCX 0,0,"PRINT.PCX"\n'
+    + 'PUTPCX 0,0,"PRINT.PCX"\n'
     //横线
+    /*
     + 'BAR 10, ' + lineStart + ', 770, 3\n'
     + 'BAR 10, ' + (lineStart + lineStep) + ', 770, 3\n'
     + 'BAR 10, ' + (lineStart + 2*lineStep) + ', 400, 3\n'
@@ -56,16 +57,17 @@ const printData = ''
     + 'TEXT 20,' + (lineStart + 3*lineStep + 10) + ',"TSS24.BF2",0,1,1,"电压范围："\n'
     + 'TEXT 20,' + (lineStart + 4*lineStep + 10) + ',"TST16.BF2",0,1,1,"内阻范围："\n'
     + 'TEXT 20,' + (lineStart + 5*lineStep + 10) + ',"TST16.BF2",0,1,1,"数量："\n'
+     */
     //内容
-    + 'TEXT 210,' + (lineStart + 13) + ',"3",0,1,1,"data_sxdh"\n'
-    + 'TEXT 210,' + (lineStart + lineStep + 13) + ',"3",0,1,1,"data_rld"\n'
-    + 'TEXT 210,' + (lineStart + 2*lineStep + 13) + ',"3",0,1,1,"data_dw"\n'
-    + 'TEXT 210,' + (lineStart + 3*lineStep + 13) + ',"3",0,1,1,"data_dyfw"\n'
-    + 'TEXT 210,' + (lineStart + 4*lineStep + 13) + ',"3",0,1,1,"data_nzfw"\n'
-    + 'TEXT 210,' + (lineStart + 5*lineStep + 13) + ',"3",0,1,1,"data_sl"\n'
-    + 'TEXT 430,' + (lineStart + 13) + ',"3",0,1,1,"data_sj"\n'
+    + 'TEXT 230,' + (lineStart + 18) + ',"3",0,1,1,"data_sxdh"\n'
+    + 'TEXT 230,' + (lineStart + lineStep + 18) + ',"3",0,1,1,"data_rld"\n'
+    + 'TEXT 230,' + (lineStart + 2*lineStep + 18) + ',"3",0,1,1,"data_dw"\n'
+    + 'TEXT 230,' + (lineStart + 3*lineStep + 18) + ',"3",0,1,1,"data_dyfw"\n'
+    + 'TEXT 230,' + (lineStart + 4*lineStep + 18) + ',"3",0,1,1,"data_nzfw"\n'
+    + 'TEXT 230,' + (lineStart + 5*lineStep + 18) + ',"3",0,1,1,"data_sl"\n'
+    + 'TEXT 460,' + (lineStart + 18) + ',"3",0,1,1,"data_sj"\n'
     //条码
-    + 'BARCODE 450,100,"128",96,1,0,3,5,"data_tm"\n'
+    + 'BARCODE 460,100,"128",96,1,0,3,5,"data_tm"\n'
     //开始打印
     + 'PRINT 1,1\n';
 function getNowFormatDate() {

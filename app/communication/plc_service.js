@@ -3,7 +3,7 @@
  */
 var net = require('net');
 var timeout = 20000;//超时
-var listenPort = 3000;//监听端口
+var listenPort = 2000;//监听端口
 var server = net.createServer(function(socket){
     // 我们获得一个连接 - 该连接自动关联一个socket对象
     console.log('connect: ' +
@@ -16,6 +16,8 @@ var server = net.createServer(function(socket){
 //  });
     //接收到数据
     socket.on('data',function(data){
+        console.log(new Buffer(data).toString('hex'));
+        socket.write(data);
         console.log('recv:' + data);
     });
     //数据错误事件

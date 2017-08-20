@@ -18,11 +18,18 @@ const scanner = {
     receive : function(callBack) {
         serialPort.open(function(error){
             if(error){
-                console.log("open serialport: "+error);
+                console.log("open serialport-----: "+error);
             }
             serialPort.on('data',function(data){
+                data = new Buffer(data).toString();
+                var data = data.replace(/\ +/g, ""); //去掉空格
+                data = data.replace(/[ ]/g, "");    //去掉空格
+                data = data.replace(/[\r\n]/g, "")
+                if(data == "") {
+                    return;
+                }
+                console.log('boxCode:---' + data + "---");
                 callBack(data);
-                console.log('dataShow:' + data);
             })
         });
     }

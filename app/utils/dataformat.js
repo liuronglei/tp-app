@@ -47,10 +47,10 @@ const dataformat = {
     },
 
     float2bytes : function(value){
-        return SingleToHex(value.toString());
+        return SingleToHex_Arr(value.toString());
     },
     bytes2float : function(value){
-        return HexToSingle(value.join(" "));
+        return HexToSingle(value.reverse.join(" "));
     },
     float2bytes2 : function(value){
         return get_float_hex(value.toString());
@@ -69,6 +69,13 @@ function InsertArray(t, n) {
         r.push(parseInt(t.substr(i * 2, n),16));
     }
     return r;
+}
+function InsertArray_reverse(t, n) {
+    var r = new Array();
+    for (var i = 0; i * 2 < t.length; i++) {
+        r.push(parseInt(t.substr(i * 2, n),16));
+    }
+    return r.reverse();
 }
 function InsertString(t, c, n) {
     var r = new Array();
@@ -134,6 +141,57 @@ function HexToSingle(t) {
     }
     return m;
 }
+function SingleToHex_Arr(t) {
+    if (t == "") {
+        return "";
+    }
+    t = parseFloat(t);
+    if (isNaN(t) == true) {
+        return "Error";
+    }
+    if (t == 0) {
+        return [0,0,0,0];
+    }
+    var s,
+        e,
+        m;
+    if (t > 0) {
+        s = 0;
+    }
+    else {
+        s = 1;
+        t = 0 - t;
+    }
+    m = t.toString(2);
+    if (m >= 1) {
+        if (m.indexOf(".") == -1) {
+            m = m + ".0";
+        }
+        e = m.indexOf(".") - 1;
+    }
+    else {
+        e = 1 - m.indexOf("1");
+    }
+    if (e >= 0) {
+        m = m.replace(".", "");
+    }
+    else {
+        m = m.substring(m.indexOf("1"));
+    }
+    if (m.length > 24) {
+        m = m.substr(0, 24);
+    }
+    else {
+        m = FillString(m, "0", 24, false)
+    }
+    m = m.substring(1);
+    e = (e + 127).toString(2);
+    e = FillString(e, "0", 8, true);
+    var r = parseInt(s + e + m, 2).toString(16);
+    r = FillString(r, "0", 8, true);
+    return InsertArray_reverse(r, 2);
+    //return InsertString(r, " ", 2).toUpperCase();
+}
 function SingleToHex(t) {
     if (t == "") {
         return "";
@@ -182,8 +240,7 @@ function SingleToHex(t) {
     e = FillString(e, "0", 8, true);
     var r = parseInt(s + e + m, 2).toString(16);
     r = FillString(r, "0", 8, true);
-    return InsertArray(r, 2);
-    //return InsertString(r, " ", 2).toUpperCase();
+    return InsertString(r, "", 2).toUpperCase();
 }
 function FormatHex(t, n, ie) {
     var r = new Array();
