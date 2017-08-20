@@ -2,6 +2,7 @@ var soap = require('soap');
 var fs = require('fs');
 var HashMap = require('../../utils/hashmap');
 var m_cssz = require("../../models/m_cssz");
+var m_tpsy = require("../../models/m_tpsy");
 var c_page = require("../../controllers/c_page");
 var webService = require("../../controllers/tpsy/webservice");
 var getValue_plc = require("../../controllers/tpsy/getValue_plc");
@@ -212,13 +213,13 @@ function dataGrid_Init(dataArr) {
     $('#ng_table_sy').datagrid({
         columns: [[
             {field:'cellnum',title:'电芯条码'},
-            {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
-            {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
             {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
+            {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
+            {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
+            {field:'ocv4',title:'ocv4'},
             {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
-            {field:'creattime',title:'创建时间'},
             {field:'result',title:'结果'}
-        ]]
+        ]],
     });
     $('#ng_table_sy').datagrid({loadFilter:pagerFilter}).datagrid({
         data : dataArr,
@@ -259,6 +260,20 @@ function pagerFilter(data){
 function filltable(){
     c_page.regFilltable(function (dataArr) {
         dataGrid_Init(dataArr);
+        m_tpsy.query_ngLength(function (err,result) {
+            if(err){
+                console.log(err);
+                return;
+            }
+            $('#sy_dxsl').text(result.recordset[0].length);
+        });
+        m_tpsy.query_normalLength(function (err,result) {
+            if(err){
+                console.log(err);
+                return;
+            }
+            $('#sy_ngdxsl').text(result.recordset[0].length);
+        });
     });
 }
 
