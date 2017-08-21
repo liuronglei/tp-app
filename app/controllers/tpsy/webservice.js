@@ -1,5 +1,4 @@
 var soap = require('soap');
-
 const webService = {
     check : function (url,json,callback) {
         soap.createClient(url, function(err, client) {
