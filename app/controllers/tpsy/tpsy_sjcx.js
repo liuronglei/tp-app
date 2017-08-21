@@ -91,6 +91,22 @@ function select_All(){
 /* datagrid 初始化  */
 function dataGrid_Init(dataArr) {
     $('#ng_table').datagrid({loadFilter:pagerFilter}).datagrid({
+        columns: [[
+            {field:'cellnum',title:'电芯条码'},
+            {field:'batch',title:'批次'},
+            {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
+            {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
+            {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
+            {field:'ocv4',title:'ocv4'},
+            {field:'volumedifference',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
+            {field:'ng_reason',title:'NG原因'},
+            {field:'checknum',title:'检测次数'},
+            {field:'equiptmentnum',title:'设备号'},
+            {field:'workernum',title:'操作人员工号'},
+            {field:'productionorder',title:'生产工单'},
+            {field:'grade',title:'等级'+"("+csszMap.get('djfw').replace(";","-")+")"},
+            {field:'creattime',title:'创建时间'},
+        ]],
         data : dataArr
     });
 }

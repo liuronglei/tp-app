@@ -37,8 +37,8 @@ var dataArr = [dataObj_normal];
 */
 $(document).ready(function () {
     sycsInit();
-    //$('#zc').hide();
-    //$('#yc').hide();
+    $('#zc').hide();
+    $('#yc').hide();
     $("#btn_cssz").click(CreatWindows_cssz);
     $("#btn_ngsjcx").click(CreatWindows_ngsjcx);
     add_NG_DB();
@@ -123,12 +123,12 @@ function sycsInit() {
     });
     $('#ng_table_sy').datagrid({
         columns: [[
-            {field:'cellnum',title:'电芯条码'},
-            {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
-            {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
-            {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
+            {field:'dx',title:'电芯条码'},
+            {field:'rl',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
+            {field:'nz',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
+            {field:'dy',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
             {field:'ocv4',title:'ocv4'},
-            {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
+            {field:'dyc',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
             {field:'result',title:'结果'}
         ]]
     });
@@ -219,16 +219,27 @@ function sealing_dispose() {
 function dataGrid_Init(dataArr) {
     $('#ng_table_sy').datagrid({loadFilter:pagerFilter}).datagrid({
         columns: [[
-            {field:'cellnum',title:'电芯条码'},
-            {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
-            {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
-            {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
+            {field:'dx',title:'电芯条码'},
+            {field:'rl',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
+            {field:'nz',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
+            {field:'dy',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
             {field:'ocv4',title:'ocv4'},
-            {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
+            {field:'dyc',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
             {field:'result',title:'结果'}
         ]],
         data : dataArr
     });
+    /*[
+        {
+            dx : "",
+            rl : "",
+            nz : "",
+            dy : "",
+            ocv4 : "",
+            dyc : "",
+            result : "",
+        }
+    ]*/
 }
 
 function filltable(){
