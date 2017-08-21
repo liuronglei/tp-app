@@ -1,6 +1,8 @@
 {
   "PLC_IP" : "192.168.1.35",
-  "PLC_PORT" : "2000",
+  "PLC_PORT" : "2002",
+
+  "CHECK_NUM_SINGLE": 12,
 
   "ADDRESS_FLAG": 102,
 
@@ -22,5 +24,8 @@
 
   "FLAG_TRUE": "01000000",
   "FLAG_FALSE": "00000000",
-  "FLAG_FINISH": "02000000"
+  "FLAG_FINISH": "02000000",
+
+  "BARCODE_MISS": "Miss",
+  "BARCODE_FAIL": "Fail"
 }

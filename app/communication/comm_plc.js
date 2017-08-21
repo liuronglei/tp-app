@@ -80,6 +80,8 @@ const message_base_read_flag = [
  (byte)0x44,(byte)0x00,//软元件点数 ,  68个字
  };
  */
+const len_1=7;//数据长度位置
+const len_2=8;//数据长度位置
 const area=18;//区域
 const address_1=15;//位置1
 const address_2=16;//位置2
@@ -100,10 +102,10 @@ const plc = {
         plc_process.writeByte("D", property.ADDRESS_FLAG, 2, [0x02,0x00,0x00,0x00]);
     },
     resetCheckFlag : function() {
-        plc_process.write("D", property.ADDRESS_FLAG + 2, 2, [0]);
+        plc_process.writeFloat("D", property.ADDRESS_FLAG + 2, 2, [0]);
     },
     resetBoxFlag : function() {
-        plc_process.write("D", property.ADDRESS_FLAG + 4, 2, [0]);
+        plc_process.writeFloat("D", property.ADDRESS_FLAG + 4, 2, [0]);
     },
     setCssz : function(csszHashMap) {
         var rlfw = csszHashMap.get('rlfw');
@@ -116,26 +118,26 @@ const plc = {
         var nzfwArr = nzfw.split(";");
         var sjsx = csszHashMap.get('sjsx');
         var zxs = csszHashMap.get('zxs');
-        plc_process.write("D", property.ADDRESS_RLXX, 2, [parseFloat(rlfwArr[0])]); //容量下限
-        plc_process.write("D", property.ADDRESS_RLSX, 2, [parseFloat(rlfwArr[1])]); //容量上限
-        plc_process.write("D", property.ADDRESS_DYCXX, 2, [parseFloat(dycfwArr[0])]); //压差下限
-        plc_process.write("D", property.ADDRESS_DYCSX, 2, [parseFloat(dycfwArr[1])]); //压差上限
-        plc_process.write("D", property.ADDRESS_DYXX, 2, [parseFloat(dyfwArr[0])]); //电压下限
-        plc_process.write("D", property.ADDRESS_DYSX, 2, [parseFloat(dyfwArr[1])]); //电压上限
-        plc_process.write("D", property.ADDRESS_NZXX, 2, [parseFloat(nzfwArr[0])]); //内阻下限
-        plc_process.write("D", property.ADDRESS_NZSX, 2, [parseFloat(nzfwArr[1])]); //内阻上限
-        plc_process.write("D", property.ADDRESS_ZCZXS, 2, [parseFloat(zxs)]); //正常装箱数
+        plc_process.writeFloat("D", property.ADDRESS_RLXX, 2, [parseFloat(rlfwArr[0])]); //容量下限
+        plc_process.writeFloat("D", property.ADDRESS_RLSX, 2, [parseFloat(rlfwArr[1])]); //容量上限
+        plc_process.writeFloat("D", property.ADDRESS_DYCXX, 2, [parseFloat(dycfwArr[0])]); //压差下限
+        plc_process.writeFloat("D", property.ADDRESS_DYCSX, 2, [parseFloat(dycfwArr[1])]); //压差上限
+        plc_process.writeFloat("D", property.ADDRESS_DYXX, 2, [parseFloat(dyfwArr[0])]); //电压下限
+        plc_process.writeFloat("D", property.ADDRESS_DYSX, 2, [parseFloat(dyfwArr[1])]); //电压上限
+        plc_process.writeFloat("D", property.ADDRESS_NZXX, 2, [parseFloat(nzfwArr[0])]); //内阻下限
+        plc_process.writeFloat("D", property.ADDRESS_NZSX, 2, [parseFloat(nzfwArr[1])]); //内阻上限
+        plc_process.writeInt("D", property.ADDRESS_ZCZXS, 2, parseInt(zxs)); //正常装箱数
         plc_process.writeByte("D", property.ADDRESS_SJSX, 2, sjsx == "1" ? [0x01,0x00,0x00,0x00] : [0x00,0x00,0x00,0x00]); //OCV勾选
     },
     writeBarInfo : function(rlArr,ocv4Arr) {
         var data = new Array();
         for(var i=0; i<rlArr.length; i++) {
-            data[data.length] = parseFloat(rlArr[i]);
+            data[data.length] = rlArr[i];
         }
         for(var i=0; i<ocv4Arr.length; i++) {
-            data[data.length] = parseFloat(ocv4Arr[i]);
+            data[data.length] = ocv4Arr[i];
         }
-        plc_process.write("D", property.ADDRESS_OCVDATA, 48, data); //OCV检测数据
+        plc_process.writeFloat("D", property.ADDRESS_OCVDATA, 48, data); //OCV检测数据
     },
     readCheckInfo : function(callBack) {
         callBack_checkFlag = callBack;
@@ -182,6 +184,20 @@ function setAddress(address,read) {
         read[address_3]=temp[0];
     }
 }
+function setLength(len,write) {
+    var templen = len.toString(16);
+    if(templen.length%2!=0){
+        templen="0"+templen;
+    }
+    var temp = dataformat.hex2bytes(templen);
+    if(temp.length==1){
+        write[len_1]=temp[0];
+    }
+    if(temp.length==2){
+        write[len_1]=temp[1];
+        write[len_2]=temp[0];
+    }
+}
 
 function setBit(len,arr) {
     var hexLen = len.toString(16);
@@ -202,8 +218,9 @@ function setBit(len,arr) {
 const plc_process = {
     dataReceive : function() {
         _client.strartListen(function(hexStr) {
-            var index_fix = 28;
-            var len = 8;
+            var index_fix = 28; //报文返回内容起始下标值
+            var len = 8;        //双字16进制位数
+            var single_len = 4; //单字16进制位数
             //获取标记位的返回
             if(hexStr.length == index_fix + len*3) {
                 var flagArr = [false, false, false];
@@ -222,8 +239,52 @@ const plc_process = {
                 callBack_allFlag(flagArr);
             //获取电性能检测结果的返回
             } else if(hexStr.length == index_fix + len*58) {
-                var nzdyArr = new Array(58);
-                var tempStr = hexStr.substring(index_fix, index_fix + len);
+                var errorFlag = "0100";
+                var nzArr = new Array(property.CHECK_NUM_SINGLE);
+                var dyArr = new Array(property.CHECK_NUM_SINGLE);
+                var zztArr = new Array(property.CHECK_NUM_SINGLE);
+                var dyztArr = new Array(property.CHECK_NUM_SINGLE);
+                var nzztArr = new Array(property.CHECK_NUM_SINGLE);
+                var rlztArr = new Array(property.CHECK_NUM_SINGLE);
+                var dycztArr = new Array(property.CHECK_NUM_SINGLE);
+                for(var i=0; i<nzArr.length; i++) {
+                    tempStr = hexStr.substring(index_fix + len*i, index_fix + len*(i+1));
+                    nzArr[i] = dataformat.hex2float(tempStr);
+                }
+                for(var i=0; i<dyArr.length; i++) {
+                    tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE+i), index_fix + len*(property.CHECK_NUM_SINGLE+i+1));
+                    dyArr[i] = dataformat.hex2float(tempStr);
+                }
+                for(var i=0; i<dyArr.length; i++) {
+                    tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE+i), index_fix + len*(property.CHECK_NUM_SINGLE+i+1));
+                    dyArr[i] = dataformat.hex2float(tempStr);
+                }
+                for(var i=0; i<zztArr.length; i++) {
+                    tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*i,
+                                                index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(i+1));
+                    zztArr[i] = tempStr == errorFlag ? false : true;
+                }
+                for(var i=0; i<dyztArr.length; i++) {
+                    tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE+i),
+                                                index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE+i+1));
+                    dyztArr[i] = tempStr == errorFlag ? false : true;
+                }
+                for(var i=0; i<nzztArr.length; i++) {
+                    tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*2+i),
+                                                index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*2+i+1));
+                    nzztArr[i] = tempStr == errorFlag ? false : true;
+                }
+                for(var i=0; i<rlztArr.length; i++) {
+                    tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*3+i),
+                                                index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*3+i+1));
+                    rlztArr[i] = tempStr == errorFlag ? false : true;
+                }
+                for(var i=0; i<dycztArr.length; i++) {
+                    tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*4+i),
+                                                index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*4+i+1));
+                    dycztArr[i] = tempStr == errorFlag ? false : true;
+                }
+                callBack_checkFlag(nzArr,dyArr,zztArr,dyztArr,nzztArr,rlztArr,dycztArr);
             }
         });
     },
@@ -231,18 +292,19 @@ const plc_process = {
         var set = message_base_write.slice(0);
         set[area] = getArea(Area);
         setAddress(Address, set);
+        setLength(12 + len*2,set);
         setBit(len, set);
-        set[set.length]=data[0];
-        set[set.length]=data[1];
-        set[set.length]=data[2];
-        set[set.length]=data[3];
+        for(var i=0; i<data.length; i++) {
+            set[set.length]=data[i];
+        }
         console.log(new Buffer(set));
         _client.write(set);
     },
-    write : function(Area,Address,len,data) {
+    writeFloat : function(Area,Address,len,data) {
         var set = message_base_write.slice(0);
         set[area] = getArea(Area);
         setAddress(Address, set);
+        setLength(12 + len*2,set);
         setBit(len, set);
         for(var i=0; i<data.length; i++) {
             var data_byte = dataformat.float2bytes(data[i]);
@@ -251,6 +313,22 @@ const plc_process = {
             set[set.length]=data_byte[2];
             set[set.length]=data_byte[3];
         }
+        console.log(new Buffer(set));
+        _client.write(set);
+    },
+    writeInt : function(Area,Address,len,data) {
+        var set = message_base_write.slice(0);
+        set[area] = getArea(Area);
+        setAddress(Address, set);
+        setLength(12 + len*2,set);
+        setBit(len, set);
+        var dataByteArr = dataformat.hex2bytes(dataformat.int2hex(data));
+        console.log(dataByteArr);
+        console.log(data);
+        set[set.length]=dataByteArr[0];
+        set[set.length]=dataByteArr.length>1 ? dataByteArr[1] : 0x00;
+        set[set.length]=dataByteArr.length>2 ? dataByteArr[2] : 0x00;
+        set[set.length]=dataByteArr.length>3 ? dataByteArr[3] : 0x00;
         console.log(new Buffer(set));
         _client.write(set);
     },
@@ -376,9 +454,16 @@ const _client = {
             callBack(retrunArr);
         });
     },
-    write : function(data) {
+    write : function(data,count) {
         if(clientSyn) {
-            setTimeout(function(){_client.write(data);},50);
+            if(typeof count == "undefined") {
+                count = 0;
+            }
+            if(count >= 20) {
+                client.write(new Buffer(data));
+            } else {
+                setTimeout(function(){_client.write(data,++count);},50);
+            }
         } else {
             clientSyn = true;
             client.write(new Buffer(data));

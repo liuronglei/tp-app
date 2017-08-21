@@ -1,5 +1,5 @@
 var fs = require("fs");
-var HashMap = require("../../utils/hashmap");
+var HashMap = require("./hashmap");
 var xlsx = require('node-xlsx');
 
 //读取文件内容
@@ -14,7 +14,7 @@ var fileread = {
             var obj = xlsx.parse(filePath);
             var excelObj=new Array();
             var hashMap =new HashMap.Map();
-            for(var z = 0; z < 5 ; z++){
+            for(var z = 0; z < obj.length-1 ; z++){
                 excelObj=obj[z].data;
                 for(var i = 4; i < excelObj.length; i++) {
                     hashMap.put(excelObj[i][2], [excelObj[i][3],excelObj[i][6],excelObj[i][14]]);

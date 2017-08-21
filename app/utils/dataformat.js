@@ -37,8 +37,9 @@ const dataformat = {
     },
     //字节数组转十六进制字符串
     int2hex : function (num) {
+        var str = "";
             var tmp = num.toString(16);
-            if(tmp.length == 1)
+            if(tmp.length %2 != 0)
             {
                 tmp = "0" + tmp;
             }
@@ -50,10 +51,22 @@ const dataformat = {
         return SingleToHex_Arr(value.toString());
     },
     bytes2float : function(value){
-        return HexToSingle(value.reverse.join(" "));
+        return HexToSingle(value.reverse().join(" "));
+    },
+    hex2float : function(value) {
+        return HexToSingle(dataformat.bytes2hex(dataformat.hex2bytes(value).reverse()));
     },
     float2bytes2 : function(value){
         return get_float_hex(value.toString());
+    },
+    fillZero : function(num, size) {
+        var returnStr = num.toString();
+        if(returnStr.length < size) {
+            for(var i= returnStr.length; i<size; i++) {
+                returnStr = "0" + returnStr;
+            }
+        }
+        return returnStr;
     }
 
 

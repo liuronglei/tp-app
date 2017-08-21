@@ -1,6 +1,4 @@
 var soap = require('soap');
-var url = 'http://221.178.135.214:8099/Service1.asmx?wsdl';
-
 const webService = {
     check : function (url,json,callback) {
         soap.createClient(url, function(err, client) {
