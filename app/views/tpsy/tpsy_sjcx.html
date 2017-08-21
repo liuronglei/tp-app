@@ -1,5 +1,6 @@
 <script type="text/javascript" src="../../controllers/tpsy/tpsy_sjcx.js" ></script>
-<div class="sjcx-box">
+
+<div>
     <div class="top-function">
         <div class="combobox-div">
             <span>批次：</span>
@@ -14,35 +15,13 @@
             <a id="btn_dc" href="#" class="easyui-linkbutton" style="width:150px;height:30px">导出</a>
         </div>
     </div>
-    <div class="table-display">
+    <div>
         <table id="ng_table" class="easyui-datagrid" title="NG数据查询表" data-options="
 				rownumbers:true,
 				singleSelect:true,
 				autoRowHeight:false,
 				pagination:true,
 				pageSize:20" style="width:980px;height:550px">
-            <thead>
-                <tr>
-                    <th data-options="field:'cellnum',width:80" >电芯条码</th>
-                    <th data-options="field:'equiptmentnum',width:80">设备号</th>
-                    <th data-options="field:'workernum',width:80">操作人员工号</th>
-                    <th data-options="field:'productionorder',width:80">生产工单</th>
-                    <th data-options="field:'batch',width:80">批次</th>
-                    <th data-options="field:'voltage',width:80" >电压</th>
-                    <th data-options="field:'voltage_range',width:80" >电压范围</th>
-                    <th data-options="field:'resistance',width:80" >内阻</th>
-                    <th data-options="field:'resistance_range',width:80">内阻范围</th>
-                    <th data-options="field:'volume',width:80" >容量</th>
-                    <th data-options="field:'volume_range',width:80" >容量范围</th>
-                    <th data-options="field:'ocv4',width:80" >Ocv4</th>
-                    <th data-options="field:'volumedifference_range',width:80" >电压差范围</th>
-                    <th data-options="field:'grade',width:80" >等级</th>
-                    <th data-options="field:'grade_range',width:80" >等级范围</th>
-                    <th data-options="field:'creattime',width:80" >创建时间</th>
-                    <th data-options="field:'ng_reason',width:80" >NG原因</th>
-                    <th data-options="field:'checknum',width:80">检测次数</th>
-                </tr>
-            </thead>
         </table>
     </div>
 </div>

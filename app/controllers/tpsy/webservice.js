@@ -1,4 +1,5 @@
 var soap = require('soap');
+
 const webService = {
     check : function (url,json,callback) {
         soap.createClient(url, function(err, client) {
@@ -7,8 +8,8 @@ const webService = {
                     console.log(err);
                 } else {
                     console.log(result);
-                    var result_ret = JSON.parse(result.MESWebService0Result).ret;
-                    callback(result_ret);
+                    var resultObj = JSON.parse(result.MESWebService0Result);
+                    callback(resultObj);
                 }
             });
         })
@@ -20,8 +21,8 @@ const webService = {
                     console.log(err);
                 } else {
                     console.log(result);
-                    var result_ret = JSON.parse(result.MESWebService0Result).ret;
-                    callback(result_ret);
+                    var resultObj = JSON.parse(result.MESWebService0Result);
+                    callback(resultObj);
                 }
             });
         })

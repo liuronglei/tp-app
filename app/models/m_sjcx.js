@@ -3,19 +3,14 @@ var query = require("../utils/sqlserver");
 const m_sjcx = {
     query_selectBatch : function (batch,callback) {
         query('select cellnum,equiptmentnum,workernum,productionorder,batch,\n' +
-            'voltage,(Convert(nvarchar(50),voltage_min)+\'——\'+Convert(nvarchar(50),voltage_max)) as voltage_range,\n' +
-            'resistance,(Convert(nvarchar(50),resistance_min)+\'——\'+Convert(nvarchar(50),resistance_max)) as resistance_range,volume,\n' +
-            '(Convert(nvarchar(50),volume_min)+\'——\'+Convert(nvarchar(50),volume_max)) as volume_range,ocv4,\n' +
-            '(Convert(nvarchar(50),volumedifference_min)+\'——\'+Convert(nvarchar(50),volumedifference_max)) as volumedifference_range, \n' +
-            'grade,(Convert(nvarchar(50),grade_min)+\'——\'+Convert(nvarchar(50),grade_max)) as grade_range,Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng where batch =\''+batch+'\' ',callback);
+            'voltage,resistance,volume,ocv4,volumedifference,grade,\n' +
+            'Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng where batch =\''+batch+'\'',callback);
     },
     query_select : function (ng_reason,batch,callback) {
         query('select cellnum,equiptmentnum,workernum,productionorder,batch,\n' +
-            'voltage,(Convert(nvarchar(50),voltage_min)+\'——\'+Convert(nvarchar(50),voltage_max)) as voltage_range,\n' +
-            'resistance,(Convert(nvarchar(50),resistance_min)+\'——\'+Convert(nvarchar(50),resistance_max)) as resistance_range,volume,\n' +
-            '(Convert(nvarchar(50),volume_min)+\'——\'+Convert(nvarchar(50),volume_max)) as volume_range,ocv4,\n' +
-            '(Convert(nvarchar(50),volumedifference_min)+\'——\'+Convert(nvarchar(50),volumedifference_max)) as volumedifference_range, \n' +
-            'grade,(Convert(nvarchar(50),grade_min)+\'——\'+Convert(nvarchar(50),grade_max)) as grade_range,Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng where batch =\''+batch+'\' and ng_reason like \'%'+ng_reason+'%\' ',callback);
+            'voltage,resistance,volume,ocv4,volumedifference,grade,\n' +
+            'Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng \n' +
+            'where batch =\''+batch+'\' and ng_reason like \'%'+ng_reason+'%\'',callback);
     },
     query_selectAll_batch :function (callback) {
         query('select batch from d_cell_ng',callback);

@@ -13,7 +13,7 @@
   border-style: solid;*/
 }
 .panel-header {
-  padding: 20px;
+  padding: 15px;
   position: relative;
 }
 .panel-title {
@@ -132,8 +132,8 @@
   /*font-size: 12px;*/
   font-weight: bold;
   color: #fff;
-  height: 16px;
-  line-height: 16px;
+  height: 25px;
+  line-height: 25px;
   /*padding: 10px;*/
 }
 .panel-footer {

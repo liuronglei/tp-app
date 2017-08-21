@@ -8,7 +8,8 @@ var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
 var url = property.URL;
 var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
-/*var dataObj_ng = {
+/*
+var dataObj_ng = {
     sbh : "2",
     czrygh : "null",
     scgd : "null",
@@ -31,32 +32,9 @@ var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
     dj_max: "null",
     zxs : "null",
     ng_reason : "NG1"
-};*/
-/*var dataObj_normal = {
-    xh : "",
-    sbh : "2",
-    czrygh : "null",
-    scgd : "null",
-    pc :　"null",
-    dx : "KA2GA18 101005",
-    dy : "2000",
-    dy_min : "null",
-    dy_max : "null",
-    nz : "100",
-    nz_min : "null",
-    nz_max : "null",
-    rl : "null",
-    rl_min: "null",
-    rl_max: "null",
-    ocv4 : "null",
-    dyc_min : "null",
-    dyc_max : "null",
-    dj : "null",
-    dj_min: "null",
-    dj_max: "null",
-    zxs : "null"
 };
-var dataArr = [dataObj_normal];*/
+var dataArr = [dataObj_normal];
+*/
 $(document).ready(function () {
     sycsInit();
     $('#zc').hide();
@@ -78,8 +56,8 @@ function CreatWindows_cssz() {
         minimizable:false,
         maximizable:false,
         closable:true,
-        width:500,
-        height:700,
+        width:440,
+        height:600,
         modal:false,
         draggable:true
     });
@@ -88,14 +66,14 @@ function CreatWindows_cssz() {
 function CreatWindows_ngsjcx() {
     $('#win_cssz').window({
         title: 'NG数据查询',
-        left:150,
+        left:200,
         top:80,
         collapsible:false,
         minimizable:false,
         maximizable:false,
         closable:true,
-        width:1200,
-        height:700,
+        width:1040,
+        height:680,
         modal:false,
         draggable:true
     });
@@ -145,12 +123,12 @@ function sycsInit() {
     });
     $('#ng_table_sy').datagrid({
         columns: [[
-            {field:'cellnum',title:'电芯条码'},
-            {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
-            {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
-            {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
+            {field:'dx',title:'电芯条码'},
+            {field:'rl',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
+            {field:'nz',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
+            {field:'dy',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
             {field:'ocv4',title:'ocv4'},
-            {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
+            {field:'dyc',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
             {field:'result',title:'结果'}
         ]]
     });
@@ -176,11 +154,13 @@ function judgeNormal() {
         };
         var json = JSON.stringify(Json_Check);
         webService.check(url,json,function (result) {
-            if(result == 0){
+            if(result.ret == 0){
                 $('#zc').show();
             }
             else{
+                $('#yc_text').text(result.Msg);
                 $('#yc').show();
+                c_page.boxError();
             }
         });
     });
@@ -213,12 +193,12 @@ function sealing_dispose() {
                         MachineNo: upload.equiptmentnum,  //机台号
                         WorkerNo: upload.workernum,  // 工号
                         Qty: upload.binningnum,          //数量
-                        LevelGrade: upload.grade,         //档位
-                        CapSubGrade: upload.volume_min+"-"+upload.volume_max,      //容量档
+                        LevelGrade: upload.grade,         //档位 对应等级
+                        CapSubGrade: upload.volume_min+"-"+upload.volume_max,      //容量档 对应容量范围
                         Voltage: upload.voltage_min+"-"+upload.voltage_max,  //电压
                         InterResist: upload.resistance_min+"-"+upload.resistance_max,       //内阻
                         RecordTime: upload.creattime,      //时间
-                        ReTest: upload.checknum,      // 二次筛选
+                        ReTest: upload.checknum,      // 二次筛选 筛选次数
                         Remark: ""           //    备注
                     }]
                 };
@@ -226,7 +206,7 @@ function sealing_dispose() {
                 webService.upload(url,json,function (err,result) {
                     if (err) throw  err;
                     if(result != 0){
-                        alert("上传失败")
+                        alert(result.Msg)
                     }
                     else { alert("上传成功") }
                 });
@@ -239,47 +219,27 @@ function sealing_dispose() {
 function dataGrid_Init(dataArr) {
     $('#ng_table_sy').datagrid({loadFilter:pagerFilter}).datagrid({
         columns: [[
-            {field:'cellnum',title:'电芯条码'},
-            {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
-            {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
-            {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
+            {field:'dx',title:'电芯条码'},
+            {field:'rl',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
+            {field:'nz',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
+            {field:'dy',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
             {field:'ocv4',title:'ocv4'},
-            {field:'volumedifference_range',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
+            {field:'dyc',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
             {field:'result',title:'结果'}
         ]],
         data : dataArr
     });
-}
-
-/* easyui 分页  */
-function pagerFilter(data){
-    if (typeof data.length == 'number' && typeof data.splice == 'function'){	// is array
-        data = {
-            total: data.length,
-            rows: data
+    /*[
+        {
+            dx : "",
+            rl : "",
+            nz : "",
+            dy : "",
+            ocv4 : "",
+            dyc : "",
+            result : "",
         }
-    }
-    var dg = $(this);
-    var opts = dg.datagrid('options');
-    var pager = dg.datagrid('getPager');
-    pager.pagination({
-        onSelectPage:function(pageNum, pageSize){
-            opts.pageNumber = pageNum;
-            opts.pageSize = pageSize;
-            pager.pagination('refresh',{
-                pageNumber:pageNum,
-                pageSize:pageSize
-            });
-            dg.datagrid('loadData',data);
-        }
-    });
-    if (!data.originalRows){
-        data.originalRows = (data.rows);
-    }
-    var start = (opts.pageNumber-1)*parseInt(opts.pageSize);
-    var end = start + parseInt(opts.pageSize);
-    data.rows = (data.originalRows.slice(start, end));
-    return data;
+    ]*/
 }
 
 function filltable(){

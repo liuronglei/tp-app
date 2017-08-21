@@ -6,8 +6,8 @@ const getValue_plc = {
         for(var i = 0; i < dataArr_addNG.length; i++){
             var dataArr = [dataArr_addNG[i].dx,dataArr_addNG[i].sbh,dataArr_addNG[i].czrygh,dataArr_addNG[i].scgd,dataArr_addNG[i].pc,dataArr_addNG[i].dy
                 ,dataArr_addNG[i].dy_min,dataArr_addNG[i].dy_max,dataArr_addNG[i].nz,dataArr_addNG[i].nz_min,dataArr_addNG[i].dy_max,dataArr_addNG[i].rl,
-                dataArr_addNG[i].rl_min, dataArr_addNG[i].dy_max,dataArr_addNG[i].ocv4,dataArr_addNG[i].dyc_min,dataArr_addNG[i].dyc_max,dataArr_addNG[i].dj,
-                dataArr_addNG[i].dj_min,dataArr_addNG[i].dj_max,dataArr_addNG[i].zxs,date,dataArr_addNG[i].ng_reason,"1"];
+                dataArr_addNG[i].rl_min, dataArr_addNG[i].dy_max,dataArr_addNG[i].ocv4,dataArr_addNG[i].dyc,dataArr_addNG[i].dyc_min,dataArr_addNG[i].dyc_max,
+                dataArr_addNG[i].dj, dataArr_addNG[i].dj_min,dataArr_addNG[i].dj_max,date,dataArr_addNG[i].ng_reason,"1"];
             choose_dx.add_ng(dataArr);
         }
     },
@@ -19,7 +19,7 @@ const getValue_plc = {
                 dataArr_addNoraml[i].xh, dataArr_addNoraml[i].dx, dataArr_addNoraml[i].sbh, dataArr_addNoraml[i].czrygh, dataArr_addNoraml[i].scgd,
                 dataArr_addNoraml[i].pc, dataArr_addNoraml[i].dy, dataArr_addNoraml[i].dy_min, dataArr_addNoraml[i].dy_max, dataArr_addNoraml[i].nz,
                 dataArr_addNoraml[i].nz_min, dataArr_addNoraml[i].dy_max, dataArr_addNoraml[i].rl, dataArr_addNoraml[i].rl_min, dataArr_addNoraml[i].dy_max,
-                dataArr_addNoraml[i].ocv4, dataArr_addNoraml[i].dyc_min, dataArr_addNoraml[i].dyc_max, dataArr_addNoraml[i].dj, dataArr_addNoraml[i].dj_min,
+                dataArr_addNoraml[i].ocv4, dataArr_addNoraml[i].dyc, dataArr_addNoraml[i].dyc_min, dataArr_addNoraml[i].dyc_max, dataArr_addNoraml[i].dj, dataArr_addNoraml[i].dj_min,
                 dataArr_addNoraml[i].dj_max, dataArr_addNoraml[i].zxs, date
             ];
             choose_dx.add_normal(dataArr);
