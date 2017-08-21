@@ -1,5 +1,4 @@
 var soap = require('soap');
-var url = 'http://221.178.135.214:8099/Service1.asmx?wsdl';
 
 const webService = {
     check : function (url,json,callback) {
@@ -9,8 +8,8 @@ const webService = {
                     console.log(err);
                 } else {
                     console.log(result);
-                    var result_ret = JSON.parse(result.MESWebService0Result).ret;
-                    callback(result_ret);
+                    var resultObj = JSON.parse(result.MESWebService0Result);
+                    callback(resultObj);
                 }
             });
         })
@@ -22,8 +21,8 @@ const webService = {
                     console.log(err);
                 } else {
                     console.log(result);
-                    var result_ret = JSON.parse(result.MESWebService0Result).ret;
-                    callback(result_ret);
+                    var resultObj = JSON.parse(result.MESWebService0Result);
+                    callback(resultObj);
                 }
             });
         })

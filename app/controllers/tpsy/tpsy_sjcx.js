@@ -24,10 +24,7 @@ function comboboxInit() {
     });
     m_sjcx.query_select_dqbatch(function (err,result) {
         if(err) throw err;
-        var defaultValue = "没有当前批次的NG数据";
-        if(result.recordset[0] != null && result.recordset[0] != "") {
-            defaultValue = result.recordset[0].batch;
-        }
+        var defaultValue = result.recordset[0].batch;
         $('#combobox_pc').combobox({value: defaultValue});
     });
     m_sjcx.query_selectAll_ng_reason(function (err,result) {

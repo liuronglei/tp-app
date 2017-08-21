@@ -47,6 +47,9 @@ const c_page = {
             callBack(err,dataArr_filltable);
         });
     },
+    boxError : function() {
+        ipc.send('boxError-ping-event');
+    },
     /*
      * 打开万克LOGO指定的页面
      */
