@@ -144,12 +144,12 @@ function judgeNormal() {
             StarData : "",
             EndData : "",
             InDataSet :[{
-                RltBillNo : hashMap.get("scgd"),                //数据库查询
-                CaseNo : arg,                            //扫码得到
-                CapSubGrade : hashMap.get("rlfw"),
-                PdtGrade : "",
-                MachineNo : hashMap.get("sbh"),
-                WorkerNo : hashMap.get("czrygh")
+                RltBillNo :hashMap.get("scgd"),   //"SCTZD104579",               //数据库查询 生产工单
+                CaseNo : arg,   //"01491377",                             //扫码得到 箱号
+                CapSubGrade : hashMap.get("rlfw"), //"9",                   //数据库查询 容量档
+                PdtGrade : "",  //"A5X",                  //数据库查询 档位，暂时制空
+                MachineNo :hashMap.get("sbh"),   //"4#",            //数据库查询 设备号
+                WorkerNo : hashMap.get("czrygh")    //"8888"                //数据库查询 操作人员工号
             }]
         };
         var json = JSON.stringify(Json_Check);
@@ -193,7 +193,7 @@ function sealing_dispose() {
                         MachineNo: upload.equiptmentnum,  //机台号
                         WorkerNo: upload.workernum,  // 工号
                         Qty: upload.binningnum,          //数量
-                        LevelGrade: upload.grade,         //档位 对应等级
+                        LevelGrade: "",        //档位 对应等级
                         CapSubGrade: upload.volume_min+"-"+upload.volume_max,      //容量档 对应容量范围
                         Voltage: upload.voltage_min+"-"+upload.voltage_max,  //电压
                         InterResist: upload.resistance_min+"-"+upload.resistance_max,       //内阻
@@ -203,12 +203,11 @@ function sealing_dispose() {
                     }]
                 };
                 var json = JSON.stringify(Json_Upload);
-                webService.upload(url,json,function (err,result) {
-                    if (err) throw  err;
-                    if(result != 0){
-                        alert(result.Msg)
+                webService.upload(url,json,function (result) {
+                    if(result.ret == 0){
+                        alert("上传成功")
                     }
-                    else { alert("上传成功") }
+                    else { alert("上传失败"+"错误信息："+result.Msg) }
                 });
             }
         });
@@ -229,17 +228,6 @@ function dataGrid_Init(dataArr) {
         ]],
         data : dataArr
     });
-    /*[
-        {
-            dx : "",
-            rl : "",
-            nz : "",
-            dy : "",
-            ocv4 : "",
-            dyc : "",
-            result : "",
-        }
-    ]*/
 }
 
 function filltable(){
