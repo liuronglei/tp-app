@@ -64,22 +64,6 @@ const message_base_read_flag = [
     0x90,//软元件代码 18
     0x01,0x00,//软元件点数 19-20
 ];
-/*
- byte[] readData = new byte[]{
- (byte)0x50,(byte)0x00,//副帧头
- (byte)0x00,//网络编号
- (byte)0xFF,//PC编号
- (byte)0xFF,(byte)0x03,//请求目标模块
- (byte)0x00,//请求目标多点站号
- (byte)0x0C,(byte)0x00,//请求数据长
- (byte)0x10,(byte)0x00,//保留
- (byte)0x01,(byte)0x04,//指令
- (byte)0x00,(byte)0x00,//子指令
- (byte)0xA0,(byte)0x0F,(byte)0x00,//起始软元件编号   D4000-D4067
- (byte)0xA8,//软元件代码
- (byte)0x44,(byte)0x00,//软元件点数 ,  68个字
- };
- */
 const len_1=7;//数据长度位置
 const len_2=8;//数据长度位置
 const area=18;//区域
@@ -91,22 +75,28 @@ const read_bit_2=20;//数量2
 const write_bit=21;
 
 const plc = {
+    //开始监听
     start: function() {
         plc_process.dataReceive();
     },
+    //获得所有标记位内容
     readAllFlag : function(callBack) {
         callBack_allFlag = callBack;
         plc_process.read("D", property.ADDRESS_FLAG, 6);
     },
+    //外观扫码标记位置为已完成（PLC获取该标记位后，读取由上位机写入的OCV数据）
     finishBarCodeFlag : function() {
         plc_process.writeByte("D", property.ADDRESS_FLAG, 2, [0x02,0x00,0x00,0x00]);
     },
+    //电性能检测完成标记位重置
     resetCheckFlag : function() {
-        plc_process.writeFloat("D", property.ADDRESS_FLAG + 2, 2, [0]);
+        plc_process.writeByte("D", property.ADDRESS_FLAG + 2, 2, [0x00,0x00,0x00,0x00]);
     },
+    //封箱完成标记位重置
     resetBoxFlag : function() {
-        plc_process.writeFloat("D", property.ADDRESS_FLAG + 4, 2, [0]);
+        plc_process.writeByte("D", property.ADDRESS_FLAG + 4, 2, [0x00,0x00,0x00,0x00]);
     },
+    //系统参数写入
     setCssz : function(csszHashMap) {
         var rlfw = csszHashMap.get('rlfw');
         var rlfwArr = rlfw.split(";");
@@ -129,6 +119,7 @@ const plc = {
         plc_process.writeInt("D", property.ADDRESS_ZCZXS, 2, parseInt(zxs)); //正常装箱数
         plc_process.writeByte("D", property.ADDRESS_SJSX, 2, sjsx == "1" ? [0x01,0x00,0x00,0x00] : [0x00,0x00,0x00,0x00]); //OCV勾选
     },
+    //写入电芯OCV数据
     writeBarInfo : function(rlArr,ocv4Arr) {
         var data = new Array();
         for(var i=0; i<rlArr.length; i++) {
@@ -139,6 +130,7 @@ const plc = {
         }
         plc_process.writeFloat("D", property.ADDRESS_OCVDATA, 48, data); //OCV检测数据
     },
+    //获取电性能检测结果数据
     readCheckInfo : function(callBack) {
         callBack_checkFlag = callBack;
         plc_process.read("D", property.ADDRESS_CHECKDATA, 116);
@@ -216,11 +208,16 @@ function setBit(len,arr) {
 }
 
 const plc_process = {
+    //PLC数据接收
     dataReceive : function() {
         _client.strartListen(function(hexStr) {
-            var index_fix = 28; //报文返回内容起始下标值
+            var index_fix = 22; //报文返回内容起始下标值
             var len = 8;        //双字16进制位数
             var single_len = 4; //单字16进制位数
+            if(hexStr.substring(18,22) != "0000") {
+                //正常返回报文第10、11个字都必须为0，不然就是异常
+                return;
+            }
             //获取标记位的返回
             if(hexStr.length == index_fix + len*3) {
                 var flagArr = [false, false, false];
@@ -288,6 +285,7 @@ const plc_process = {
             }
         });
     },
+    //PLC数据写入（字节数组）
     writeByte : function(Area,Address,len,data) {
         var set = message_base_write.slice(0);
         set[area] = getArea(Area);
@@ -300,6 +298,7 @@ const plc_process = {
         console.log(new Buffer(set));
         _client.write(set);
     },
+    //PLC数据写入（浮点数）
     writeFloat : function(Area,Address,len,data) {
         var set = message_base_write.slice(0);
         set[area] = getArea(Area);
@@ -316,6 +315,7 @@ const plc_process = {
         console.log(new Buffer(set));
         _client.write(set);
     },
+    //PLC数据写入（整数）
     writeInt : function(Area,Address,len,data) {
         var set = message_base_write.slice(0);
         set[area] = getArea(Area);
@@ -332,6 +332,7 @@ const plc_process = {
         console.log(new Buffer(set));
         _client.write(set);
     },
+    //PLC数据读取（发送读取数据的报文，具体数据获取在dataReceive方法中定义）
     read : function(Area,Address,len) {
         var read = message_base_read.slice(0);
         read[area] = getArea(Area);
@@ -340,15 +341,11 @@ const plc_process = {
         console.log("sendData:" + new Buffer(read).toString('hex'));
         _client.write(read);
     },
+    /* M区域数据目前没有使用，先注释掉
     getFlag : function(Area,Address,len,callBack) {
         var read = message_base_read_flag.slice(0);  //克隆报文
         read[area] = getArea(Area);
         setAddress(Address, read);
-        /*
-         for(var i=0;i<read.length;i++){
-         console.log((read[i]&0xFF).toString(16));
-         }
-         */
         console.log('getBarCodeFlag:');
         console.log(new Buffer(read));
         _client.write(read);
@@ -365,6 +362,7 @@ const plc_process = {
         }
         _client.write(set);
     }
+    */
 }
 /***********************客户端相关方法************************/
 var client= new net.Socket();
@@ -382,79 +380,19 @@ client.on('close',function(){
 });
 var clientSyn = false;
 const _client = {
+    //开启监听
     strartListen : function(callBack) {
         client.on('data',function(data){
             clientSyn = false;
-            var receiveData = new Buffer(data).toString('hex');
+            var receiveData = dataformat.report2hex(new Buffer(data).toString('hex'));
             console.log("receiveData:" + receiveData);
             callBack(receiveData);
         });
     },
-    receiveFlag : function(len,callBack) {
-        client.on('data',function(data){
-            /*
-            console.log("receiveFlag:");
-            console.log(new Buffer(data));
-            console.log(new Buffer(data).toString('hex'));
-            var response = dataformat.hex2bytes(data);
-            console.log(response);
-            //var response = new Array(11+len);
-             //for(var i=0;i<response.length;i++){
-             //console.log((response[i]&0xFF).toString(16));
-             //}
-            var hex = (response[11]&0xFF).toString(16);
-            if(hex.length<2){
-                hex="0"+hex;
-            }
-            */
-            var receiveData = new Buffer(data).toString('hex');
-            console.log("receive flag init:" + receiveData);
-            var hex = receiveData.substring(receiveData.length-2, receiveData.length);
-            var flag = false;
-            if(hex == "10" || hex == "11") {
-                flag = true;
-            } else if(hex == "00" || hex == "01") {
-                flag = false;
-            } else {
-                console.log("readFlag Error！！！！");
-                flag = false;
-            }
-            console.log("receive flag reset:" + hex);
-            callBack(flag);
-        });
-    },
-    receiveInfo : function(len,callBack) {
-        client.on('data',function(data){
-            /*
-            console.log(data);
-            var hex = new Array(len*2);
-            var response = new Array(11+len*2);
-            response = data;
-            var response_frame = new Array(len*2);
-            for(var i=0;i<response.length;i++){
-                console.log((response[i]&0xFF).toString(16));
-            }
-            for(var i=11;i<response.length;i++){
-                response_frame[i-11]=response[i];
-                hex[i-11]=(response_frame[i-11]&0xFF).toString(16);
-                if(hex[i-11].length<2){
-                    hex[i-11]="0"+hex[i-11];
-                }
-            }
-            */
-            var receiveData = new Buffer(data).toString('hex');
-            console.log('recv data init:'+ receiveData);
-            var hex = receiveData.substring(receiveData.length-len*4, receiveData.length);
-            var byteArr = dataformat.hex2bytes(hex);
-            var retrunArr = new Array(len);
-            for(var i=0; i<len; i++) {
-                retrunArr[i] = dataformat.bytes2float(byteArr.slice(i*4,(i+1)*4));
-            }
-            console.log('recv data reset:'+ retrunArr);
-            callBack(retrunArr);
-        });
-    },
+    //写入数据
     write : function(data,count) {
+        //为避免PLC还未返回数据，已经有下次请求过来，故使用clientSyn标志
+        //如果标记位为true，说明正在获取数据，等待50ms再执行，20次后若还是在等待，则强行执行
         if(clientSyn) {
             if(typeof count == "undefined") {
                 count = 0;

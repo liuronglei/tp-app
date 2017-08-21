@@ -3,6 +3,16 @@
  */
 
 const dataformat = {
+    report2hex : function(value) {
+        var byteArr = dataformat.hex2bytes(value);
+        for(var i=byteArr.length-1; i>=0; i--) {
+            if(byteArr[i] == 195) {
+                byteArr.splice(i,1);
+                byteArr[i] +=64;
+            }
+        }
+        return dataformat.bytes2hex(byteArr);
+    },
     //十六进制字符串转字节数组
     hex2bytes : function (str){
         var pos = 0;
