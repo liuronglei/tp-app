@@ -5,7 +5,7 @@ const m_choose = {
         query('merge into d_cell_ng as t1\n' +
             'using (select \''+dataArr.dx+'\' as cellnum,\''+dataArr.sbh+'\' as equiptmentnum,\''+dataArr.czrygh+'\' as workernum,\''+dataArr.scgd+'\' as productionorder,\''+dataArr.pc+'\' as batch,'+dataArr.dy+' as voltage,'+dataArr.dy_min+' as voltage_min,\n' +
             '\t'+dataArr.dy_max+' as voltage_max,'+dataArr.nz+' as resistance,'+dataArr.nz_min+' as resistance_min,'+dataArr.nz_max+' as resistance_max,'+dataArr.rl+' as volume, '+dataArr.rl_min+' as volume_min,'+dataArr.rl_max+' as volume_max,\n' +
-            '\t '+dataArr.ocv4+' as ocv4,\''+dataArr.dyc+'\' as voltagedifference,'+dataArr.dyc_min+' as voltagedifference_min,'+dataArr.dyc_max+' as voltagedifference_max, \''+dataArr.dj+'\' as grade,\''+dataArr.dj_min+'\' as grade_min, \''+dataArr.dj_max+'\' as grade_max,\''+dataArr.creattime+'\' as creattime,\''+dataArr.ng_reason+'\'as ng_reason,\n' +
+            '\t '+dataArr.ocv4+' as ocv4,'+dataArr.dyc+' as voltagedifference,'+dataArr.dyc_min+' as voltagedifference_min,'+dataArr.dyc_max+' as voltagedifference_max, \''+dataArr.dj+'\' as grade,\''+dataArr.dj_min+'\' as grade_min, \''+dataArr.dj_max+'\' as grade_max,\''+dataArr.creattime+'\' as creattime,\''+dataArr.ng_reason+'\'as ng_reason,\n' +
             '\tCASE when (select top 1 checknum from d_cell_ng where cellnum=\''+dataArr.dx+'\') is null then 1 \n' +
             '\telse (select top 1 checknum+1 from d_cell_ng where cellnum=\''+dataArr.dx+'\') end as checknum) as t2\n' +
             'on t1.cellnum=t2.cellnum\n' +
