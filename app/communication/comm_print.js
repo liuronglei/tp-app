@@ -61,7 +61,7 @@ const printData = ''
     //内容
     + 'TEXT 230,' + (lineStart + 18) + ',"3",0,1,1,"data_sxdh"\n'
     + 'TEXT 230,' + (lineStart + lineStep + 18) + ',"3",0,1,1,"data_rld"\n'
-    + 'TEXT 230,' + (lineStart + 2*lineStep + 18) + ',"3",0,1,1,"data_dw"\n'
+    + 'TEXT 230,' + (lineStart + 2*lineStep + 18) + ',"3",0,1,1,"data_rlfw"\n'
     + 'TEXT 230,' + (lineStart + 3*lineStep + 18) + ',"3",0,1,1,"data_dyfw"\n'
     + 'TEXT 230,' + (lineStart + 4*lineStep + 18) + ',"3",0,1,1,"data_nzfw"\n'
     + 'TEXT 230,' + (lineStart + 5*lineStep + 18) + ',"3",0,1,1,"data_sl"\n'

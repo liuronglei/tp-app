@@ -45,7 +45,7 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+//app.on('ready', createWindow)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -117,8 +117,9 @@ function updateCssz() {
         if(hashmap.get("sjsx") == "1" && (typeof global.sharedObject.excelMap == "undefined" || global.sharedObject.excelMap == null)) {
             saveOcvData();
         }
-        //参数设置完成后，启动PLC标记位监听
+        //参数设置完成后，启动PLC标记位监听，并打开窗口
         schedulePLC(200);
+        createWindow();
     });
 }
 
@@ -337,7 +338,14 @@ function boxProcess() {
         global.sharedObject.normalBarArr = newBarArr;
         send_sealing(dataArr);
         //打印标签
-        print.write(print.getData_TP({sxdh:scgd, rld:rlfwStr.replace(";","-"), dw:"", dyfw:dyfwStr.replace(";","-"), nzfw:nzfwStr.replace(";","-"), sl:zxs, tm:xh}));
+        print.write(print.getData_TP({
+            sxdh:scgd,
+            rlfw:rlfwStr.replace(";","-"),
+            rld:"",
+            dyfw:dyfwStr.replace(";","-"),
+            nzfw:nzfwStr.replace(";","-"),
+            sl:zxs,
+            tm:xh}));
         //重置标记位
         plc.resetBoxFlag();
     });
