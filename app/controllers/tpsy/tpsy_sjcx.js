@@ -23,37 +23,21 @@ function comboboxInit() {
     });
     m_sjcx.query_select_dqbatch(function (err,result) {
         if(err) throw err;
-        var defaultValue = result.recordset[0].batch;
+        var defaultValue = "";
+        if(result.recordset != null && result.recordset.length > 0 && typeof result.recordset[0].batch != "undefined"){
+            defaultValue = result.recordset[0].batch;
+        }
         $('#combobox_pc').combobox({value: defaultValue});
     });
-    m_sjcx.query_selectAll_ng_reason(function (err,result) {
-        if (err) throw err;
-        var data1 = [];
-        for (var i = 0; i < result.recordset.length; i++) {
-            var value = {};
-            var record = result.recordset[i].ng_reason;
-            if(record == "NG1"){
-                value = {value: record, text: "扫码不良"};
-            }
-            if(record == "NG2"){
-                value = {value: record, text: "电压异常"};
-            }
-            if(record == "NG3"){
-                value = {value: record, text: "内阻异常"};
-            }
-            if(record == "NG4"){
-                value = {value: record, text: "容量信息不匹配"};
-            }
-            if(record == "NG5"){
-                value = {value: record, text: "△V不良"};
-            }
-            if(record == "NG6"){
-                value = {value: record, text: "电压内阻未测试到"};
-            }
-            data1.push(value);
-        }
-        $('#combobox_ngyy').combobox("loadData",data1);
-    });
+    var data1 = [
+        {value: "NG1", text: "扫码不良"},
+        {value: "NG2", text: "电压异常"},
+        {value: "NG3", text: "内阻异常"},
+        {value: "NG4", text: "容量信息不匹配"},
+        {value: "NG5", text: "△V不良"},
+        {value: "NG6", text: "电压内阻未测试到"}
+    ];
+    $('#combobox_ngyy').combobox("loadData",data1);
     var batch = csszMap.get("pc");
     m_sjcx.query_selectBatch(batch,function (error,result) {
         if(error){
@@ -68,13 +52,15 @@ function comboboxInit() {
 function select_All(){
     var batch =$('#combobox_pc').combobox('getValue');
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
-    m_sjcx.query_selectBatch(batch,function (error,result) {
-        if(error){
-            console.log(error);
-            return;
-        }
-        dataGrid_Init(result.recordset);
-    });
+    if(batch !="" &&ng_reason == ""){
+        m_sjcx.query_selectBatch(batch,function (error,result) {
+            if(error){
+                console.log(error);
+                return;
+            }
+            dataGrid_Init(result.recordset);
+        });
+    }
     if(batch != "" && ng_reason != "") {
         batch =$('#combobox_pc').combobox('getValue');
         m_sjcx.query_select(ng_reason,batch,function (error,result) {

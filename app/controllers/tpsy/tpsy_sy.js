@@ -82,7 +82,7 @@ function sycsInit() {
                 return;
             }
             for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_dxsl').text(result.recordset[i].length);
+                $('#sy_ngdxsl').text(result.recordset[i].length);
             }
         });
         m_tpsy.query_normalLength(function (err,result) {
@@ -91,7 +91,7 @@ function sycsInit() {
                 return;
             }
             for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_ngdxsl').text(result.recordset[i].length);
+                $('#sy_dxsl').text(result.recordset[i].length);
             }
         });
     });
@@ -143,12 +143,30 @@ function judgeNormal() {
 function add_NG_DB() {
     c_page.regValue_ng(function (dataArr_addNG) {
         getValue_plc.add_NG(dataArr_addNG);
+        m_tpsy.query_ngLength(function (err,result) {
+            if(err){
+                console.log(err);
+                return;
+            }
+            for(var i = 0;i < result.recordset.length; i++){
+                $('#sy_ngdxsl').text(result.recordset[i].length);
+            }
+        });
     });
 }
 
 function sealing_dispose() {
     c_page.regValue_casenum(function (dataArr_addNoraml) {
         getValue_plc.add_normal(dataArr_addNoraml);
+        m_tpsy.query_normalLength(function (err,result) {
+            if(err){
+                console.log(err);
+                return;
+            }
+            for(var i = 0;i < result.recordset.length; i++){
+                $('#sy_dxsl').text(result.recordset[i].length);
+            }
+        });
         getValue_plc.select_normal(function (dataArr) {
             var dataArr_upload = dataArr;
             for(var i = 0; i < dataArr_upload.length; i++){
@@ -206,24 +224,6 @@ function filltable(){
     /* dataArr格式 ： [{},{},...] 对象数组  */
     c_page.regFilltable(function (dataArr) {
         dataGrid_Init(dataArr);
-        m_tpsy.query_ngLength(function (err,result) {
-            if(err){
-                console.log(err);
-                return;
-            }
-            for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_dxsl').text(result.recordset[i].length);
-            }
-        });
-        m_tpsy.query_normalLength(function (err,result) {
-            if(err){
-                console.log(err);
-                return;
-            }
-            for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_ngdxsl').text(result.recordset[i].length);
-            }
-        });
     });
 }
 
