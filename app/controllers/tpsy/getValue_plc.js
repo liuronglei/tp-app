@@ -52,6 +52,3 @@ const getValue_plc = {
 };
 
 module.exports = getValue_plc;
-getValue_plc.select_casenum(function (result) {
-    console.log(result);
-})
