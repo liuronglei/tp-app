@@ -18,7 +18,6 @@ function comboboxInit() {
             var record = result.recordset[i].batch;
             var value = {value: record ,text: record};
             data.push(value);
-
         }
         $('#combobox_pc').combobox("loadData",data);
     });

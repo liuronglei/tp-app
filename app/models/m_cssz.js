@@ -18,7 +18,7 @@ const m_cssz = {
         });
     },
     query_csszInit :function (callback) {
-        query('select * from p_cssz',callback)
+        query('select * from p_cssz  order by sn ',callback)
     }
 };
 

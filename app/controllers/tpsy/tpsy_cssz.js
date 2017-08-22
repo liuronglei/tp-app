@@ -114,10 +114,12 @@ function isChecked(){
         $('#dycfw').css({color:"black"});
         $('#rlfw').css({color:"black"});
         $('#djfw').css({color:"black"});
+        $('#rld').css({color:"black"});
     }
     else{
         $('#dycfw').css({color:"#ddd"});
         $('#rlfw').css({color:"#ddd"});
         $('#djfw').css({color:"#ddd"});
+        $('#rld').css({color:"black"});
     }
 }

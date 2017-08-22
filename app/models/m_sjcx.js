@@ -3,20 +3,20 @@ var query = require("../utils/sqlserver");
 const m_sjcx = {
     query_selectBatch : function (batch,callback) {
         query('select cellnum,equiptmentnum,workernum,productionorder,batch,\n' +
-            'voltage,resistance,volume,ocv4,volumedifference,grade,\n' +
+            'voltage,resistance,volume,ocv4,voltagedifference,grade,\n' +
             'Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng where batch =\''+batch+'\'',callback);
     },
     query_select : function (ng_reason,batch,callback) {
         query('select cellnum,equiptmentnum,workernum,productionorder,batch,\n' +
-            'voltage,resistance,volume,ocv4,volumedifference,grade,\n' +
+            'voltage,resistance,volume,ocv4,voltagedifference,grade,\n' +
             'Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng \n' +
             'where batch =\''+batch+'\' and ng_reason like \'%'+ng_reason+'%\'',callback);
     },
     query_selectAll_batch :function (callback) {
-        query('select batch from d_cell_ng',callback);
+        query('select batch from d_cell_ng group by batch',callback);
     },
     query_selectAll_ng_reason :function (callback) {
-        query('select ng_reason from d_cell_ng',callback);
+        query('select ng_reason from d_cell_ng group by ng_reason',callback);
     },
     query_select_dqbatch : function (callback) {
         query('select batch from d_cell_ng where batch = (select value from p_cssz where name = \'pc\')',callback);

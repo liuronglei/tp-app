@@ -31,7 +31,7 @@ function CreatWindows_cssz() {
         maximizable:false,
         closable:true,
         width:440,
-        height:600,
+        height:615,
         modal:false,
         draggable:true
     });
