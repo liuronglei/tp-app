@@ -160,9 +160,6 @@ function setAddress(address,read) {
         tempaddress="0"+tempaddress;
     }
     var temp = dataformat.hex2bytes(tempaddress);
-    for(var i=0;i<temp.length;i++){
-        console.log("current address:"+temp[i].toString(16));
-    }
     if(temp.length==1){
         read[address_1]=temp[0];
     }
@@ -295,7 +292,6 @@ const plc_process = {
         for(var i=0; i<data.length; i++) {
             set[set.length]=data[i];
         }
-        console.log(new Buffer(set));
         _client.write(set);
     },
     //PLC数据写入（浮点数）
@@ -312,7 +308,6 @@ const plc_process = {
             set[set.length]=data_byte[2];
             set[set.length]=data_byte[3];
         }
-        console.log(new Buffer(set));
         _client.write(set);
     },
     //PLC数据写入（整数）
@@ -323,13 +318,10 @@ const plc_process = {
         setLength(12 + len*2,set);
         setBit(len, set);
         var dataByteArr = dataformat.hex2bytes(dataformat.int2hex(data));
-        console.log(dataByteArr);
-        console.log(data);
         set[set.length]=dataByteArr[0];
         set[set.length]=dataByteArr.length>1 ? dataByteArr[1] : 0x00;
         set[set.length]=dataByteArr.length>2 ? dataByteArr[2] : 0x00;
         set[set.length]=dataByteArr.length>3 ? dataByteArr[3] : 0x00;
-        console.log(new Buffer(set));
         _client.write(set);
     },
     //PLC数据读取（发送读取数据的报文，具体数据获取在dataReceive方法中定义）
@@ -338,7 +330,6 @@ const plc_process = {
         read[area] = getArea(Area);
         setAddress(Address, read);
         setBit(len, read);
-        console.log("sendData:" + new Buffer(read).toString('hex'));
         _client.write(read);
     },
     /* M区域数据目前没有使用，先注释掉
@@ -384,8 +375,9 @@ const _client = {
     strartListen : function(callBack) {
         client.on('data',function(data){
             clientSyn = false;
+            //console.log("receiveData_old:" + new Buffer(data).toString('hex'));
             var receiveData = dataformat.report2hex(new Buffer(data).toString('hex'));
-            console.log("receiveData:" + receiveData);
+            //console.log("receiveData_new:" + receiveData);
             callBack(receiveData);
         });
     },
@@ -404,6 +396,7 @@ const _client = {
             }
         } else {
             clientSyn = true;
+            //console.log("sendData:" + new Buffer(read).toString('hex'));
             client.write(new Buffer(data));
         }
     }

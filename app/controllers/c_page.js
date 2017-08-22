@@ -32,19 +32,19 @@ const c_page = {
     updateCssz : function () {
         ipc.send('updateCssz-ping-event');
     },
-    regValue_ng : function (err,callBack) {
+    regValue_ng : function (callBack) {
         ipc.on('add_ng-pong-event', function(event,dataArr_addNG) {
-            callBack(err,dataArr_addNG);
+            callBack(dataArr_addNG);
         });
     },
-    regValue_casenum :function (err,callBack) {
+    regValue_casenum :function (callBack) {
         ipc.on('sealing_dispose-pong-event', function(event,dataArr_addNoraml) {
-            callBack(err,dataArr_addNoraml);
+            callBack(dataArr_addNoraml);
         });
     },
-    regFilltable : function (err,callback) {
+    regFilltable : function (callBack) {
         ipc.on('filltable-pong-event', function(event,dataArr_filltable) {
-            callBack(err,dataArr_filltable);
+            callBack(dataArr_filltable);
         });
     },
     boxError : function() {

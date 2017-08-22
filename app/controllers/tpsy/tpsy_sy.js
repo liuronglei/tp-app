@@ -141,15 +141,13 @@ function judgeNormal() {
 }
 
 function add_NG_DB() {
-    c_page.regValue_ng(function (err,dataArr_addNG) {
-        if(err) throw err;
+    c_page.regValue_ng(function (dataArr_addNG) {
         getValue_plc.add_NG(dataArr_addNG);
     });
 }
 
 function sealing_dispose() {
-    c_page.regValue_casenum(function (err,dataArr_addNoraml) {
-        if(err) throw err;
+    c_page.regValue_casenum(function (dataArr_addNoraml) {
         getValue_plc.add_normal(dataArr_addNoraml);
         getValue_plc.select_normal(function (dataArr) {
             var dataArr_upload = dataArr;
@@ -190,7 +188,7 @@ function sealing_dispose() {
 
 /* datagrid 初始化  */
 function dataGrid_Init(dataArr) {
-    $('#ng_table_sy').datagrid({loadFilter:pagerFilter}).datagrid({
+    $('#ng_table_sy').datagrid({
         columns: [[
             {field:'dx',title:'电芯条码'},
             {field:'rl',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},

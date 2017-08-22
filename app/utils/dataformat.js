@@ -9,6 +9,8 @@ const dataformat = {
             if(byteArr[i] == 195) {
                 byteArr.splice(i,1);
                 byteArr[i] +=64;
+            } else if(byteArr[i] == 194) {
+                byteArr.splice(i,1);
             }
         }
         return dataformat.bytes2hex(byteArr);

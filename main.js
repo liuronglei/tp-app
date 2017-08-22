@@ -31,7 +31,7 @@ function createWindow () {
     }))
 
     // Open the DevTools.
-    //win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -117,6 +117,8 @@ function updateCssz() {
         if(hashmap.get("sjsx") == "1" && (typeof global.sharedObject.excelMap == "undefined" || global.sharedObject.excelMap == null)) {
             saveOcvData();
         }
+        //参数设置完成后，启动PLC标记位监听
+        schedulePLC(200);
     });
 }
 
@@ -226,13 +228,22 @@ function checkProcess() {
                 if(checkBarCodeArr[i] == property_plc.BARCODE_FAIL) {
                     ng_reason += "NG1";
                 }
-                if (zztArr[i]) {
-                    if (dyztArr[i]) ng_reason += ";NG2";
-                    if (nzztArr[i]) ng_reason += ";NG3";
-                    if (rlztArr[i]) ng_reason += ";NG4";
-                    if (dycztArr[i]) ng_reason += ";NG5";
+                if(!zztArr[i]) {
+                    if (!dyztArr[i]) ng_reason += ";NG2";
+                    if (!nzztArr[i]) ng_reason += ";NG3";
+                    if (!rlztArr[i]) ng_reason += ";NG4";
+                    if (!dycztArr[i]) ng_reason += ";NG5";
                 }
                 if (ng_reason != "") ng_reason = ng_reason.substring(1);
+                var barInfo = excelMap.get(checkBarCodeArr[i]);
+                var rl = "null";
+                var ocv4 = "null";
+                var dyc = "null";
+                if(barInfo != null && csszMap.get("sjsx") == "1") {
+                    rl = barInfo[1];
+                    ocv4 = (parseFloat(barInfo[2])/1000).toFixed(3);
+                    dyc = (parseFloat(barInfo[2])/1000-dyArr[i]).toFixed(3);
+                }
                 //开始组建NG和正常列表
                 var barObj = {
                     sbh: csszMap.get("sbh"),
@@ -240,17 +251,17 @@ function checkProcess() {
                     scgd: csszMap.get("scgd"),
                     pc: csszMap.get("pc"),
                     dx: checkBarCodeArr[i],
-                    dy: dyArr[i],
+                    dy: dyArr[i].toFixed(3),
                     dy_min: dyfwArr[0],
                     dy_max: dyfwArr[1],
-                    nz: nzArr[i],
+                    nz: nzArr[i].toFixed(3),
                     nz_min: nzfwArr[0],
                     nz_max: nzfwArr[1],
-                    rl : csszMap.get("sjsx") != "1" ? "null" : excelMap.get(checkBarCodeArr[i])[1],
+                    rl : rl,
                     rl_min: csszMap.get("sjsx") != "1" ? "null" : rlfwArr[0],
                     rl_max: csszMap.get("sjsx") != "1" ? "null" : rlfwArr[1],
-                    ocv4 : csszMap.get("sjsx") != "1" ? "null" : parseFloat(excelMap.get(checkBarCodeArr[i])[2])/1000,
-                    dyc: csszMap.get("sjsx") != "1" ? "null" : (parseFloat(excelMap.get(checkBarCodeArr[i])[2])/1000-dy[i]),
+                    ocv4 : ocv4,
+                    dyc: dyc,
                     dyc_min: dycfwArr[0],
                     dyc_max: dycfwArr[1],
                     dj: "null",
@@ -267,19 +278,23 @@ function checkProcess() {
                 //开始组建filltable列表
                 var fillObj = {
                     dx: checkBarCodeArr[i],
-                    rl: csszMap.get("sjsx") != "1" ? "null" : excelMap.get(checkBarCodeArr[i])[1],
-                    nz: nzArr[i],
-                    dy: dyArr[i],
-                    ocv4: csszMap.get("sjsx") != "1" ? "null" : parseFloat(excelMap.get(checkBarCodeArr[i])[2])/1000,
-                    dyc: csszMap.get("sjsx") != "1" ? "null" : (parseFloat(excelMap.get(checkBarCodeArr[i])[2])/1000-dy[i]),
+                    rl: rl,
+                    nz: nzArr[i].toFixed(3),
+                    dy: dyArr[i].toFixed(3),
+                    ocv4: ocv4,
+                    dyc: dyc,
                     result : ng_reason == "" ? "OK" : ng_reason,
                 };
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
             }
         }
         //发送填充数据消息
+        console.log("filltable------------:" + dataArr_filltable.length);
+        console.log(dataArr_filltable);
         send_filltable(dataArr_filltable);
         //发送NG数据入库消息
+        console.log("dataArr_ng-----------:" + dataArr_ng.length);
+        console.log(dataArr_ng);
         if(dataArr_ng.length > 0) send_ng(dataArr_ng);
         //重置标记位
         plc.resetCheckFlag();
@@ -300,14 +315,14 @@ function boxProcess() {
         //获得箱号
         var xh_int = parseInt(casenum) + 1;
         var xh = dataformat.fillZero(xh_int, 7);
-        for(var key in dataArr_addNoraml) {
-            dataArr_addNoraml[key].xh = xh;
-        }
         //向界面发送消息，进行处理
         var normalBarArr = global.sharedObject.normalBarArr;
         var dataArr = new Array();
         var newBarArr = new Array();
         var zxsInt = parseInt(zxs);
+        console.log("start----zxs-------:" + zxsInt);
+        console.log("start----xh-------:" + xh);
+        console.log("start----normal-------:" + normalBarArr.length);
         for(var i=0; i<normalBarArr.length; i++) {
             if(i < zxsInt) {
                 normalBarArr[i].xh = xh;
@@ -316,6 +331,9 @@ function boxProcess() {
                 newBarArr[newBarArr.length] = normalBarArr[i];
             }
         }
+        console.log("end----normal-------:" + newBarArr.length);
+        console.log("end----sendArr-------:" + dataArr.length);
+        console.log("end----sendArr-------:" + dataArr);
         global.sharedObject.normalBarArr = newBarArr;
         send_sealing(dataArr);
         //打印标签
@@ -326,9 +344,8 @@ function boxProcess() {
 }
 
 //定时取PLC数据（每200ms），如果发现标记你位被设置，则进行相应处理
-function schedulePLC(time) {
+function schedulePLC(runTime) {
     setInterval(function() {
-//    setTimeout(function() {
         //获取3个标记位
         plc.readAllFlag(function(flagArr){
             //扫码结束标记位
@@ -338,9 +355,8 @@ function schedulePLC(time) {
             //封箱标记位
             if(flagArr[2]) boxProcess();
         });
-    }, time);
+    }, runTime);
 }
-schedulePLC(200);
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
