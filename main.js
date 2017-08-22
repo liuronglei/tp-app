@@ -8,6 +8,7 @@ const fileread = require(path.join(__dirname, 'app/utils/fileread'))
 const dataformat = require(path.join(__dirname,'app/utils/dataformat'));
 var property_ocv = JSON.parse(fs.readFileSync(path.join(__dirname, 'app/config/config_ocv.json'), 'utf8'));
 var property_plc = JSON.parse(fs.readFileSync(path.join(__dirname, 'app/config/config_plc.json'), 'utf8'));
+var isWinOpening = false;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -31,7 +32,7 @@ function createWindow () {
     }))
 
     // Open the DevTools.
-    win.webContents.openDevTools()
+    //win.webContents.openDevTools()
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -119,7 +120,10 @@ function updateCssz() {
         }
         //参数设置完成后，启动PLC标记位监听，并打开窗口
         schedulePLC(200);
-        createWindow();
+        if(!isWinOpening) {
+            isWinOpening = true;
+            createWindow();
+        }
     });
 }
 
@@ -167,9 +171,11 @@ function barCodeProcess() {
         var currentBarCodeArr = new Array();
         for(var i=0; i<results.length; i++) {
             //barCodeArr[barCodeArr.length] = results[i].barcode;
-            checkBarCodeArr[checkBarCodeArr.length] = 'KA2GA18 ' + (i + 101004);
-            currentBarCodeArr[currentBarCodeArr.length] = 'KA2GA18 ' + (i + 101004);
+            //checkBarCodeArr[checkBarCodeArr.length] = 'KA2GA18 ' + (i + 101004);
+            //currentBarCodeArr[currentBarCodeArr.length] = 'KA2GA18 ' + (i + 101004);
             console.log('barCode:' + results[i].barcode);
+            checkBarCodeArr[checkBarCodeArr.length] = results[i].barcode;
+            currentBarCodeArr[currentBarCodeArr.length] = results[i].barcode;
         }
         //如果参数设置勾选了OCV筛选，则需要传递OCV数据给PLC
         var csszMap = global.sharedObject.csszMap;
@@ -216,11 +222,11 @@ function checkProcess() {
             if(checkBarCodeArr[i] == property_plc.BARCODE_MISS) {
                 var fillObj = {
                     dx: checkBarCodeArr[i],
-                    rl: "",
-                    nz: "",
-                    dy: "",
-                    ocv4: "",
-                    dyc: "",
+                    rl: "----",
+                    nz: "----",
+                    dy: "----",
+                    ocv4: "----",
+                    dyc: "----",
                     result : property_plc.BARCODE_MISS
                 };
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
@@ -236,14 +242,16 @@ function checkProcess() {
                     if (!dycztArr[i]) ng_reason += ";NG5";
                 }
                 if (ng_reason != "") ng_reason = ng_reason.substring(1);
-                var barInfo = excelMap.get(checkBarCodeArr[i]);
                 var rl = "null";
                 var ocv4 = "null";
                 var dyc = "null";
-                if(barInfo != null && csszMap.get("sjsx") == "1") {
-                    rl = barInfo[1];
-                    ocv4 = (parseFloat(barInfo[2])/1000).toFixed(3);
-                    dyc = (parseFloat(barInfo[2])/1000-dyArr[i]).toFixed(3);
+                if(csszMap.get("sjsx") == "1") {
+                    var barInfo = excelMap.get(checkBarCodeArr[i]);
+                    if(barInfo != null) {
+                        rl = barInfo[1];
+                        ocv4 = (parseFloat(barInfo[2])/1000).toFixed(3);
+                        dyc = (parseFloat(barInfo[2])/1000-dyArr[i]).toFixed(3);
+                    }
                 }
                 //开始组建NG和正常列表
                 var barObj = {
@@ -279,11 +287,11 @@ function checkProcess() {
                 //开始组建filltable列表
                 var fillObj = {
                     dx: checkBarCodeArr[i],
-                    rl: rl,
+                    rl: rl == "null" ? "----" : rl,
                     nz: nzArr[i].toFixed(3),
                     dy: dyArr[i].toFixed(3),
-                    ocv4: ocv4,
-                    dyc: dyc,
+                    ocv4: ocv4 == "null" ? "----" : ocv4,
+                    dyc: dyc == "null" ? "----" : dyc,
                     result : ng_reason == "" ? "----" : ng_reason,
                 };
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
@@ -311,9 +319,10 @@ function boxProcess() {
         var dyfwStr = csszMap.get("dyfw");
         var nzfwStr = csszMap.get("nzfw");
         var zxs = csszMap.get("zxs");
+        var rld = csszMap.get("rld");
         //获得箱号
         var xh_int = parseInt(casenum) + 1;
-        var xh = dataformat.fillZero(xh_int, 7);
+        var xh = dataformat.fillZero(xh_int, 8);
         //向界面发送消息，进行处理
         var normalBarArr = global.sharedObject.normalBarArr;
         var dataArr = new Array();
@@ -337,7 +346,7 @@ function boxProcess() {
         print.write(print.getData_TP({
             sxdh:scgd,
             rlfw:rlfwStr.replace(";","-"),
-            rld:"",
+            rld:rld,
             dyfw:dyfwStr.replace(";","-"),
             nzfw:nzfwStr.replace(";","-"),
             sl:zxs,
