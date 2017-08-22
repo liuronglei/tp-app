@@ -177,9 +177,9 @@ function sealing_dispose() {
                 var json = JSON.stringify(Json_Upload);
                 webService.upload(url,json,function (result) {
                     if(result.ret == 0){
-                        alert("上传成功")
+                        console.log("case update : sccu")
                     }
-                    else { alert("上传失败"+"错误信息："+result.Msg) }
+                    else { console.log("case update errot:"+result.Msg) }
                 });
             }
         });

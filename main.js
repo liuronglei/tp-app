@@ -284,18 +284,16 @@ function checkProcess() {
                     dy: dyArr[i].toFixed(3),
                     ocv4: ocv4,
                     dyc: dyc,
-                    result : ng_reason == "" ? "OK" : ng_reason,
+                    result : ng_reason == "" ? "----" : ng_reason,
                 };
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
             }
         }
         //发送填充数据消息
         console.log("filltable------------:" + dataArr_filltable.length);
-        console.log(dataArr_filltable);
         send_filltable(dataArr_filltable);
         //发送NG数据入库消息
         console.log("dataArr_ng-----------:" + dataArr_ng.length);
-        console.log(dataArr_ng);
         if(dataArr_ng.length > 0) send_ng(dataArr_ng);
         //重置标记位
         plc.resetCheckFlag();
@@ -321,7 +319,6 @@ function boxProcess() {
         var dataArr = new Array();
         var newBarArr = new Array();
         var zxsInt = parseInt(zxs);
-        console.log("start----zxs-------:" + zxsInt);
         console.log("start----xh-------:" + xh);
         console.log("start----normal-------:" + normalBarArr.length);
         for(var i=0; i<normalBarArr.length; i++) {
@@ -334,7 +331,6 @@ function boxProcess() {
         }
         console.log("end----normal-------:" + newBarArr.length);
         console.log("end----sendArr-------:" + dataArr.length);
-        console.log("end----sendArr-------:" + dataArr);
         global.sharedObject.normalBarArr = newBarArr;
         send_sealing(dataArr);
         //打印标签
