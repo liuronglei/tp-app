@@ -42,6 +42,9 @@ const getValue_plc = {
     },
     select_casenum : function (callback) {
         choose_dx.select_casenum(function (result) {
+            if(result.recordset[0].casenum == ""){
+                callback("0");
+            }
             callback(result.recordset[0].casenum);
         })
     }
