@@ -4,8 +4,8 @@ const getValue_plc = {
         var cxTime = new Date();
         var date=cxTime.getFullYear()+"/"+(cxTime.getMonth()+1)+"/"+cxTime.getDate()+" "+cxTime.getHours()+":"+cxTime.getMinutes()+":"+cxTime.getSeconds();
         for(var i = 0; i < dataArr_addNG.length; i++){
-            var dataArr = [dataArr_addNG[i].dx,dataArr_addNG[i].sbh,dataArr_addNG[i].czrygh,dataArr_addNG[i].scgd,dataArr_addNG[i].pc,dataArr_addNG[i].dy
-                ,dataArr_addNG[i].dy_min,dataArr_addNG[i].dy_max,dataArr_addNG[i].nz,dataArr_addNG[i].nz_min,dataArr_addNG[i].dy_max,dataArr_addNG[i].rl,
+            var dataArr = [dataArr_addNG[i].dx,dataArr_addNG[i].sbh,dataArr_addNG[i].czrygh,dataArr_addNG[i].scgd,dataArr_addNG[i].pc,dataArr_addNG[i].dy,
+                dataArr_addNG[i].dy_min,dataArr_addNG[i].dy_max,dataArr_addNG[i].nz,dataArr_addNG[i].nz_min,dataArr_addNG[i].dy_max,dataArr_addNG[i].rl,
                 dataArr_addNG[i].rl_min, dataArr_addNG[i].dy_max,dataArr_addNG[i].ocv4,dataArr_addNG[i].dyc,dataArr_addNG[i].dyc_min,dataArr_addNG[i].dyc_max,
                 dataArr_addNG[i].dj, dataArr_addNG[i].dj_min,dataArr_addNG[i].dj_max,date,dataArr_addNG[i].ng_reason,"1"];
             choose_dx.add_ng(dataArr);

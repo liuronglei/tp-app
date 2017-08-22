@@ -29,3 +29,31 @@ const choose_dx = {
 };
 
 module.exports = choose_dx;
+/*var dataObj_ng = {
+    sbh: '23122',
+    czrygh: '12313',
+    scgd: '312312',
+    pc: '1',
+    dx: 'KA2GA18 101015',
+    dy: 3.6403000354766846,
+    dy_min: '2.34',
+    dy_max: '2.67',
+    nz: 166.0900115966797,
+    nz_min: '23.45',
+    nz_max: '25.75',
+    rl: '2229',
+    rl_min: '2000',
+    rl_max: '3000',
+    ocv4: 3.6521999999999997,
+    dyc: 0.011899964523315099,
+    dyc_min: '-0.50',
+    dyc_max: '0.51',
+    dj: 'null',
+    dj_min: 'null',
+    dj_max: 'null',
+    zxs: '100',
+    ng_reason: 'NG2;NG3;NG4;NG5',
+    creattime: "2017/8/22 11:37:00",
+};
+var dataArr = [dataObj_ng];
+choose_dx.add_ng(dataArr[0]);*/

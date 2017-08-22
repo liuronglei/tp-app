@@ -8,33 +8,7 @@ var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
 var url = property.URL;
 var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
-/*
-var dataObj_ng = {
-    sbh : "2",
-    czrygh : "null",
-    scgd : "null",
-    pc :　"null",
-    dx : "KA2GA18 101005",
-    dy : "2000",
-    dy_min : "null",
-    dy_max : "null",
-    nz : "100",
-    nz_min : "null",
-    nz_max : "null",
-    rl : "null",
-    rl_min: "null",
-    rl_max: "null",
-    ocv4 : "null",
-    dyc_min : "null",
-    dyc_max : "null",
-    dj : "null",
-    dj_min: "null",
-    dj_max: "null",
-    zxs : "null",
-    ng_reason : "NG1"
-};
-var dataArr = [dataObj_normal];
-*/
+
 $(document).ready(function () {
     sycsInit();
     $('#zc').hide();
