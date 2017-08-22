@@ -30,7 +30,7 @@ const printSet = 'REFERENCE 0,10\n'    //打印起始位置参考坐标，单位
      + 'MOVE\n'
      + '＾Z\n';
 const printTcx_fixed ='D:\>COPY CON LPT1\n'
-    + 'DOWNLOAD F,"PRINT.PCX",10188,^Z\n'
+    + 'DOWNLOAD F,"PRINT.PCX",10542,^Z\n'
     + 'COPY PRINT.PCX /B LPT1\n'
     + 'COPY CON LPT1\n';
 const printData = ''
@@ -74,6 +74,7 @@ function getNowFormatDate() {
     var date = new Date();
     var seperator1 = "-";
     var seperator2 = ":";
+    var year = date.getFullYear();
     var month = date.getMonth() + 1;
     var strDate = date.getDate();
     var hours = date.getHours();
@@ -95,7 +96,7 @@ function getNowFormatDate() {
         seconds = "0" + seconds;
     }
 
-    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+    var currentdate = year + seperator1 + month + seperator1 + strDate
         + " " + hours + seperator2 + minutes + seperator2 + seconds;
     return currentdate;
 }
