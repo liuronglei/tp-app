@@ -247,11 +247,7 @@ const plc_process = {
                 }
                 for(var i=0; i<dyArr.length; i++) {
                     tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE+i), index_fix + len*(property.CHECK_NUM_SINGLE+i+1));
-                    dyArr[i] = dataformat.hex2float(tempStr);
-                }
-                for(var i=0; i<dyArr.length; i++) {
-                    tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE+i), index_fix + len*(property.CHECK_NUM_SINGLE+i+1));
-                    dyArr[i] = dataformat.hex2float(tempStr);
+                    dyArr[i] = Math.abs(dataformat.hex2float(tempStr));
                 }
                 for(var i=0; i<zztArr.length; i++) {
                     tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*i,

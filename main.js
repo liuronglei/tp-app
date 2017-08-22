@@ -45,7 +45,7 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+//app.on('ready', createWindow)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -117,8 +117,9 @@ function updateCssz() {
         if(hashmap.get("sjsx") == "1" && (typeof global.sharedObject.excelMap == "undefined" || global.sharedObject.excelMap == null)) {
             saveOcvData();
         }
-        //参数设置完成后，启动PLC标记位监听
+        //参数设置完成后，启动PLC标记位监听，并打开窗口
         schedulePLC(200);
+        createWindow();
     });
 }
 
@@ -283,18 +284,16 @@ function checkProcess() {
                     dy: dyArr[i].toFixed(3),
                     ocv4: ocv4,
                     dyc: dyc,
-                    result : ng_reason == "" ? "OK" : ng_reason,
+                    result : ng_reason == "" ? "----" : ng_reason,
                 };
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
             }
         }
         //发送填充数据消息
         console.log("filltable------------:" + dataArr_filltable.length);
-        console.log(dataArr_filltable);
         send_filltable(dataArr_filltable);
         //发送NG数据入库消息
         console.log("dataArr_ng-----------:" + dataArr_ng.length);
-        console.log(dataArr_ng);
         if(dataArr_ng.length > 0) send_ng(dataArr_ng);
         //重置标记位
         plc.resetCheckFlag();
@@ -320,7 +319,6 @@ function boxProcess() {
         var dataArr = new Array();
         var newBarArr = new Array();
         var zxsInt = parseInt(zxs);
-        console.log("start----zxs-------:" + zxsInt);
         console.log("start----xh-------:" + xh);
         console.log("start----normal-------:" + normalBarArr.length);
         for(var i=0; i<normalBarArr.length; i++) {
@@ -333,11 +331,17 @@ function boxProcess() {
         }
         console.log("end----normal-------:" + newBarArr.length);
         console.log("end----sendArr-------:" + dataArr.length);
-        console.log("end----sendArr-------:" + dataArr);
         global.sharedObject.normalBarArr = newBarArr;
         send_sealing(dataArr);
         //打印标签
-        print.write(print.getData_TP({sxdh:scgd, rld:rlfwStr.replace(";","-"), dw:"", dyfw:dyfwStr.replace(";","-"), nzfw:nzfwStr.replace(";","-"), sl:zxs, tm:xh}));
+        print.write(print.getData_TP({
+            sxdh:scgd,
+            rlfw:rlfwStr.replace(";","-"),
+            rld:"",
+            dyfw:dyfwStr.replace(";","-"),
+            nzfw:nzfwStr.replace(";","-"),
+            sl:zxs,
+            tm:xh}));
         //重置标记位
         plc.resetBoxFlag();
     });
