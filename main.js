@@ -199,13 +199,13 @@ function checkProcess() {
         var excelMap = global.sharedObject.excelMap;
         var normalBarArr = global.sharedObject.normalBarArr;
         var checkBarCodeArr = global.sharedObject.checkBarCodeArr;
-        var rlfw = csszHashMap.get('rlfw');
+        var rlfw = csszMap.get('rlfw');
         var rlfwArr = rlfw.split(";");
-        var dycfw = csszHashMap.get('dycfw');
+        var dycfw = csszMap.get('dycfw');
         var dycfwArr = dycfw.split(";");
-        var dyfw = csszHashMap.get('dyfw');
+        var dyfw = csszMap.get('dyfw');
         var dyfwArr = dyfw.split(";");
-        var nzfw = csszHashMap.get('nzfw');
+        var nzfw = csszMap.get('nzfw');
         var nzfwArr = nzfw.split(";");
         var dataArr_ng = new Array();
         var dataArr_filltable = new Array();
@@ -218,8 +218,8 @@ function checkProcess() {
                     dy: "",
                     ocv4: "",
                     dyc: "",
-                    result : "Miss"
-                }
+                    result : property_plc.BARCODE_MISS
+                };
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
             } else {
                 var ng_reason = "";
@@ -273,7 +273,7 @@ function checkProcess() {
                     ocv4: csszMap.get("sjsx") != "1" ? "null" : parseFloat(excelMap.get(checkBarCodeArr[i])[2])/1000,
                     dyc: csszMap.get("sjsx") != "1" ? "null" : (parseFloat(excelMap.get(checkBarCodeArr[i])[2])/1000-dy[i]),
                     result : ng_reason == "" ? "OK" : ng_reason,
-                }
+                };
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
             }
         }
@@ -340,37 +340,7 @@ function schedulePLC(time) {
         });
     }, time);
 }
-schedulePLC(1000);
-
-/*
- var dataformat = require(path.join(__dirname,'app/utils/dataformat'));
- console.log(new Buffer([0xD0,0x00,0x00,0xFF,0xFF,0x03,0x00,0x04,0x00,0x00,0x00,0x00,0x00]).toString('hex'));
- console.log(dataformat.bytes2hex([0xD0,0x00,0x00,0xFF,0xFF,0x03,0x00,0x04,0x00,0x00,0x00,0x00,0x00]));
- console.log(dataformat.hex2bytes('D00000FFFF0300040000000000'));
- console.log(dataformat.bytes2float(dataformat.hex2bytes('10DD0000')));
-
- var receiveData = 'hex12345';
- var hex = receiveData.substring(receiveData.length-2, receiveData.length);
- console.log(hex);
- var dataformat = require(path.join(__dirname,'app/utils/dataformat'));
- //console.log(dataformat.bytes2float(dataformat.hex2bytes('00000000')));
- console.log(dataformat.float2bytes(1));
- //console.log(dataformat.bytes2float(dataformat.float2bytes(3.14)));
-
- var dataformat = require(path.join(__dirname,'app/utils/dataformat'));
-var num = 55;
-var dataByteArr = dataformat.hex2bytes(dataformat.int2hex(num));
-console.log(dataformat.int2hex(num));
- console.log(dataByteArr);
-*/
-//开始标签打印
-/*
- const print = require(path.join(__dirname, 'app/communication/comm_print'));
- function boxLablePrint(data) {
- print.write(data);
- }
- boxLablePrint(print.getData_TP({sxdh:1, rld:2, dw:3, dyfw:4, nzfw:5, sl:6, tm:'1234567'}));
- */
+schedulePLC(200);
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
