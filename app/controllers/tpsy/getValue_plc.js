@@ -42,12 +42,16 @@ const getValue_plc = {
     },
     select_casenum : function (callback) {
         choose_dx.select_casenum(function (result) {
-            if(result.recordset[0].casenum == ""){
-                callback("0");
+            var casenum = 0;
+            if(result.recordset != null && result.recordset.length > 0 && typeof result.recordset[0].casenum != "undefined"){
+                casenum = result.recordset[0].casenum;
             }
-            callback(result.recordset[0].casenum);
+            callback(casenum);
         })
     }
 };
 
 module.exports = getValue_plc;
+getValue_plc.select_casenum(function (result) {
+    console.log(result);
+})
