@@ -147,7 +147,7 @@ plc.start();
 
 //启动后，要清空扫码数据表
 const m_barcode = require(path.join(__dirname, 'app/models/m_barcode'))
-//m_barcode.clearData(function(){});
+m_barcode.clearData(function(){});
 
 //定义错误声音输出
 var errorTimeoutObj;
@@ -189,6 +189,9 @@ function barCodeProcess() {
                     rlArr[rlArr.length] = parseFloat(barObj[1]);
                     ocv4Arr[ocv4Arr.length] = parseFloat(barObj[2])/1000;
                 } else {
+                    if(currentBarCodeArr[i] != "Fail" && currentBarCodeArr[i] != "Miss") {
+                        console.log(currentBarCodeArr[i]);
+                    }
                     rlArr[rlArr.length] = 0;
                     ocv4Arr[ocv4Arr.length] = 0;
                 }
@@ -233,7 +236,7 @@ function checkProcess() {
             } else {
                 var ng_reason = "";
                 if(checkBarCodeArr[i] == property_plc.BARCODE_FAIL) {
-                    ng_reason += "NG1";
+                    ng_reason += ";NG1";
                 }
                 if(!zztArr[i]) {
                     if (!dyztArr[i]) ng_reason += ";NG2";
@@ -297,6 +300,8 @@ function checkProcess() {
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
             }
         }
+        //完成后，把检测值从列表中清除
+        global.sharedObject.checkBarCodeArr = checkBarCodeArr.splice(property_plc.CHECK_NUM_SINGLE,checkBarCodeArr.length);
         //发送填充数据消息
         console.log("filltable------------:" + dataArr_filltable.length);
         send_filltable(dataArr_filltable);
@@ -330,6 +335,7 @@ function boxProcess() {
         var zxsInt = parseInt(zxs);
         console.log("start----xh-------:" + xh);
         console.log("start----normal-------:" + normalBarArr.length);
+        console.log("start----normal-------:" + global.sharedObject.normalBarArr.length);
         for(var i=0; i<normalBarArr.length; i++) {
             if(i < zxsInt) {
                 normalBarArr[i].xh = xh;
@@ -338,9 +344,9 @@ function boxProcess() {
                 newBarArr[newBarArr.length] = normalBarArr[i];
             }
         }
-        console.log("end----normal-------:" + newBarArr.length);
-        console.log("end----sendArr-------:" + dataArr.length);
         global.sharedObject.normalBarArr = newBarArr;
+        console.log("end----normal-------:" + global.sharedObject.normalBarArr.length);
+        console.log("end----sendArr-------:" + dataArr.length);
         send_sealing(dataArr);
         //打印标签
         print.write(print.getData_TP({

@@ -78,7 +78,7 @@ function getNowFormatDate() {
     var month = date.getMonth() + 1;
     var strDate = date.getDate();
     var hours = date.getHours();
-    var minutes = date.getHours();
+    var minutes = date.getMinutes();
     var seconds = date.getSeconds();
     if (month >= 1 && month <= 9) {
         month = "0" + month;
