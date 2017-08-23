@@ -8,8 +8,8 @@ var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
 var url = property.URL;
 var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
-
 $(document).ready(function () {
+    updataNormal();
     sycsInit();
     $('#zc').hide();
     $('#yc').hide();
@@ -143,30 +143,38 @@ function judgeNormal() {
 function add_NG_DB() {
     c_page.regValue_ng(function (dataArr_addNG) {
         getValue_plc.add_NG(dataArr_addNG);
-        m_tpsy.query_ngLength(function (err,result) {
-            if(err){
-                console.log(err);
-                return;
-            }
-            for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_ngdxsl').text(result.recordset[i].ngcount);
-            }
-        });
+        setInterval(function() {
+            m_tpsy.query_ngLength(function (err,result) {
+                if(err){
+                    console.log(err);
+                    return;
+                }
+                for(var i = 0;i < result.recordset.length; i++){
+                    $('#sy_ngdxsl').text(result.recordset[i].ngcount);
+                }
+            });
+        }, 1000);
     });
 }
 
-function sealing_dispose() {
-    c_page.regValue_casenum(function (dataArr_addNoraml) {
-        getValue_plc.add_normal(dataArr_addNoraml);
+function updataNormal() {
+    setInterval(function() {
         m_tpsy.query_normalLength(function (err,result) {
             if(err){
                 console.log(err);
                 return;
             }
-            for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_dxsl').text(result.recordset[i].normalcount);
+            var normalBarArr = require('electron').remote.getGlobal('sharedObject').normalBarArr;
+            var count = parseInt(result.recordset[0].normalcount) + normalBarArr.length;
+            if($('#sy_dxsl').text() == "" || count > parseInt($('#sy_dxsl').text())){
+                $('#sy_dxsl').text(count);
             }
         });
+    }, 1000);
+}
+function sealing_dispose() {
+    c_page.regValue_casenum(function (dataArr_addNoraml) {
+        getValue_plc.add_normal(dataArr_addNoraml);
         getValue_plc.select_normal(function (dataArr) {
             var dataArr_upload = dataArr;
             for(var i = 0; i < dataArr_upload.length; i++){
