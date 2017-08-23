@@ -130,10 +130,12 @@ function judgeNormal() {
         webService.check(url,json,function (result) {
             if(result.ret == 0){
                 $('#zc').show();
+                $('#yc').hide();
             }
             else{
                 $('#yc_text').text(result.Msg);
                 $('#yc').show();
+                $('#zc').hide();
                 c_page.boxError();
             }
         });

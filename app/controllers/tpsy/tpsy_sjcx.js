@@ -30,12 +30,12 @@ function comboboxInit() {
         $('#combobox_pc').combobox({value: defaultValue});
     });
     var data1 = [
-        {value: "NG1", text: "扫码不良"},
-        {value: "NG2", text: "电压异常"},
-        {value: "NG3", text: "内阻异常"},
-        {value: "NG4", text: "容量信息不匹配"},
-        {value: "NG5", text: "△V不良"},
-        {value: "NG6", text: "电压内阻未测试到"}
+        {value: "NG1", text: "NG1(扫码不良)"},
+        {value: "NG2", text: "NG2(电压异常)"},
+        {value: "NG3", text: "NG3(内阻异常)"},
+        {value: "NG4", text: "NG4(容量信息不匹配)"},
+        {value: "NG5", text: "NG5(△V不良)"},
+        {value: "NG6", text: "NG6(电压内阻未测试到)"}
     ];
     $('#combobox_ngyy').combobox("loadData",data1);
     var batch = csszMap.get("pc");
