@@ -7,6 +7,7 @@ var webService = require("../../controllers/tpsy/webservice");
 var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
 var url = property.URL;
+//var url = "http://172.22.33.6:8088/Service1.asmx?wsdl";
 var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 $(document).ready(function () {
     updataCountShow();
@@ -120,7 +121,7 @@ function judgeNormal() {
             InDataSet :[{
                 RltBillNo :hashMap.get("scgd"),   //"SCTZD104579",               //数据库查询 生产工单
                 CaseNo : arg,   //"01491377",                             //扫码得到 箱号
-                CapSubGrade : hashMap.get("rlfw"), //"9",                   //数据库查询 容量档
+                CapSubGrade : hashMap.get("rld"), //"9",                   //数据库查询 容量档
                 PdtGrade : "",  //"A5X",                  //数据库查询 档位，暂时制空
                 MachineNo :hashMap.get("sbh"),   //"4#",            //数据库查询 设备号
                 WorkerNo : hashMap.get("czrygh")    //"8888"                //数据库查询 操作人员工号
