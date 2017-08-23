@@ -9,7 +9,7 @@ var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', '
 var url = property.URL;
 var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 $(document).ready(function () {
-    updataNormal();
+    updataCountShow();
     sycsInit();
     $('#zc').hide();
     $('#yc').hide();
@@ -143,21 +143,10 @@ function judgeNormal() {
 function add_NG_DB() {
     c_page.regValue_ng(function (dataArr_addNG) {
         getValue_plc.add_NG(dataArr_addNG);
-        setInterval(function() {
-            m_tpsy.query_ngLength(function (err,result) {
-                if(err){
-                    console.log(err);
-                    return;
-                }
-                for(var i = 0;i < result.recordset.length; i++){
-                    $('#sy_ngdxsl').text(result.recordset[i].ngcount);
-                }
-            });
-        }, 1000);
     });
 }
 
-function updataNormal() {
+function updataCountShow() {
     setInterval(function() {
         m_tpsy.query_normalLength(function (err,result) {
             if(err){
@@ -168,6 +157,15 @@ function updataNormal() {
             var count = parseInt(result.recordset[0].normalcount) + normalBarArr.length;
             if($('#sy_dxsl').text() == "" || count > parseInt($('#sy_dxsl').text())){
                 $('#sy_dxsl').text(count);
+            }
+        });
+        m_tpsy.query_ngLength(function (err,result) {
+            if(err){
+                console.log(err);
+                return;
+            }
+            for(var i = 0;i < result.recordset.length; i++){
+                $('#sy_ngdxsl').text(result.recordset[i].ngcount);
             }
         });
     }, 1000);
