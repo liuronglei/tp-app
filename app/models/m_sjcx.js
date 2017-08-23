@@ -4,12 +4,12 @@ const m_sjcx = {
     query_selectBatch : function (batch,callback) {
         query('select cellnum,equiptmentnum,workernum,productionorder,batch,\n' +
             'voltage,resistance,volume,ocv4,voltagedifference,voltagedifference,grade,\n' +
-            'Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng where batch =\''+batch+'\'',callback);
+            'creattime,ng_reason,checknum from d_cell_ng where batch =\''+batch+'\'',callback);
     },
     query_select : function (ng_reason,batch,callback) {
         query('select cellnum,equiptmentnum,workernum,productionorder,batch,\n' +
             'voltage,resistance,volume,ocv4,voltagedifference,voltagedifference,grade,\n' +
-            'Convert(nvarchar(30),creattime)as creattime,ng_reason,checknum from d_cell_ng \n' +
+            'creattime,ng_reason,checknum from d_cell_ng \n' +
             'where batch =\''+batch+'\' and ng_reason like \'%'+ng_reason+'%\'',callback);
     },
     query_selectAll_batch :function (callback) {
