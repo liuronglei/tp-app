@@ -149,7 +149,7 @@ function add_NG_DB() {
                 return;
             }
             for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_ngdxsl').text(result.recordset[i].length);
+                $('#sy_ngdxsl').text(result.recordset[i].ngcount);
             }
         });
     });
@@ -164,7 +164,7 @@ function sealing_dispose() {
                 return;
             }
             for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_dxsl').text(result.recordset[i].length);
+                $('#sy_dxsl').text(result.recordset[i].normalcount);
             }
         });
         getValue_plc.select_normal(function (dataArr) {
