@@ -24,9 +24,9 @@ const c_page = {
         ipc.send('newWin-ping-event', arg);
         //easyui窗口组件方式
     },
-    regScanBarCode : function (err,callBack) {
+    regScanBarCode : function (callBack) {
         ipc.on('scanBarCode-pong-event', function(event, arg) {
-            callBack(err,arg);
+            callBack(arg);
         });
     },
     updateCssz : function () {
