@@ -14,28 +14,32 @@ function comboboxInit() {
     m_sjcx.query_selectAll_batch(function (err,result) {
         if(err) throw err;
         var data = [];
+        var contains =  false;
+        var value = {value: "",text: "全部"};
+        data.push(value);
         for( var i = 0; i < result.recordset.length; i++){
             var record = result.recordset[i].batch;
-            var value = {value: record ,text: record};
+            value = {value: record ,text: record};
+            if(csszMap.get("pc") == record){
+                contains = true;
+                value.selected = true;
+            }
+            data.push(value);
+        }
+        if(!contains){
+            value = {value: csszMap.get("pc") ,text: csszMap.get("pc"),selected : true};
             data.push(value);
         }
         $('#combobox_pc').combobox("loadData",data);
     });
-    m_sjcx.query_select_dqbatch(function (err,result) {
-        if(err) throw err;
-        var defaultValue = "";
-        if(result.recordset != null && result.recordset.length > 0 && typeof result.recordset[0].batch != "undefined"){
-            defaultValue = result.recordset[0].batch;
-        }
-        $('#combobox_pc').combobox({value: defaultValue});
-    });
+
     var data1 = [
+        {value: "", text: "全部",selected: true},
         {value: "NG1", text: "NG1(扫码不良)"},
         {value: "NG2", text: "NG2(电压异常)"},
         {value: "NG3", text: "NG3(内阻异常)"},
         {value: "NG4", text: "NG4(容量信息不匹配)"},
-        {value: "NG5", text: "NG5(△V不良)"},
-        //{value: "NG6", text: "NG6(电压内阻未测试到)"}
+        {value: "NG5", text: "NG5(△V不良)"}
     ];
     $('#combobox_ngyy').combobox("loadData",data1);
     var batch = csszMap.get("pc");

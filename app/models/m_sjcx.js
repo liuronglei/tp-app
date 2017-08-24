@@ -20,7 +20,7 @@ const m_sjcx = {
         query('select ng_reason from d_cell_ng group by ng_reason',callback);
     },
     query_select_dqbatch : function (callback) {
-        query('select batch from d_cell_ng where batch = (select value from p_cssz where name = \'pc\')',callback);
+        query('select value from p_cssz where name = \'pc\'',callback);
     }
 };
 
