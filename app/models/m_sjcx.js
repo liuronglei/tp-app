@@ -1,16 +1,17 @@
 var query = require("../utils/sqlserver");
 
 const m_sjcx = {
-    query_selectBatch : function (batch,callback) {
-        query('select cellnum,equiptmentnum,workernum,productionorder,batch,\n' +
-            'voltage,resistance,volume,ocv4,voltagedifference,voltagedifference,grade,\n' +
-            'creattime,ng_reason,checknum from d_cell_ng where batch =\''+batch+'\'',callback);
-    },
     query_select : function (ng_reason,batch,callback) {
-        query('select cellnum,equiptmentnum,workernum,productionorder,batch,\n' +
-            'voltage,resistance,volume,ocv4,voltagedifference,voltagedifference,grade,\n' +
-            'creattime,ng_reason,checknum from d_cell_ng \n' +
-            'where batch =\''+batch+'\' and ng_reason like \'%'+ng_reason+'%\'',callback);
+        var sql = 'select cellnum,equiptmentnum,workernum,productionorder,batch,' +
+            'voltage,resistance,volume,ocv4,voltagedifference,voltagedifference,grade,' +
+            'creattime,ng_reason,checknum from d_cell_ng where 1=1';
+        if(batch != null && batch != "") {
+            sql += " and batch='" + batch + "'";
+        }
+        if(ng_reason != null && ng_reason != "") {
+            sql += " and ng_reason like '%" + ng_reason + "%'";
+        }
+        query(sql,callback);
     },
     query_selectAll_batch :function (callback) {
         query('select batch from d_cell_ng group by batch',callback);

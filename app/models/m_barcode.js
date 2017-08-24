@@ -7,7 +7,7 @@ const m_barcode = {
         query('select * from (select t.*,t.`Index` as sn from table_barcode t order by `Index` desc limit ' + num + ' ) as t2 order by t2.sn asc', callBack);
     },
     clearData : function(callBack) {
-        query('delete from table_barcode', callBack);
+        query('truncate table table_barcode', callBack);
     },
 };
 module.exports = m_barcode;
