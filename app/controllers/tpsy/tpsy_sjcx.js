@@ -39,8 +39,9 @@ function comboboxInit() {
     ];
     $('#combobox_ngyy').combobox("loadData",data1);
     var batch = csszMap.get("pc");
-    m_sjcx.query_selectBatch(batch,function (error,result) {
-        if(error){
+    var ng_reason = $('#combobox_ngyy').combobox('getValue');
+    m_sjcx.query_select(ng_reason, batch, function (error, result) {
+        if (error) {
             console.log(error);
             return;
         }
@@ -52,25 +53,13 @@ function comboboxInit() {
 function select_All(){
     var batch =$('#combobox_pc').combobox('getValue');
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
-    if(batch !="" &&ng_reason == ""){
-        m_sjcx.query_selectBatch(batch,function (error,result) {
-            if(error){
-                console.log(error);
-                return;
-            }
-            dataGrid_Init(result.recordset);
-        });
-    }
-    if(batch != "" && ng_reason != "") {
-        batch =$('#combobox_pc').combobox('getValue');
-        m_sjcx.query_select(ng_reason,batch,function (error,result) {
-            if(error){
-                console.log(error);
-                return;
-            }
-            dataGrid_Init(result.recordset);
-        });
-    }
+    m_sjcx.query_select(ng_reason, batch, function (error, result) {
+        if (error) {
+            console.log(error);
+            return;
+        }
+        dataGrid_Init(result.recordset);
+    });
 }
 
 /* datagrid 初始化  */

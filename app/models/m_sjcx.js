@@ -4,7 +4,7 @@ const m_sjcx = {
     query_select : function (ng_reason,batch,callback) {
         var sql = 'select cellnum,equiptmentnum,workernum,productionorder,batch,' +
             'voltage,resistance,volume,ocv4,voltagedifference,voltagedifference,grade,' +
-            'creattime,ng_reason,checknum from d_cell_ng where 1=1';
+            'CONVERT(varchar(100), creattime, 20) as creattime,ng_reason,checknum from d_cell_ng where 1=1';
         if(batch != null && batch != "") {
             sql += " and batch='" + batch + "'";
         }

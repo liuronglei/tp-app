@@ -76,6 +76,17 @@ function sycsInit() {
         $('#sy_rlfw').text(hashMap.get("rlfw").replace(";","-"));
         $('#sy_zxs').text(hashMap.get("zxs"));
         $('#sy_sjsx').text(hashMap.get("sjsx")==1 ? " 是" : "否");
+        $('#ng_table_sy').datagrid({
+            columns: [[
+                {field:'dx',title:'电芯条码'},
+                {field:'rl',title:'容量'+"("+hashMap.get('rlfw').replace(";","-")+")"},
+                {field:'nz',title:'内阻'+"("+hashMap.get('nzfw').replace(";","-")+")"},
+                {field:'dy',title:'电压'+"("+hashMap.get('dyfw').replace(";","-")+")"},
+                {field:'ocv4',title:'ocv4'},
+                {field:'dyc',title:'电压差'+"("+hashMap.get('dycfw').replace(";","-")+")"},
+                {field:'result',title:'结果'}
+            ]]
+        });
         m_tpsy.query_ngLength(function (err,result) {
             if(err){
                 console.log(err);
@@ -94,18 +105,6 @@ function sycsInit() {
                 $('#sy_dxsl').text(result.recordset[i].length);
             }
         });
-    });
-    var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
-    $('#ng_table_sy').datagrid({
-        columns: [[
-            {field:'dx',title:'电芯条码'},
-            {field:'rl',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
-            {field:'nz',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
-            {field:'dy',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
-            {field:'ocv4',title:'ocv4'},
-            {field:'dyc',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
-            {field:'result',title:'结果'}
-        ]]
     });
 }
 
