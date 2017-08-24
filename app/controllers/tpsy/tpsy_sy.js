@@ -8,6 +8,7 @@ var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
 var url = property.URL;
 //var url = "http://172.22.33.6:8088/Service1.asmx?wsdl";
+var json_xh_value = {};
 $(document).ready(function () {
     print();
     fillCombobox();
@@ -26,12 +27,11 @@ $(document).ready(function () {
 function fillCombobox (){
     c_page.regFillCombobox(function (json_xh) {
         $('#combobox_xh').combobox("loadData",json_xh);
+        json_xh_value = json_xh.value;
     })
 }
 function print() {
-    c_page.doPrint(function () {
-
-    })
+    c_page.doPrint(json_xh_value);
 }
 function CreatWindows_cssz() {
     $('#win_cssz').window({
@@ -226,18 +226,13 @@ function sealing_dispose() {
 
 /* datagrid 初始化  */
 function dataGrid_Init(dataArr) {
-    $('#ng_table_sy').datagrid({
-        data : dataArr
-    });
+    $('#ng_table_sy').datagrid("loadData",dataArr);
 }
 
 function filltable(){
     /* dataArr格式 ： [{},{},...] 对象数组  */
     c_page.regFilltable(function (dataArr) {
-        $('#ng_table_sy').datagrid({
-            data : dataArr
-        });
-        $('#ng_table_sy').datagrid("reload");
+        $('#ng_table_sy').datagrid("loadData",dataArr);
     });
 }
 
