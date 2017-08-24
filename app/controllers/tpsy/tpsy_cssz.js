@@ -90,7 +90,8 @@ function csszInit(){
            }
            else if(record.type == 4){
                $('#cssz_div').prepend('<div class="checkbox">\n' +
-                   '<input name="'+record.name+'" id="'+record.name+'" type="checkbox" onclick=isChecked() name="checkbox" ' + (value == 1 ? 'checked' : '') + '/>'+record.title+' \n' +
+                   '<label for="'+record.name+'">'+record.title+'</label> \n' +
+                   '<input name="'+record.name+'" id="'+record.name+'" type="checkbox" onclick=isChecked() name="checkbox" ' + (value == 1 ? 'checked' : '') + '/>'+
                    '</div>');
            }
        }

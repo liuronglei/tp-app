@@ -10,8 +10,8 @@ var url = property.URL;
 //var url = "http://172.22.33.6:8088/Service1.asmx?wsdl";
 var json_xh_value = {};
 $(document).ready(function () {
-    print();
-    fillCombobox();
+    //print();
+    //fillCombobox();
     updataCountShow();
     sycsInit();
     $('#zc').hide();
@@ -34,6 +34,7 @@ function print() {
     c_page.doPrint(json_xh_value);
 }
 function CreatWindows_cssz() {
+    var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
     $('#win_cssz').window({
         title:'参数设置',
         left:500,
@@ -43,7 +44,7 @@ function CreatWindows_cssz() {
         maximizable:false,
         closable:true,
         width:440,
-        height:615,
+        height:150 + csszMap.size()*40,
         modal:false,
         draggable:true
     });
@@ -122,7 +123,7 @@ function sycsInit() {
 
 function judgeNormal() {
     c_page.regScanBarCode(function (arg) {
-        var hashMap = require('electron').remote.getGlobal('sharedObject').csszMap;
+        var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
         var Json_Check = {
             Key : "",
             Role : "",
@@ -130,12 +131,12 @@ function judgeNormal() {
             StarData : "",
             EndData : "",
             InDataSet :[{
-                RltBillNo :hashMap.get("scgd"),   //"SCTZD104579",               //数据库查询 生产工单
+                RltBillNo :csszMap.get("scgd"),   //"SCTZD104579",               //数据库查询 生产工单
                 CaseNo : arg,   //"01491377",                             //扫码得到 箱号
-                CapSubGrade : hashMap.get("rld"), //"9",                   //数据库查询 容量档
+                CapSubGrade : csszMap.get("rld"), //"9",                   //数据库查询 容量档
                 PdtGrade : "",  //"A5X",                  //数据库查询 档位，暂时制空
-                MachineNo :hashMap.get("sbh"),   //"4#",            //数据库查询 设备号
-                WorkerNo : hashMap.get("czrygh")    //"8888"                //数据库查询 操作人员工号
+                MachineNo :csszMap.get("sbh"),   //"4#",            //数据库查询 设备号
+                WorkerNo : csszMap.get("czrygh")    //"8888"                //数据库查询 操作人员工号
             }]
         };
         var json = JSON.stringify(Json_Check);
