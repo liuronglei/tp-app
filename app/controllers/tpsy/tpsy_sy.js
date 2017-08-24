@@ -8,7 +8,6 @@ var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
 var url = property.URL;
 //var url = "http://172.22.33.6:8088/Service1.asmx?wsdl";
-var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 $(document).ready(function () {
     updataCountShow();
     sycsInit();
@@ -96,6 +95,7 @@ function sycsInit() {
             }
         });
     });
+    var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
     $('#ng_table_sy').datagrid({
         columns: [[
             {field:'dx',title:'电芯条码'},
@@ -216,15 +216,6 @@ function sealing_dispose() {
 /* datagrid 初始化  */
 function dataGrid_Init(dataArr) {
     $('#ng_table_sy').datagrid({
-        columns: [[
-            {field:'dx',title:'电芯条码'},
-            {field:'rl',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
-            {field:'nz',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
-            {field:'dy',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
-            {field:'ocv4',title:'ocv4'},
-            {field:'dyc',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
-            {field:'result',title:'结果'}
-        ]],
         data : dataArr
     });
 }
