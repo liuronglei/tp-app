@@ -8,16 +8,15 @@ var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
 var url = property.URL;
 //var url = "http://172.22.33.6:8088/Service1.asmx?wsdl";
-var json_xh_value = {};
 $(document).ready(function () {
-    //print();
-    //fillCombobox();
+    fillCombobox();
     updataCountShow();
     sycsInit();
     $('#zc').hide();
     $('#yc').hide();
     $("#btn_cssz").click(CreatWindows_cssz);
     $("#btn_ngsjcx").click(CreatWindows_ngsjcx);
+    $("#btn_cxdy").click(print);
     add_NG_DB();
     sealing_dispose();
     filltable();
@@ -27,10 +26,10 @@ $(document).ready(function () {
 function fillCombobox (){
     c_page.regFillCombobox(function (json_xh) {
         $('#combobox_xh').combobox("loadData",json_xh);
-        json_xh_value = json_xh.value;
     })
 }
 function print() {
+    var json_xh_value = ('#combobox_xh').combobox('getValue');
     c_page.doPrint(json_xh_value);
 }
 function CreatWindows_cssz() {

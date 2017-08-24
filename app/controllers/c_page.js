@@ -48,12 +48,12 @@ const c_page = {
         });
     },
     regFillCombobox : function (callBack) {
-        ipc.on('fillcombobox-pong-event', function(event,json_xh) {
-            callBack(json_xh);
+        ipc.on('casenum_refresh-pong-event', function(event,dataArr) {
+            callBack(dataArr);
         });
     },
-    doPrint : function (dataArr_xh) {
-        ipc.send('print-ping-event',dataArr_xh);
+    doPrint : function (dataArr) {
+        ipc.send('casenumPrint-ping-event',dataArr);
     },
     boxError : function() {
         ipc.send('boxError-ping-event');
