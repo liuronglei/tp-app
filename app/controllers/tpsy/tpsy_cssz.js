@@ -121,6 +121,6 @@ function isChecked(){
         $('#dycfw').css({color:"#ddd"});
         $('#rlfw').css({color:"#ddd"});
         $('#djfw').css({color:"#ddd"});
-        $('#rld').css({color:"black"});
+        $('#rld').css({color:"#ddd"});
     }
 }
