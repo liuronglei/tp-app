@@ -9,6 +9,8 @@ var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', '
 var url = property.URL;
 //var url = "http://172.22.33.6:8088/Service1.asmx?wsdl";
 $(document).ready(function () {
+    print();
+    fillCombobox();
     updataCountShow();
     sycsInit();
     $('#zc').hide();
@@ -21,6 +23,16 @@ $(document).ready(function () {
     judgeNormal();
 });
 
+function fillCombobox (){
+    c_page.regFillCombobox(function (json_xh) {
+        $('#combobox_xh').combobox("loadData",json_xh);
+    })
+}
+function print() {
+    c_page.doPrint(function () {
+
+    })
+}
 function CreatWindows_cssz() {
     $('#win_cssz').window({
         title:'参数设置',
@@ -222,7 +234,10 @@ function dataGrid_Init(dataArr) {
 function filltable(){
     /* dataArr格式 ： [{},{},...] 对象数组  */
     c_page.regFilltable(function (dataArr) {
-        dataGrid_Init(dataArr);
+        $('#ng_table_sy').datagrid({
+            data : dataArr
+        });
+        $('#ng_table_sy').datagrid("reload");
     });
 }
 

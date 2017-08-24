@@ -47,6 +47,14 @@ const c_page = {
             callBack(dataArr_filltable);
         });
     },
+    regFillCombobox : function (callBack) {
+        ipc.on('filltable-pong-event', function(event,json_xh) {
+            callBack(json_xh);
+        });
+    },
+    doPrint : function (dataArr_xh) {
+        ipc.send('updateCssz-ping-event',dataArr_xh);
+    },
     boxError : function() {
         ipc.send('boxError-ping-event');
     },

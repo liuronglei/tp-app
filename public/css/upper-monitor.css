@@ -54,7 +54,7 @@
 }
 .button-div{
     padding-top: 1%;
-    padding-left:10%;
+    padding-left:5%;
 }
 .zc-div{
     text-align: center;
@@ -141,6 +141,10 @@
 .combobox-div{
     float:left;
     margin-right:50px;
+}
+.combobox-div-sy{
+    float:left;
+    margin-right: 50px;
 }
 .sjcx-button{
     float:left;
