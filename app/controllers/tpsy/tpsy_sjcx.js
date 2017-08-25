@@ -123,6 +123,8 @@ function pagerFilter(data){
 /* 导出csv文件 */
 function dcCsv() {
     var property = JSON.parse(fs.readFileSync('app/config/config_filesave.json', 'utf8'));
+    var cxTime = new Date();
+    var date=cxTime.getFullYear()+"_"+(cxTime.getMonth()+1)+"_"+cxTime.getDate()+"_"+cxTime.getHours()+"_"+cxTime.getMinutes()+"_"+cxTime.getSeconds();
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
     var batch = $('#combobox_pc').combobox('getValue');
     m_sjcx.query_select(ng_reason, batch, function (error, result) {
@@ -130,14 +132,18 @@ function dcCsv() {
             console.log(error);
             return;
         }
-        var str = "电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "电压范围" + "," + "内阻" + "," + "内阻范围" + "," + "容量" + "," + "容量范围" + "," + "Ocv4" + "," + "电压差范围" + "," + "等级" + "," + "等级范围" + "," + "创建时间" + "," + "NG原因" + "," + "检测次数" + "\n";
+        var str = "电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "内阻" + ","  + "容量" + "," + "Ocv4" + "," + "电压差" + "," + "等级" +  "," + "创建时间" + "," + "NG原因" + "," + "检测次数" + "\n";
+        var dcbatch = "_"+result.recordset[0].batch;
         for (var i = 0; i < result.recordset.length; i++) {
             for (var key in result.recordset[i]) {
                 str = str + (result.recordset[i][key]) + ",";
             }
             str = str + "\n";
+            if(batch == ""){
+                dcbatch= "";
+            }
         }
-        fs.writeFile(property.FILESAVE_PATH, str, function (err) {
+        fs.writeFile(property.FILESAVE_PATH + date + dcbatch+".csv", str, function (err) {
             if (err) throw err;
             alert('数据导出成功');
         });
