@@ -133,7 +133,7 @@ function dcCsv() {
             return;
         }
         var str = "电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "内阻" + ","  + "容量" + "," + "Ocv4" + "," + "电压差" + "," + "等级" +  "," + "创建时间" + "," + "NG原因" + "," + "检测次数" + "\n";
-        var dcbatch = "_"+result.recordset[0].batch;
+        var dcbatch = result.recordset[0].batch;
         for (var i = 0; i < result.recordset.length; i++) {
             for (var key in result.recordset[i]) {
                 str = str + (result.recordset[i][key]) + ",";
@@ -143,7 +143,9 @@ function dcCsv() {
                 dcbatch= "";
             }
         }
-        fs.writeFile(property.FILESAVE_PATH + date + dcbatch+".csv", str, function (err) {
+        var fileNameArr = [dcbatch,date];
+        var filePath = path.join(property.FILESAVE_PATH, (fileNameArr.join("_")+".csv"));
+        fs.writeFile(filePath, str, function (err) {
             if (err) throw err;
             alert('数据导出成功');
         });
