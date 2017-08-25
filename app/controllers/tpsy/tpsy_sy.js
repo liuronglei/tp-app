@@ -29,7 +29,7 @@ function fillCombobox (){
     })
 }
 function print() {
-    var json_xh_value = ('#combobox_xh').combobox('getValue');
+    var json_xh_value = $('#combobox_xh').combobox('getValue');
     c_page.doPrint(json_xh_value);
 }
 function CreatWindows_cssz() {

@@ -64,18 +64,15 @@ app.on('activate', () => {
     createWindow()
 }
 })
-ipcMain.on('pageTo-ping-event', (event, arg) => {
-    win.webContents.send('pageTo-pong-event', arg)
-})
-ipcMain.on('newWin-ping-event', (event, arg) => {
-    win.webContents.send('newWin-pong-event', arg)
-})
 
 //保存全局变量
 global.sharedObject = {
     rootdir: __dirname,
     normalBarArr: new Array(),
     checkBarCodeArr: new Array(),
+    printDataArr: new Array(2),
+    checkIndex: 0,
+    barCodeNum: 0,
 };
 
 //接收界面参数设置消息，更新参数设置
@@ -86,6 +83,20 @@ ipcMain.on('updateCssz-ping-event',(event) => {
 //接收界面箱号扫描错误消息，进行报警
 ipcMain.on('boxError-ping-event',(event) => {
     doErrorVoice();
+})
+
+//接收界面打印请求，进行打印
+ipcMain.on('casenumPrint-ping-event',(event, arg) => {
+    console.log(arg);
+    var printDataArr = global.sharedObject.printDataArr;
+    var printData = null;
+    for(var i=0; i<printDataArr.length; i++) {
+        if(typeof printDataArr[i] != "undefined" && printDataArr[i] != null && arg == printDataArr[i].tm) {
+            printData = printDataArr[i];
+        }
+    }
+    console.log(printData);
+    if(printData != null) casenumPrint(printData);
 })
 
 //串口发送箱号给渲染进程
@@ -106,6 +117,11 @@ function send_filltable(dataArr) {
 //装箱消息发送
 function send_sealing(dataArr) {
     win.webContents.send('sealing_dispose-pong-event',dataArr);
+}
+
+//打印箱号列表信息发送
+function send_casenum(dataArr) {
+    win.webContents.send('casenum_refresh-pong-event',dataArr);
 }
 
 //参数设置全局变量保存
@@ -166,6 +182,7 @@ function doErrorVoice() {
 function barCodeProcess() {
     m_barcode.queryBarCode(property_plc.CHECK_NUM_SINGLE,function (error, results, fields) {
         if (error) throw error;
+        var csszMap = global.sharedObject.csszMap;
         //保存电芯条码列表
         var checkBarCodeArr = global.sharedObject.checkBarCodeArr;
         var currentBarCodeArr = new Array();
@@ -173,13 +190,13 @@ function barCodeProcess() {
             //barCodeArr[barCodeArr.length] = results[i].barcode;
             //checkBarCodeArr[checkBarCodeArr.length] = 'KA2GA18 ' + (i + 101004);
             //currentBarCodeArr[currentBarCodeArr.length] = 'KA2GA18 ' + (i + 101004);
-            console.log('barCode:' + results[i].barcode);
-            checkBarCodeArr[checkBarCodeArr.length] = results[i].barcode;
-            currentBarCodeArr[currentBarCodeArr.length] = results[i].barcode;
+            //console.log('barCode:' + results[i].barcode);
+            var barCode = csszMap.get("sfsm") == "1" ? results[i].barcode : dataformat.fillZero(++global.sharedObject.barCodeNum, 8);
+            checkBarCodeArr[checkBarCodeArr.length] = barCode;
+            currentBarCodeArr[currentBarCodeArr.length] = barCode;
         }
         //如果参数设置勾选了OCV筛选，则需要传递OCV数据给PLC
-        var csszMap = global.sharedObject.csszMap;
-        if(csszMap.get("sjsx") == "1") {
+        if(csszMap.get("sjsx") == "1" && csszMap.get("sfsm") == "1") {
             var excelMap = global.sharedObject.excelMap;
             var rlArr = new Array();
             var ocv4Arr = new Array();
@@ -188,10 +205,13 @@ function barCodeProcess() {
                 if(barObj != null) {
                     rlArr[rlArr.length] = parseFloat(barObj[1]);
                     ocv4Arr[ocv4Arr.length] = parseFloat(barObj[2])/1000;
+                    //console.log("---inserBarCode---:" + currentBarCodeArr[i] + "---" + parseFloat(barObj[1]) + "---");
                 } else {
+                    /*
                     if(currentBarCodeArr[i] != "Fail" && currentBarCodeArr[i] != "Miss") {
                         console.log(currentBarCodeArr[i]);
                     }
+                    */
                     rlArr[rlArr.length] = 0;
                     ocv4Arr[ocv4Arr.length] = 0;
                 }
@@ -222,9 +242,13 @@ function checkProcess() {
         var dataArr_ng = new Array();
         var dataArr_filltable = new Array();
         for(var i=0; i<property_plc.CHECK_NUM_SINGLE; i++) {
-            if(checkBarCodeArr[i] == property_plc.BARCODE_MISS) {
+            //取之前保存的电芯条码，取出后，置空
+            var checkBarCode = checkBarCodeArr[global.sharedObject.checkIndex];
+            checkBarCodeArr[global.sharedObject.checkIndex] == null;
+            global.sharedObject.checkIndex++;
+            if(checkBarCode == property_plc.BARCODE_MISS) {
                 var fillObj = {
-                    dx: checkBarCodeArr[i],
+                    dx: checkBarCode,
                     rl: "----",
                     nz: "----",
                     dy: "----",
@@ -235,7 +259,7 @@ function checkProcess() {
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
             } else {
                 var ng_reason = "";
-                if(checkBarCodeArr[i] == property_plc.BARCODE_FAIL) {
+                if(checkBarCode == property_plc.BARCODE_FAIL) {
                     ng_reason += ";NG1";
                 }
                 if(!zztArr[i]) {
@@ -244,12 +268,17 @@ function checkProcess() {
                     if (!rlztArr[i]) ng_reason += ";NG4";
                     if (!dycztArr[i]) ng_reason += ";NG5";
                 }
+                //如果扫码不良，肯定拿不到容量和OCV4数据，所以去掉NG4和NG5
+                if(ng_reason.indexOf(";NG1") != -1) {
+                    ng_reason = ng_reason.replace(";NG4", "");
+                    ng_reason = ng_reason.replace(";NG5", "");
+                }
                 if (ng_reason != "") ng_reason = ng_reason.substring(1);
                 var rl = "null";
                 var ocv4 = "null";
                 var dyc = "null";
                 if(csszMap.get("sjsx") == "1") {
-                    var barInfo = excelMap.get(checkBarCodeArr[i]);
+                    var barInfo = excelMap.get(checkBarCode);
                     if(barInfo != null) {
                         rl = barInfo[1];
                         ocv4 = (parseFloat(barInfo[2])/1000).toFixed(3);
@@ -262,7 +291,7 @@ function checkProcess() {
                     czrygh: csszMap.get("czrygh"),
                     scgd: csszMap.get("scgd"),
                     pc: csszMap.get("pc"),
-                    dx: checkBarCodeArr[i],
+                    dx: checkBarCode,
                     dy: dyArr[i].toFixed(3),
                     dy_min: dyfwArr[0],
                     dy_max: dyfwArr[1],
@@ -289,24 +318,23 @@ function checkProcess() {
                 }
                 //开始组建filltable列表
                 var fillObj = {
-                    dx: checkBarCodeArr[i],
+                    dx: checkBarCode,
                     rl: rl == "null" ? "----" : rl,
                     nz: nzArr[i].toFixed(3),
                     dy: dyArr[i].toFixed(3),
                     ocv4: ocv4 == "null" ? "----" : ocv4,
                     dyc: dyc == "null" ? "----" : dyc,
-                    result : ng_reason == "" ? "----" : ng_reason,
+                    result : ng_reason == "" ? "√" : ng_reason,
                 };
                 dataArr_filltable[dataArr_filltable.length] = fillObj;
+                //console.log("---checkBarCode---:" + checkBarCode + "---" + rl + "---");
             }
         }
-        //完成后，把检测值从列表中清除
-        global.sharedObject.checkBarCodeArr = checkBarCodeArr.splice(property_plc.CHECK_NUM_SINGLE,checkBarCodeArr.length);
         //发送填充数据消息
-        console.log("filltable------------:" + dataArr_filltable.length);
+        //console.log("filltable------------:" + dataArr_filltable.length);
         send_filltable(dataArr_filltable);
         //发送NG数据入库消息
-        console.log("dataArr_ng-----------:" + dataArr_ng.length);
+        //console.log("dataArr_ng-----------:" + dataArr_ng.length);
         if(dataArr_ng.length > 0) send_ng(dataArr_ng);
         //重置标记位
         plc.resetCheckFlag();
@@ -333,9 +361,9 @@ function boxProcess() {
         var dataArr = new Array();
         var newBarArr = new Array();
         var zxsInt = parseInt(zxs);
-        console.log("start----xh-------:" + xh);
-        console.log("start----normal-------:" + normalBarArr.length);
-        console.log("start----normal-------:" + global.sharedObject.normalBarArr.length);
+        //console.log("start----xh-------:" + xh);
+        //console.log("start----normal-------:" + normalBarArr.length);
+        //console.log("start----normal-------:" + global.sharedObject.normalBarArr.length);
         for(var i=0; i<normalBarArr.length; i++) {
             if(i < zxsInt) {
                 normalBarArr[i].xh = xh;
@@ -346,20 +374,38 @@ function boxProcess() {
         }
         global.sharedObject.normalBarArr = newBarArr;
         console.log("end----normal-------:" + global.sharedObject.normalBarArr.length);
-        console.log("end----sendArr-------:" + dataArr.length);
+        //console.log("end----sendArr-------:" + dataArr.length);
         send_sealing(dataArr);
         //打印标签
-        print.write(print.getData_TP({
+        var printData = {
             sxdh:scgd,
-            rlfw:rlfwStr.replace(";","-"),
+            rlfw:csszMap.get("sfdyrlfw") == "1" ? rlfwStr.replace(";","-") : "",
             rld:rld,
             dyfw:dyfwStr.replace(";","-"),
             nzfw:nzfwStr.replace(";","-"),
             sl:zxs,
-            tm:xh}));
+            tm:xh};
+        casenumPrint(printData);
+        //保存打印列表
+        var printDataArr = global.sharedObject.printDataArr;
+        printDataArr.splice(0, 0, printData);
+        printDataArr.length = printDataArr.length - 1;
+        var casenumArr = new Array();
+        for(var i=0; i<printDataArr.length; i++) {
+            if(typeof printDataArr[i] != "undefined" && printDataArr[i] != null) {
+                casenumArr[casenumArr.length] = {value:printDataArr[i].tm,text:printDataArr[i].tm};
+                casenumArr[0].selected = true;
+            }
+        }
+        console.log(casenumArr);
+        send_casenum(casenumArr);
         //重置标记位
         plc.resetBoxFlag();
     });
+}
+
+function casenumPrint(printData) {
+    print.write(print.getData_TP(printData));
 }
 
 //定时取PLC数据（每200ms），如果发现标记你位被设置，则进行相应处理
