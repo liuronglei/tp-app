@@ -17,7 +17,7 @@ const m_sjcx_normal = {
         query('select batch from d_cell_normal group by batch',callback);
     },
     query_selectAll_casenum : function (pc,callback) {
-        query('select casenum from d_cell_normal where batch = \''+pc+'\'',callback);
+        query('select casenum from d_cell_normal where batch = \''+pc+'\' group by casenum',callback);
     }
 };
 
