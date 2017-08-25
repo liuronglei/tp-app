@@ -1,0 +1,27 @@
+<script type="text/javascript" src="../../controllers/tpsy/tpsy_sjcx_normal.js" ></script>
+
+<div>
+    <div class="top-function">
+        <div class="combobox-div">
+            <span>批次：</span>
+            <input id="combobox_pc_normal" class="easyui-combobox float-left" name="state" style="height:30px;width:200px;" />
+        </div>
+        <div class="combobox-div">
+            <span>箱号：</span>
+            <input id="combobox_xh_normal" class="easyui-combobox float-left" name="state" style="height:30px;width:200px;" />
+        </div>
+        <div class="sjcx-button">
+            <a id="btn_qd_normal" href="#" class="easyui-linkbutton" style="width:150px;height:30px;margin-right: 10px;">查询</a>
+            <a id="btn_dc_normal" href="#" class="easyui-linkbutton" style="width:150px;height:30px">导出</a>
+        </div>
+    </div>
+    <div>
+        <table id="normal_table" class="easyui-datagrid" title="正常数据查询表" data-options="
+				rownumbers:true,
+				singleSelect:true,
+				autoRowHeight:false,
+				pagination:true,
+				pageSize:20" style="width:980px;height:550px">
+        </table>
+    </div>
+</div>

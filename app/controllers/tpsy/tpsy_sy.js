@@ -16,6 +16,7 @@ $(document).ready(function () {
     $('#yc').hide();
     $("#btn_cssz").click(CreatWindows_cssz);
     $("#btn_ngsjcx").click(CreatWindows_ngsjcx);
+    $("#btn_zcsjcx").click(CreatWindows_zcsjcx);
     $("#btn_cxdy").click(print);
     add_NG_DB();
     sealing_dispose();
@@ -50,7 +51,7 @@ function CreatWindows_cssz() {
     $('#win_cssz').window('refresh', './tpsy_cssz.html');
 }
 function CreatWindows_ngsjcx() {
-    $('#win_cssz').window({
+    $('#win_ngsjcx').window({
         title: 'NG数据查询',
         left:200,
         top:80,
@@ -63,9 +64,24 @@ function CreatWindows_ngsjcx() {
         modal:false,
         draggable:true
     });
-    $('#win_cssz').window('refresh', './tpsy_sjcx.html');
+    $('#win_ngsjcx').window('refresh', './tpsy_sjcx.html');
 }
-
+function CreatWindows_zcsjcx() {
+    $('#win_normalsjcx').window({
+        title: '正常数据查询',
+        left:200,
+        top:80,
+        collapsible:false,
+        minimizable:false,
+        maximizable:false,
+        closable:true,
+        width:1040,
+        height:680,
+        modal:false,
+        draggable:true
+    });
+    $('#win_normalsjcx').window('refresh', './tpsy_sjcx_normal.html');
+}
 function sycsInit() {
     m_cssz.query_csszInit(function (err,result) {
         if(err){
@@ -91,11 +107,11 @@ function sycsInit() {
         $('#ng_table_sy').datagrid({
             columns: [[
                 {field:'dx',title:'电芯条码'},
-                {field:'rl',title:'容量'+"("+hashMap.get('rlfw').replace(";","-")+")"},
-                {field:'nz',title:'内阻'+"("+hashMap.get('nzfw').replace(";","-")+")"},
                 {field:'dy',title:'电压'+"("+hashMap.get('dyfw').replace(";","-")+")"},
-                {field:'ocv4',title:'ocv4'},
+                {field:'nz',title:'内阻'+"("+hashMap.get('nzfw').replace(";","-")+")"},
+                {field:'rl',title:'容量'+"("+hashMap.get('rlfw').replace(";","-")+")"},
                 {field:'dyc',title:'电压差'+"("+hashMap.get('dycfw').replace(";","-")+")"},
+                {field:'ocv4',title:'ocv4'},
                 {field:'result',title:'结果'}
             ]]
         });

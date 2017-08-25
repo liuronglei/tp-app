@@ -1,17 +1,17 @@
 var fs = require("fs");
-var m_sjcx = require('../../models/m_sjcx');
+var m_sjcx_normal = require('../../models/m_sjcx_normal');
 var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 
 $(document).ready(function () {
     window.setTimeout('comboboxInit();',500);
-    $('#btn_qd').click(select_All);
-    $('#btn_dc').click(dcCsv);
+    $('#btn_qd_normal').click(select_All);
+    $('#btn_dc_normal').click(dcCsv);
 });
-
 
 /* 下拉框初始化 */
 function comboboxInit() {
-    m_sjcx.query_selectAll_batch(function (err,result) {
+    // 批次中含有多个箱号
+    m_sjcx_normal.query_selectAll_batch(function (err,result) {
         if(err) throw err;
         var data = [];
         var contains =  false;
@@ -30,21 +30,23 @@ function comboboxInit() {
             value = {value: csszMap.get("pc") ,text: csszMap.get("pc"),selected : true};
             data.push(value);
         }
-        $('#combobox_pc').combobox("loadData",data);
+        $('#combobox_pc_normal').combobox("loadData",data);
     });
-
-    var data1 = [
-        {value: "", text: "全部",selected: true},
-        {value: "NG1", text: "NG1(扫码不良)"},
-        {value: "NG2", text: "NG2(电压异常)"},
-        {value: "NG3", text: "NG3(内阻异常)"},
-        {value: "NG4", text: "NG4(容量信息不匹配)"},
-        {value: "NG5", text: "NG5(△V不良)"}
-    ];
-    $('#combobox_ngyy').combobox("loadData",data1);
-    var batch = csszMap.get("pc");
-    var ng_reason = $('#combobox_ngyy').combobox('getValue');
-    m_sjcx.query_select(ng_reason, batch, function (error, result) {
+    var pc = csszMap.get("pc");
+    m_sjcx_normal.query_selectAll_casenum(pc,function (err,result) {
+        if(err) throw err;
+        var data = [];
+        var value = {value: "",text: "全部"};
+        data.push(value);
+        for( var i = 0; i < result.recordset.length; i++){
+            var record = result.recordset[i].casenum;
+            var value = {value: record ,text: record};
+            data.push(value);
+        }
+        $('#combobox_xh_normal').combobox("loadData",data);
+    });
+    var xh = $('#combobox_xh_normal').combobox("getValue");
+    m_sjcx_normal.query_select( pc,xh, function (error, result) {
         if (error) {
             console.log(error);
             return;
@@ -55,9 +57,21 @@ function comboboxInit() {
 
 /* 查询数据 */
 function select_All(){
-    var batch =$('#combobox_pc').combobox('getValue');
-    var ng_reason = $('#combobox_ngyy').combobox('getValue');
-    m_sjcx.query_select(ng_reason, batch, function (error, result) {
+    var batch =$('#combobox_pc_normal').combobox('getValue');
+    var casenum = $('#combobox_xh_normal').combobox('getValue');
+    m_sjcx_normal.query_selectAll_casenum(batch,function (err,result) {
+        if(err) throw err;
+        var data = [];
+        var value = {value: "",text: "全部"};
+        data.push(value);
+        for( var i = 0; i < result.recordset.length; i++){
+            var record = result.recordset[i].casenum;
+            var value = {value: record ,text: record};
+            data.push(value);
+        }
+        $('#combobox_xh_normal').combobox("loadData",data);
+    });
+    m_sjcx_normal.query_select(batch,casenum, function (error, result) {
         if (error) {
             console.log(error);
             return;
@@ -68,17 +82,18 @@ function select_All(){
 
 /* datagrid 初始化  */
 function dataGrid_Init(dataArr) {
-    $('#ng_table').datagrid({loadFilter:pagerFilter}).datagrid({
+    $('#normal_table').datagrid({loadFilter:pagerFilter}).datagrid({
         columns: [[
             {field:'batch',title:'批次'},
+            {field:'casenum',title:'箱号'},
             {field:'cellnum',title:'电芯条码'},
             {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
             {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
             {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
             {field:'ocv4',title:'ocv4'},
             {field:'volumedifference',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
-            {field:'ng_reason',title:'NG原因'},
             {field:'checknum',title:'检测次数'},
+            {field:'binningnum',title:'装箱数'},
             {field:'equiptmentnum',title:'设备号'},
             {field:'workernum',title:'操作人员工号'},
             {field:'productionorder',title:'生产工单'},
@@ -125,14 +140,14 @@ function dcCsv() {
     var property = JSON.parse(fs.readFileSync('app/config/config_filesave.json', 'utf8'));
     var cxTime = new Date();
     var date=cxTime.getFullYear()+"_"+(cxTime.getMonth()+1)+"_"+cxTime.getDate()+"_"+cxTime.getHours()+"_"+cxTime.getMinutes()+"_"+cxTime.getSeconds();
-    var ng_reason = $('#combobox_ngyy').combobox('getValue');
-    var batch = $('#combobox_pc').combobox('getValue');
-    m_sjcx.query_select(ng_reason, batch, function (error, result) {
+    var casenum = $('#combobox_xh_normal').combobox('getValue');
+    var batch = $('#combobox_pc_normal').combobox('getValue');
+    m_sjcx_normal.query_select(casenum, batch, function (error, result) {
         if (error) {
             console.log(error);
             return;
         }
-        var str = "电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "内阻" + ","  + "容量" + "," + "Ocv4" + "," + "电压差" + "," + "等级" +  "," + "创建时间" + "," + "NG原因" + "," + "检测次数" + "\n";
+        var str = "箱号"+"电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "内阻" + ","  + "容量" + "," + "Ocv4" + "," + "电压差" + "," + "等级" + "," +"装箱数"+  "," + "创建时间" + ","  + "," + "检测次数" + "\n";
         var dcbatch = result.recordset[0].batch;
         for (var i = 0; i < result.recordset.length; i++) {
             for (var key in result.recordset[i]) {
