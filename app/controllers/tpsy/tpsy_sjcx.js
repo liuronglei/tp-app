@@ -11,6 +11,12 @@ $(document).ready(function () {
 
 /* 下拉框初始化 */
 function comboboxInit() {
+    var pc =csszMap.get("pc");
+    var ng_reason = $('#combobox_ngyy').combobox('getValue');
+    var scgd = csszMap.get("scgd");
+    var ygh = $('#combobox_ygh').combobox('getValue');
+    var kssj = $('#dd_star').datetimebox('getValue');
+    var jjsj = $('#dd_end').datetimebox('getValue');
     m_sjcx.query_selectAll_batch(function (err,result) {
         if(err) throw err;
         var data = [];
@@ -32,7 +38,40 @@ function comboboxInit() {
         }
         $('#combobox_pc').combobox("loadData",data);
     });
+    m_sjcx.query_selectAll_scgd(pc,function (err,result) {
+        if(err) throw err;
+        var data = [];
+        var contains =  false;
+        var value = {value: "",text: "全部"};
+        data.push(value);
+        for( var i = 0; i < result.recordset.length; i++){
+            var record = result.recordset[i].productionorder;
+            value = {value: record ,text: record};
+            if(csszMap.get("scgd") == record){
+                contains = true;
+                value.selected = true;
+            }
+            data.push(value);
 
+        }
+        if(!contains){
+            value = {value: csszMap.get("scgd") ,text: csszMap.get("scgd"),selected : true};
+            data.push(value);
+        }
+        $('#combobox_scgd').combobox("loadData",data);
+    });
+    m_sjcx.query_selectAll_ygh(pc,function (err,result) {
+        if(err) throw err;
+        var data = [];
+        var value = {value: "",text: "全部"};
+        data.push(value);
+        for( var i = 0; i < result.recordset.length; i++){
+            var record = result.recordset[i].workernum;
+            value = {value: record ,text: record};
+            data.push(value);
+        }
+        $('#combobox_ygh').combobox("loadData",data);
+    });
     var data1 = [
         {value: "", text: "全部",selected: true},
         {value: "NG1", text: "NG1(扫码不良)"},
@@ -42,9 +81,7 @@ function comboboxInit() {
         {value: "NG5", text: "NG5(△V不良)"}
     ];
     $('#combobox_ngyy').combobox("loadData",data1);
-    var batch = csszMap.get("pc");
-    var ng_reason = $('#combobox_ngyy').combobox('getValue');
-    m_sjcx.query_select(ng_reason, batch, function (error, result) {
+    m_sjcx.query_select(ng_reason, pc,scgd,ygh,kssj,jjsj, function (error, result) {
         if (error) {
             console.log(error);
             return;
@@ -57,7 +94,11 @@ function comboboxInit() {
 function select_All(){
     var batch =$('#combobox_pc').combobox('getValue');
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
-    m_sjcx.query_select(ng_reason, batch, function (error, result) {
+    var scgd = $('#combobox_scgd').combobox('getValue');
+    var ygh = $('#combobox_ygh').combobox('getValue');
+    var kssj = $('#dd_star').datetimebox('getValue');
+    var jjsj = $('#dd_end').datetimebox('getValue');
+    m_sjcx.query_select(ng_reason, batch,scgd,ygh,kssj,jjsj, function (error, result) {
         if (error) {
             console.log(error);
             return;
@@ -76,7 +117,7 @@ function dataGrid_Init(dataArr) {
             {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
             {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
             {field:'ocv4',title:'ocv4'},
-            {field:'volumedifference',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
+            {field:'voltagedifference',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
             {field:'ng_reason',title:'NG原因'},
             {field:'checknum',title:'检测次数'},
             {field:'equiptmentnum',title:'设备号'},
@@ -127,7 +168,11 @@ function dcCsv() {
     var date=cxTime.getFullYear()+"_"+(cxTime.getMonth()+1)+"_"+cxTime.getDate()+"_"+cxTime.getHours()+"_"+cxTime.getMinutes()+"_"+cxTime.getSeconds();
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
     var batch = $('#combobox_pc').combobox('getValue');
-    m_sjcx.query_select(ng_reason, batch, function (error, result) {
+    var scgd = $('#combobox_scgd').combobox('getValue');
+    var ygh = $('#combobox_ygh').combobox('getValue');
+    var kssj = $('#dd_star').datetimebox('getValue');
+    var jjsj = $('#dd_end').datetimebox('getValue');
+    m_sjcx.query_select(ng_reason, batch,scgd,ygh,kssj,jjsj, function (error, result) {
         if (error) {
             console.log(error);
             return;

@@ -1,9 +1,9 @@
 var query = require("../utils/sqlserver");
 
 const m_sjcx = {
-    query_select : function (ng_reason,batch,callback) {
+    query_select : function (ng_reason,batch,scgd,ygh,kssj,jjsj,callback) {
         var sql = 'select cellnum,equiptmentnum,workernum,productionorder,batch,' +
-            'voltage,resistance,volume,ocv4,voltagedifference,voltagedifference,grade,' +
+            'voltage,resistance,volume,ocv4,voltagedifference,grade,' +
             'CONVERT(varchar(100), creattime, 20) as creattime,ng_reason,checknum from d_cell_ng where 1=1';
         if(batch != null && batch != "") {
             sql += " and batch='" + batch + "'";
@@ -11,16 +11,28 @@ const m_sjcx = {
         if(ng_reason != null && ng_reason != "") {
             sql += " and ng_reason like '%" + ng_reason + "%'";
         }
+        if(scgd != null && scgd != "") {
+            sql += " and productionorder ='" + scgd + "'";
+        }
+        if(ygh != null && ygh != "") {
+            sql += " and workernum ='" + ygh + "'";
+        }
+        if(kssj != null && kssj != ""){
+            sql += " and creattime>=CONVERT(datetime,'"+kssj+"',20)";
+        }
+        if(jjsj != null && jjsj != ""){
+            sql += " and creattime<=CONVERT(datetime,'"+jjsj+"',20)";
+        }
         query(sql,callback);
     },
     query_selectAll_batch :function (callback) {
         query('select batch from d_cell_ng group by batch',callback);
     },
-    query_selectAll_ng_reason :function (callback) {
-        query('select ng_reason from d_cell_ng group by ng_reason',callback);
+    query_selectAll_ygh :function (pc,callback) {
+        query('select workernum from d_cell_ng where batch='+pc+' group by workernum',callback);
     },
-    query_select_dqbatch : function (callback) {
-        query('select value from p_cssz where name = \'pc\'',callback);
+    query_selectAll_scgd : function (pc,callback) {
+        query('select productionorder from d_cell_ng where batch='+pc+' group by productionorder',callback);
     }
 };
 

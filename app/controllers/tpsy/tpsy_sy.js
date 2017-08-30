@@ -27,7 +27,6 @@ $(document).ready(function () {
 
 function qlfx() {
     c_page.doQlfx();
-    sealing_dispose();
 }
 
 function fillCombobox (){
@@ -59,14 +58,14 @@ function CreatWindows_cssz() {
 function CreatWindows_ngsjcx() {
     $('#win_ngsjcx').window({
         title: 'NG数据查询',
-        left:200,
-        top:80,
+        left:230,
+        top:50,
         collapsible:false,
         minimizable:false,
         maximizable:false,
         closable:true,
         width:1040,
-        height:680,
+        height:710,
         modal:false,
         draggable:true
     });
@@ -75,14 +74,14 @@ function CreatWindows_ngsjcx() {
 function CreatWindows_zcsjcx() {
     $('#win_normalsjcx').window({
         title: '正常数据查询',
-        left:200,
-        top:80,
+        left:230,
+        top:50,
         collapsible:false,
         minimizable:false,
         maximizable:false,
         closable:true,
         width:1040,
-        height:680,
+        height:710,
         modal:false,
         draggable:true
     });
