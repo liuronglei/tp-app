@@ -162,11 +162,15 @@ const plc_client = {
     //PLC数据接收
     dataReceive : function() {
         _client.strartListen(function(hexStr) {
-            if(hexStr == null || hexStr.length < 22 || hexStr.substring(18,22) != "0000") {
-                //正常返回报文第10、11个字都必须为0，不然就是异常
+            if(hexStr == null || hexStr.length < 22 || hexStr.substring(16,22) != "000000") {
+                //正常返回报文第9、10、11个字都必须为0，不然就是异常
+                if(callBack_receive != null) {
+                    callBack_receive(true, hexStr);
+                    callBack_receive = null;
+                }
                 return;
             } else if(callBack_receive != null) {
-                callBack_receive(hexStr);
+                callBack_receive(false,hexStr);
                 callBack_receive = null;
             }
         });
@@ -175,15 +179,30 @@ const plc_client = {
         return getFlagByte(value);
     },
     //PLC数据写入（字节数组）
-    writeByte : function(Area,Address,len,data) {
+    writeByte : function(Area,Address,len,data,callBack) {
         var set = getWriteSet(Area,Address,len);
         for(var i=0; i<data.length; i++) {
             set[set.length]=data[i];
         }
-        _client.write(set);
+        _client.write(set,callBack);
+    },
+    //PLC数据写入（二进制数）
+    writeBinary : function(Area,Address,len,data,callBack) {
+        var set = getWriteSet(Area,Address,len);
+        data = parseInt(data,2);
+        var flagByte = new Array();
+        var dataByteArr = dataformat.hex2bytes(dataformat.int2hex(data));
+        flagByte[flagByte.length]=dataByteArr.length>1 ? dataByteArr[1] : 0x00;
+        flagByte[flagByte.length]=dataByteArr[0];
+        flagByte[flagByte.length]=dataByteArr.length>3 ? dataByteArr[3] : 0x00;
+        flagByte[flagByte.length]=dataByteArr.length>2 ? dataByteArr[2] : 0x00;
+        for(var i=0; i<flagByte.length; i++) {
+            set[set.length] = flagByte[i];
+        }
+        _client.write(set,callBack);
     },
     //PLC数据写入（浮点数）
-    writeFloat : function(Area,Address,len,data) {
+    writeFloat : function(Area,Address,len,data,callBack) {
         var set = getWriteSet(Area,Address,len);
         for(var i=0; i<data.length; i++) {
             var data_byte = dataformat.float2bytes(data[i]);
@@ -192,16 +211,16 @@ const plc_client = {
             set[set.length]=data_byte[2];
             set[set.length]=data_byte[3];
         }
-        _client.write(set);
+        _client.write(set,callBack);
     },
     //PLC数据写入（整数）
-    writeInt : function(Area,Address,len,data) {
+    writeInt : function(Area,Address,len,data,callBack) {
         var set = getWriteSet(Area,Address,len);
         var dataByteArr = getFlagByte(data);
         for(var i=0; i<dataByteArr.length; i++) {
             set[set.length] = dataByteArr[i];
         }
-        _client.write(set);
+        _client.write(set,callBack);
     },
     //PLC数据读取（发送读取数据的报文，具体数据获取在dataReceive方法中定义）
     read : function(Area,Address,len,callBack) {
@@ -260,16 +279,17 @@ const _client = {
     //写入数据
     write : function(data,callBack,count) {
         //为避免PLC还未返回数据，已经有下次请求过来，故使用clientSyn标志
-        //如果标记位为true，说明正在获取数据，等待50ms再执行，20次后若还是在等待，则强行执行
+        //如果标记位为true，说明正在获取数据，等待10ms再执行，30次后若还是在等待，则强行执行
         if(clientSyn) {
             if(typeof count == "undefined") {
                 count = 0;
             }
-            if(count >= 20) {
+            if(count >= 30) {
+                console.log("sendData: Timeout!!!!!!!" );
                 callBack_receive = callBack;
                 client.write(new Buffer(data));
             } else {
-                setTimeout(function(){_client.write(data,callBack,++count);},50);
+                setTimeout(function(){_client.write(data,callBack,++count);},10);
             }
         } else {
             clientSyn = true;

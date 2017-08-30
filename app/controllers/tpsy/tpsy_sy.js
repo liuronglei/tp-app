@@ -44,7 +44,7 @@ function CreatWindows_cssz() {
         maximizable:false,
         closable:true,
         width:440,
-        height:150 + csszMap.size()*40,
+        height:150 + csszMap.size()*39,
         modal:false,
         draggable:true
     });

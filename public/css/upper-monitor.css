@@ -121,8 +121,9 @@
     float:left;
 }
 .checkbox{
-    text-align: right;
-    margin-bottom : 10px;
+    text-align: left;
+    margin-left:6%;
+    margin-bottom : 17px;
 }
 .cssz-button{
     padding-top: 1%;
