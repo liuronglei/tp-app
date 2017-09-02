@@ -26,7 +26,9 @@ $(document).ready(function () {
 });
 
 function qlfx() {
-    c_page.doQlfx();
+    if(window.confirm('确定要进行尾料清算吗？')) {
+        c_page.doQlfx();
+    }
 }
 
 function fillCombobox (){
@@ -43,7 +45,7 @@ function CreatWindows_cssz() {
     $('#win_cssz').window({
         title:'参数设置',
         left:500,
-        top:80,
+        top:30,
         collapsible:false,
         minimizable:false,
         maximizable:false,
@@ -134,9 +136,9 @@ function sycsInit() {
                 console.log(err);
                 return;
             }
-            for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_dxsl').text(result.recordset[i].length);
-            }
+            var normalBarArr = require('electron').remote.getGlobal('sharedObject').normalBarArr;
+            var count = parseInt(result.recordset[0].normalcount) + normalBarArr.length;
+            $('#sy_dxsl').text(count);
         });
     });
 }
@@ -208,39 +210,34 @@ function updataCountShow() {
 function sealing_dispose() {
     c_page.regValue_casenum(function (dataArr_addNoraml) {
         getValue_plc.add_normal(dataArr_addNoraml);
-        getValue_plc.select_normal(function (dataArr) {
-            var dataArr_upload = dataArr;
-            for(var i = 0; i < dataArr_upload.length; i++){
-                var upload = dataArr_upload[i];
-                var Json_Upload = {
-                    Key: "",      //未使用，为空字符串
-                    Role: "",      //未使用，为空字符串
-                    TransactionType: 1,     //校验check:0   数据上传：1
-                    StartDate: "",//未使用，空字符串
-                    EndDate: "", //未使用，空字符串
-                    InDataSet :[{
-                        LotNo: upload.batch,     // 批号
-                        RltBillNo: upload.productionorder,   //筛选单号
-                        MachineNo: upload.equiptmentnum,  //机台号
-                        WorkerNo: upload.workernum,  // 工号
-                        Qty: dataArr_upload.length,          //数量
-                        LevelGrade: "",        //档位 对应等级
-                        CapSubGrade: upload.volume_min+"-"+upload.volume_max,      //容量档 对应容量范围
-                        Voltage: upload.voltage_min+"-"+upload.voltage_max,  //电压
-                        InterResist: upload.resistance_min+"-"+upload.resistance_max,       //内阻
-                        RecordTime: upload.creattime,      //时间
-                        ReTest: upload.checknum,      // 二次筛选 筛选次数
-                        Remark: ""           //    备注
-                    }]
-                };
-                var json = JSON.stringify(Json_Upload);
-                webService.upload(url,json,function (result) {
-                    if(result.ret == 0){
-                        console.log("case update : sccu")
-                    }
-                    else { console.log("case update errot:"+result.Msg) }
-                });
+        var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
+        var Json_Upload = {
+            Key: "",      //未使用，为空字符串
+            Role: "",      //未使用，为空字符串
+            TransactionType: 1,     //校验check:0   数据上传：1
+            StartDate: "",//未使用，空字符串
+            EndDate: "", //未使用，空字符串
+            InDataSet :[{
+                LotNo: csszMap.get("pc"),     // 批号
+                RltBillNo: csszMap.get("scgd"),   //筛选单号
+                MachineNo: csszMap.get("sbh"),  //机台号
+                WorkerNo: csszMap.get("czrygh"),  // 工号
+                Qty: dataArr_addNoraml.length,          //数量
+                LevelGrade: "",        //档位 对应等级
+                CapSubGrade: (csszMap.get("rlfw")).replace(";","-"),      //容量档 对应容量范围
+                Voltage: (csszMap.get("dyfw")).replace(";","-"),  //电压
+                InterResist: (csszMap.get("nzfw")).replace(";","-"),       //内阻
+                RecordTime: "",      //时间
+                ReTest: "",      // 二次筛选 筛选次数
+                Remark: ""           //    备注
+            }]
+        };
+        var json = JSON.stringify(Json_Upload);
+        webService.upload(url,json,function (result) {
+            if(result.ret == 0){
+                console.log("case update : sccu")
             }
+            else { console.log("case update errot:"+result.Msg) }
         });
     });
 }
@@ -260,7 +257,3 @@ function filltable(){
 function closeCsszWin(){
     $('#win_cssz').window('close');
 }
-
-
-
-
