@@ -1,8 +1,8 @@
-var mssql = require('mssql');
+﻿var mssql = require('mssql');
 const config = {
     user: 'sa',
     password: '123456',
-    server: '192.168.95.1',
+    server: 'localhost',
     database: 'tenpower',
     port:1433
 };

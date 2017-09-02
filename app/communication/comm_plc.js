@@ -147,8 +147,26 @@ const plc = {
         plc_client.writeByte("D", property.ADDRESS_SFSM, 2, sfsm != "1" ? plc_client.getFlagByte(1) : plc_client.getFlagByte(0), function(){}); //是否扫码勾选
     },
     //写入电芯扫码结果
-    writeBarCodeFlag : function(data) {
-        plc_client.writeBinary("D", property.ADDRESS_FLAG_BARCODE_RESULT, 2, data, function(){}); //电芯扫码结果
+    writeBarCodeFlag : function(data, count) {
+        plc_client.writeBinary("D", property.ADDRESS_FLAG_BARCODE_RESULT, 2, data, function(){});
+        //写入之后读取一下，看看有没有问题，避免写入失败
+        plc_client.read("D", property.ADDRESS_FLAG_BARCODE_RESULT, 2, function(error,hexStr) {
+            var flag = false;
+            var tempStr = hexStr.substring(index_fix, index_fix + len_double);
+            if(parseInt(tempStr.substring(2,4) + tempStr.substring(0,2),16) >= parseInt("1000000000000000",2)) {
+                flag = true;
+            }
+            if(!flag) {
+                if(typeof count == "undefined") {
+                    count = 0;
+                }
+                if(count >= 10) {
+                    console.log("sendBarCodeFlag: Timeout!!!!!!!" );
+                } else {
+                    setTimeout(function(){plc.writeBarCodeFlag(data, ++count);},10);
+                }
+            }
+        });
     },
     //写入电芯OCV数据
     writeBarInfo : function(rlArr,ocv4Arr) {

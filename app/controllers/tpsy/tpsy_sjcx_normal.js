@@ -1,4 +1,4 @@
-var fs = require("fs");
+﻿var fs = require("fs");
 var m_sjcx_normal = require('../../models/m_sjcx_normal');
 var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 
@@ -179,6 +179,7 @@ function pagerFilter(data){
 
 /* 导出csv文件 */
 function dcCsv() {
+	alert(1);
     var property = JSON.parse(fs.readFileSync('app/config/config_filesave.json', 'utf8'));
     var cxTime = new Date();
     var date=cxTime.getFullYear()+"_"+(cxTime.getMonth()+1)+"_"+cxTime.getDate()+"_"+cxTime.getHours()+"_"+cxTime.getMinutes()+"_"+cxTime.getSeconds();
