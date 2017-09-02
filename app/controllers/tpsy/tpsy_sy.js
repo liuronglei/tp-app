@@ -18,11 +18,16 @@ $(document).ready(function () {
     $("#btn_ngsjcx").click(CreatWindows_ngsjcx);
     $("#btn_zcsjcx").click(CreatWindows_zcsjcx);
     $("#btn_cxdy").click(print);
+    $("#btn_qlfx").click(qlfx);
     add_NG_DB();
     sealing_dispose();
     filltable();
     judgeNormal();
 });
+
+function qlfx() {
+    c_page.doQlfx();
+}
 
 function fillCombobox (){
     c_page.regFillCombobox(function (json_xh) {
@@ -53,14 +58,14 @@ function CreatWindows_cssz() {
 function CreatWindows_ngsjcx() {
     $('#win_ngsjcx').window({
         title: 'NG数据查询',
-        left:200,
-        top:80,
+        left:230,
+        top:50,
         collapsible:false,
         minimizable:false,
         maximizable:false,
         closable:true,
         width:1040,
-        height:680,
+        height:710,
         modal:false,
         draggable:true
     });
@@ -69,14 +74,14 @@ function CreatWindows_ngsjcx() {
 function CreatWindows_zcsjcx() {
     $('#win_normalsjcx').window({
         title: '正常数据查询',
-        left:200,
-        top:80,
+        left:230,
+        top:50,
         collapsible:false,
         minimizable:false,
         maximizable:false,
         closable:true,
         width:1040,
-        height:680,
+        height:710,
         modal:false,
         draggable:true
     });
@@ -218,7 +223,7 @@ function sealing_dispose() {
                         RltBillNo: upload.productionorder,   //筛选单号
                         MachineNo: upload.equiptmentnum,  //机台号
                         WorkerNo: upload.workernum,  // 工号
-                        Qty: upload.binningnum,          //数量
+                        Qty: dataArr_upload.length,          //数量
                         LevelGrade: "",        //档位 对应等级
                         CapSubGrade: upload.volume_min+"-"+upload.volume_max,      //容量档 对应容量范围
                         Voltage: upload.voltage_min+"-"+upload.voltage_max,  //电压

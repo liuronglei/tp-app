@@ -58,6 +58,9 @@ const c_page = {
     boxError : function() {
         ipc.send('boxError-ping-event');
     },
+    doQlfx : function () {
+        ipc.send('clearBox-ping-event');
+    },
     /*
      * 打开万克LOGO指定的页面
      */

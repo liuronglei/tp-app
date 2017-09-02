@@ -2140,6 +2140,7 @@
   overflow: hidden;
 }
 .calendar table {
+  background-color: white;
   table-layout: fixed;
   border-collapse: separate;
   font-size: 12px;
@@ -2158,6 +2159,7 @@
   height: 22px;
 }
 .calendar-title {
+  background-color: #0a62ea;
   text-align: center;
   height: 22px;
 }
@@ -2285,10 +2287,10 @@
 }
 .calendar-body th,
 .calendar-menu-month {
-  color: white;
+  color: black;
 }
 .calendar-day {
-  color: white;
+  color: black;
 }
 .calendar-sunday {
   color: #CC2222;
@@ -2314,7 +2316,7 @@
   background: black;
 }
 .calendar-body th {
-  background:#1D212A;
+  background:white;
   padding: 2px 0;
 }
 .calendar-hover,
@@ -2364,7 +2366,7 @@
   background-position: center center;
 }
 .datebox-button {
-  background-color: #4D525C;
+  background-color: #0a62ea;
 }
 .datebox-button a {
   color: #fff;

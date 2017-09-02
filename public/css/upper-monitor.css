@@ -11,7 +11,7 @@
     text-align: center;
 }
 .level-div img{
-    float:left;margin-left:40%;position: relative;top:8px;
+    float:left;margin-left:40%;position: relative;top:8px;margin-right: 20px;
 }
 .level-div p{
     float:left;font-size: 20px;color:#fff;position: relative;top:-10%;
@@ -135,13 +135,12 @@
 .top-function{
     float:none;
     margin-top:-5px;
-    margin-bottom: 50px;
     height:5%;
     width:100%;
 }
 .combobox-div{
     float:left;
-    margin-right:50px;
+    margin-right:20px;
 }
 .combobox-div-sy{
     text-align: right;
@@ -153,4 +152,15 @@
 .table-display{
     height:80%;
     width:90%;
+}
+.button-div-sjcx{
+    zoom: 1;
+    height:49%;
+    margin-bottom: 1%;
+}
+.button-div-sjcx:after{
+    display:block; content:'clear'; clear:both; line-height:0; visibility:hidden;
+}
+.cbx-text{
+    display:block;width:100px;float:left;margin-top:5px;
 }
