@@ -11,27 +11,39 @@ var serialPort = new SerialPort(property.PRINT_PORT, {
     baudRate: property.PRINT_BAUDRATE,  //波特率
     dataBits: property.PRINT_DATABITS,    //数据位
     parity: 'none',   //奇偶校验
-    stopBits: property.PRINT_STOPBITS,   //停止位
-    flowControl: false
-}, false);
+    stopBits: property.PRINT_STOPBITS,   //停止位,
+    parser: SerialPort.parsers.Readline,
+    //autoOpen: false,
+    //rtscts: true,
+    //xon:true,
+    //xoff:true,
+    //xany:true,
+    //lock:false,
+    //buffersize:1024,
+    //highWaterMark:16,
+}, function() {});
 const scanner = {
-    receive : function(callBack) {
-        serialPort.open(function(error){
-            if(error){
-                console.log("open serialport-----: "+error);
-            }
-            serialPort.on('data',function(data){
-                data = new Buffer(data).toString();
-                var data = data.replace(/\ +/g, ""); //去掉空格
-                data = data.replace(/[ ]/g, "");    //去掉空格
-                data = data.replace(/[\r\n]/g, "")
-                if(data == "") {
-                    return;
-                }
-                console.log('boxCode:---' + data + "---");
-                callBack(data);
-            })
+    start : function(callBack) {
+        serialPort.open(function(error) {
+            callBack(error);
         });
+    },
+    receive : function(callBack) {
+        serialPort.on('data',function(data){
+            data = new Buffer(data).toString();
+            var data = data.replace(/\ +/g, ""); //去掉空格
+            data = data.replace(/[ ]/g, "");    //去掉空格
+            data = data.replace(/[\r\n]/g, "")
+            if(data == "") {
+                return;
+            }
+            console.log('boxCode:---' + data + "---");
+            callBack(data);
+        })
+    },
+    close : function(callBack) {
+        serialPort.close(callBack);
     }
+
 }
 module.exports = scanner;

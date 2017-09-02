@@ -109,14 +109,9 @@ var serialPort = new SerialPort(property.PRINT_PORT, {
 }, false);
 const print = {
     write : function(data) {
-        serialPort.open(function(error){
-            if(error){
-                console.log("open serialport: "+error);
-            }
-            serialPort.write(data, function(err, results) {
-                console.log('err ' + err);
-                console.log('results ' + results);
-            });
+        serialPort.write(data, function(err, results) {
+            console.log('err ' + err);
+            console.log('results ' + results);
         });
     },
     //xxdh, rld, dw, dyfw, nzfw, sl, tm

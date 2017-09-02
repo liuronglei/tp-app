@@ -80,6 +80,38 @@ global.sharedObject = {
     barCodeIndex: 0,
 };
 
+function getBarCodePre() {
+    var date = new Date();
+    var seperator1 = "";
+    var seperator2 = "";
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    if (hours >= 0 && hours <= 9) {
+        hours = "0" + hours;
+    }
+    if (minutes >= 0 && minutes <= 9) {
+        minutes = "0" + minutes;
+    }
+    if (seconds >= 0 && seconds <= 9) {
+        seconds = "0" + seconds;
+    }
+
+    var currentdate = year + seperator1 + month + seperator1 + strDate
+        + " " + hours + seperator2 + minutes + seperator2 + seconds;
+    return currentdate;
+}
+var preStr = getBarCodePre();
+
 //接收界面参数设置消息，更新参数设置
 ipcMain.on('updateCssz-ping-event',(event) => {
     updateCssz();
@@ -100,6 +132,11 @@ ipcMain.on('casenumPrint-ping-event',(event, arg) => {
         }
     }
     if(printData != null) casenumPrint(printData);
+})
+
+//接收清料装箱消息，进行装箱
+ipcMain.on('clearBox-ping-event',(event) => {
+    doClearBox();
 })
 
 //串口发送箱号给渲染进程
@@ -127,6 +164,12 @@ function send_casenum(dataArr) {
     win.webContents.send('casenum_refresh-pong-event',dataArr);
 }
 
+//开始扫码枪监听
+const scanner = require(path.join(__dirname, 'app/communication/comm_scanner'));
+scanner.receive(function(barCode) {
+    scan_barcode(barCode);
+});
+
 //参数设置全局变量保存
 function updateCssz() {
     m_cssz.fillCsszMap(function (hashmap) {
@@ -145,6 +188,12 @@ function updateCssz() {
             isWinOpening = true;
             createWindow();
         }
+        //判断是否需要扫描箱号
+        if(hashmap.get("sfsmxh") == "1") {
+            scanner.start(function(){});
+        } else {
+            scanner.close(function(){});
+        }
     });
 }
 
@@ -158,12 +207,6 @@ function saveOcvData() {
 
 //启动后，进行参数初始化
 updateCssz();
-
-//开始扫码枪监听
-const scanner = require(path.join(__dirname, 'app/communication/comm_scanner'));
-scanner.receive(function(barCode) {
-    scan_barcode(barCode);
-});
 
 //开始plc数据监听
 var plc = require(path.join(__dirname, 'app/communication/comm_plc'));
@@ -184,6 +227,10 @@ function errorVoice(count) {
 function doErrorVoice() {
     clearTimeout(errorTimeoutObj);
     errorVoice();
+}
+function doClearBox() {
+    clearInterval(boxTimer);
+    boxProcess();
 }
 
 function fillOcvData(currentBarCodeArr) {
@@ -221,17 +268,20 @@ function fillOcvData(currentBarCodeArr) {
 //外观检测结束处理
 function barCodeProcess() {
     //plc.resetBarCodeFlag();
-    schedulePLC_barCode(timerRun);
     //判断距离上一次处理的时间差
+    /* （暂时不判断时间差）
     var newDate = new Date();
     var oldDate = global.sharedObject.lastProcessDate[0];
     if(oldDate != null && newDate-oldDate<timeInterval) {
         console.log('barCodeProcess:reset!!!!!!!!!!!');
         return;
     }
-    console.log("barCodeCount:" + (++count_bar));
     global.sharedObject.lastProcessDate[0] = newDate;
-    m_barcode.queryBarCode(property_plc.CHECK_NUM_SINGLE,function (error, results, fields) {
+     */
+    console.log("barCodeCount:" + (++count_bar));
+    var start = global.sharedObject.barCodeIndex-property_plc.CHECK_NUM_SINGLE+1;
+    var end = global.sharedObject.barCodeIndex;
+    m_barcode.queryBarCode(start,end,function (error, results, fields) {
         if (error) throw error;
         var csszMap = global.sharedObject.csszMap;
         //保存电芯条码列表
@@ -242,7 +292,9 @@ function barCodeProcess() {
             global.sharedObject.barCodeNum++;
             var barCode = results[i].barcode;
             if(barCode != property_plc.BARCODE_MISS){
-                if(csszMap.get("sfsm") != "1")  barCode = dataformat.fillZero(global.sharedObject.barCodeNum, 8);
+                if(csszMap.get("sfsm") != "1")  {
+                    barCode = preStr + " " + dataformat.fillZero(global.sharedObject.barCodeNum, 6);
+                }
             }
             if(barCode == property_plc.BARCODE_FAIL){
                 barCodeFlag = "1" + barCodeFlag;
@@ -257,6 +309,8 @@ function barCodeProcess() {
         plc.writeBarCodeFlag(barCodeFlag);
         //如果参数设置勾选了OCV筛选，则需要传递OCV数据给PLC
         fillOcvData(currentBarCodeArr);
+        //结束后，重新开始循环
+        schedulePLC_barCode(timerRun);
     });
 }
 
@@ -396,8 +450,10 @@ function checkProcess() {
     });
 }
 
+//打开打印机串口
+const print = require(path.join(__dirname, 'app/communication/comm_print'));
+
 //封箱结束处理
-const print = require(path.join(__dirname, 'app/communication/comm_print'))
 var getValue_plc = require(path.join(__dirname, 'app/controllers/tpsy/getValue_plc'));
 function boxProcess() {
     //重置标记位
@@ -438,6 +494,7 @@ function boxProcess() {
         global.sharedObject.normalBarArr = newBarArr;
         send_sealing(dataArr);
         //打印标签
+        console.log("boxSize:" + dataArr.length);
         var csszMap = global.sharedObject.csszMap;
         if(csszMap.get("sfdyxh") == "1") {
             var printData = {
@@ -446,7 +503,7 @@ function boxProcess() {
                 rld:rld,
                 dyfw:dyfwStr.replace(";","-"),
                 nzfw:nzfwStr.replace(";","-"),
-                sl:zxs,
+                sl:dataArr.length,
                 tm:xh};
             casenumPrint(printData);
             //保存打印列表
@@ -487,9 +544,9 @@ function schedulePLC_barCode(runTime) {
             if(results.length > 0){
                 var barCodeIndex = global.sharedObject.barCodeIndex;
                 var lastIndex = parseInt(results[0].lastindex);
-                if(lastIndex == barCodeIndex + property_plc.CHECK_NUM_SINGLE) {
-                    global.sharedObject.barCodeIndex = lastIndex;
-                    clearInterval(barCodeTimer);
+                if(lastIndex >= barCodeIndex + property_plc.CHECK_NUM_SINGLE) {
+                    global.sharedObject.barCodeIndex = barCodeIndex + property_plc.CHECK_NUM_SINGLE;
+                    //clearInterval(barCodeTimer);
                     barCodeProcess();
                 }
             }
