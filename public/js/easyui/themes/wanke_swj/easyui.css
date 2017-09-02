@@ -441,7 +441,7 @@
 }
 .window-proxy-mask,
 .window-mask {
-  background: #ccc;
+  background: black;
 }
 .window .panel-footer {
   border: 1px solid #95B8E7;

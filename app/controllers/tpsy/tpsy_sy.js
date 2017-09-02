@@ -50,7 +50,7 @@ function CreatWindows_cssz() {
         closable:true,
         width:440,
         height:150 + csszMap.size()*39,
-        modal:false,
+        modal:true,
         draggable:true
     });
     $('#win_cssz').window('refresh', './tpsy_cssz.html');
@@ -66,7 +66,7 @@ function CreatWindows_ngsjcx() {
         closable:true,
         width:1040,
         height:710,
-        modal:false,
+        modal:true,
         draggable:true
     });
     $('#win_ngsjcx').window('refresh', './tpsy_sjcx.html');
@@ -82,7 +82,7 @@ function CreatWindows_zcsjcx() {
         closable:true,
         width:1040,
         height:710,
-        modal:false,
+        modal:true,
         draggable:true
     });
     $('#win_normalsjcx').window('refresh', './tpsy_sjcx_normal.html');

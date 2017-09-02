@@ -6,8 +6,9 @@ var xlsx = require('node-xlsx');
 var fileread = {
     readData : function(filePath) {
         var hashMap =new HashMap.Map();
-        for(var x = 0; x < fs.readdirSync(filePath).length; x++){
-            var filename = fs.readdirSync(filePath)[x];
+        var filecount = fs.readdirSync(filePath);
+        for(var x = 0; x < filecount.length; x++){
+            var filename = filecount[x];
             var k = filename.lastIndexOf(".");
             var SUFFIX="";
             for(k = k+1; k < filename.length; k++) {

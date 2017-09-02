@@ -13,8 +13,8 @@
 .level-div img{
     float:left;margin-left:40%;position: relative;top:8px;margin-right: 20px;
 }
-.level-div p{
-    float:left;font-size: 20px;color:#fff;position: relative;top:-10%;
+.level-div span{
+    float:left;font-size: 24px;color:#fff;position: relative;margin-top: 12px;
 }
 .left-content {
     position: relative;
@@ -53,8 +53,9 @@
     width:60%;
 }
 .button-div{
+    height:30px;
     padding-top: 1%;
-    padding-left:5%;
+    padding-left: 5%;
 }
 .zc-div{
     text-align: center;
