@@ -22,7 +22,7 @@
     float:left;
     margin:1% 1% 0 1%;
     width:29%;
-    height:620px;
+    height:645px;
 }
 .right-content{
     position: relative;
@@ -30,27 +30,32 @@
     float:left;
     margin-top: 1%;
     width:15%;
-    height:620px;
+    height:645px;
 }
 .jbcs-div{
     text-align: center;
 }
 .jbcs-content{
-    height:34px;
+    height:30px;
 }
 .left-img{
     float: left;
     margin-top:-10px;
+    height: 23px;
+    width: 23px;
 }
 .left-text{
     float:left;
     text-align: left;
-    width:30%;
+    width:33%;
+    font-size: 13px;
+    line-height: 8px;
 }
 .left-text-value{
     float:left;
     text-align: left;
     width:60%;
+    line-height: 8px;
 }
 .button-div{
     height:30px;
@@ -59,6 +64,7 @@
 }
 .zc-div{
     text-align: center;
+    font-weight:bold;
 }
 .full{
     width:100%;
@@ -141,14 +147,15 @@
 }
 .combobox-div{
     float:left;
-    margin-right:20px;
+    margin-right:25px;
 }
 .combobox-div-sy{
     text-align: right;
     margin-right: 50px;
 }
 .sjcx-button{
-    float:left;
+    float:right;
+    margin-right:30px;
 }
 .table-display{
     height:80%;
@@ -163,5 +170,67 @@
     display:block; content:'clear'; clear:both; line-height:0; visibility:hidden;
 }
 .cbx-text{
-    display:block;width:100px;float:left;margin-top:5px;
+    display:block;width:100px;float:left;margin-top:5px;font-size: 14px;position: relative;top:3px;
+}
+.sjcx-hr{
+    width:18px;
+    height:1px;
+    background-color:black;
+    border:none;
+    float:left;
+    margin-right:25px;
+    margin-top:15px;
+}
+.history-record {
+    height: 40%;
+}
+
+.normal-picture {
+    width: 28px;
+    height: 28px;
+    margin: 4px 0 0 105px;
+    float: left;
+}
+
+.now-picture {
+    width: 68px;
+    height: 68px;
+    float: left;
+    margin-left: 90px;
+}
+
+.history_list {
+    width: 200px;
+    height: 30px;
+}
+
+.history_content:after {
+    display: block;
+    content: 'clear';
+    clear: both;
+    line-height: 0;
+    visibility: hidden;
+}
+.zccontent ,.zcnow-content,.yccontent,.ycnow-content,.zccontent-code,.zcnow-content-code,.yccontent-code,.ycnow-content-code {
+    width: 100%;
+    margin-left: 160px;
+    display: block;
+    font-size: 14px;
+    color: #3c8b3c;
+}
+.zccontent,.yccontent,.zccontent-code,.yccontent-code{
+    font-size: 12px;
+}
+.ycnow-content-code,.yccontent-code,.ycnow-content,.yccontent{
+    color: #b52b27;
+}
+.zcnow-content,.ycnow-content{
+    position: absolute;
+    top: 420px;
+    left: 22px;
+}
+.zcnow-content-code,.ycnow-content-code{
+    position: absolute;
+    top: 436px;
+    left: 21px;
 }

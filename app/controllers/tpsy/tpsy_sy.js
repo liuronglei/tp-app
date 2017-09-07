@@ -6,8 +6,13 @@ var c_page = require("../../controllers/c_page");
 var webService = require("../../controllers/tpsy/webservice");
 var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
+//var dataformat = require('../../utils/dataformat');
+var normalCount = require('electron').remote.getGlobal('sharedObject').normalCount;
+var ngCount = require('electron').remote.getGlobal('sharedObject').ngCount;
 var url = property.URL;
-//var url = "http://172.22.33.6:8088/Service1.asmx?wsdl";
+var checkResultArr = [];
+/*var url = "http://221.178.135.214:8099/Service1.asmx?wsdl";
+var count = 0;*/
 $(document).ready(function () {
     fillCombobox();
     updataCountShow();
@@ -24,6 +29,33 @@ $(document).ready(function () {
     filltable();
     judgeNormal();
 });
+
+function updataCheckResult() {
+    //遍历checkResultArr
+    for(var i = 0; i < checkResultArr.length; i++){
+        var arg = checkResultArr[i].arg;
+        var ret = checkResultArr[i].ret;
+        var Msg = "正常";
+        var checkFlag = "zc";
+        var nowCheck ="";
+        if(ret == 1){
+            checkFlag = "yc";
+            Msg = checkResultArr[i].Msg;      //异常则有异常信息,需要显示出来
+        }
+        var historyCheck = "normal";
+        if(i == 0){
+            historyCheck = "now";
+            nowCheck = "now-";
+        }
+        console.log(arg);
+        var htmlStr = '<img class="'+historyCheck+'-picture" src="../../../public/img/icon_tp/icon-big-'+checkFlag+'.png"/>'+
+            '<div class="history_list">'+
+            '<span class="'+checkFlag+''+nowCheck+'content">'+Msg+'</span>'+
+            '<span class="'+checkFlag+''+nowCheck+'content-code">'+arg+'</span>'+
+            '</div>';
+        $("#check_0"+(i+1)).html(htmlStr);
+    }
+}
 
 function qlfx() {
     if(window.confirm('确定要进行尾料清算吗？')) {
@@ -122,29 +154,15 @@ function sycsInit() {
                 {field:'result',title:'结果'}
             ]]
         });
-        m_tpsy.query_ngLength(function (err,result) {
-            if(err){
-                console.log(err);
-                return;
-            }
-            for(var i = 0;i < result.recordset.length; i++){
-                $('#sy_ngdxsl').text(result.recordset[i].length);
-            }
-        });
-        m_tpsy.query_normalLength(function (err,result) {
-            if(err){
-                console.log(err);
-                return;
-            }
-            var normalBarArr = require('electron').remote.getGlobal('sharedObject').normalBarArr;
-            var count = parseInt(result.recordset[0].normalcount) + normalBarArr.length;
-            $('#sy_dxsl').text(count);
-        });
+        $('#sy_ngdxsl').text(0);
+        $('#sy_dxsl').text(0);
     });
 }
 
 function judgeNormal() {
     c_page.regScanBarCode(function (arg) {
+        /*count++;
+        var arg=dataformat.fillZero(count,8);*/
         var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
         var Json_Check = {
             Key : "",
@@ -163,16 +181,37 @@ function judgeNormal() {
         };
         var json = JSON.stringify(Json_Check);
         webService.check(url,json,function (result) {
+            //将历史检测结果记录下来
+            if(checkResultArr == "" || arg!="undefined" && arg !=checkResultArr[0].arg){
+                checkResultArr.unshift({arg:arg,ret :result.ret,Msg :result.Msg});
+                while(checkResultArr.length >5){
+                    checkResultArr.pop();
+                }
+                updataCheckResult();
+            }
+            /*var ret = checkResultArr[0].arg.ret;
+            var Msg = "正常";
+            var checkFlag = "zc";
+            if(ret == 1){
+                checkFlag = "yc";
+                Msg = checkResultArr[0].arg.Msg;
+            }
+            $('#check_01').append('<img class="now-picture" src="../../../public/img/icon_tp/icon-big-'+checkFlag+'.png"/>'+
+                '<div class="history_list">'+
+                '<span class="content">'+Msg+'</span>'+
+                '<span class="content">'+arg+'</span>'+
+                '</div>')*/
+            /*$('#yc').hide();
+            $('#zc').hide();
             if(result.ret == 0){
                 $('#zc').show();
-                $('#yc').hide();
+
             }
             else{
                 $('#yc_text').text(result.Msg);
                 $('#yc').show();
-                $('#zc').hide();
                 c_page.boxError();
-            }
+            }*/
         });
     });
 }
@@ -205,6 +244,8 @@ function updataCountShow() {
                 $('#sy_ngdxsl').text(result.recordset[i].ngcount);
             }
         });
+        $('#sy_yxdxsl').text(normalCount);
+        $('#sy_yxngdxsl').text(ngCount);
     }, 1000);
 }
 function sealing_dispose() {
