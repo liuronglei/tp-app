@@ -78,6 +78,8 @@ global.sharedObject = {
     isFillOcvData: false,
     lastProcessDate: [null, null, null],
     barCodeIndex: 0,
+    normalCount: 0, //本次运行正常电芯数量
+    ngCount: 0,     //本次运行NG电芯数量
 };
 
 function getBarCodePre() {
@@ -422,8 +424,10 @@ function checkProcess() {
                         ng_reason: ng_reason
                     };
                     if (ng_reason != "") {
+                        global.sharedObject.ngCount++;
                         dataArr_ng[dataArr_ng.length] = barObj;
                     } else {
+                        global.sharedObject.normalCount++;
                         normalBarArr[normalBarArr.length] = barObj;
                     }
                     //开始组建filltable列表
