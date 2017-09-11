@@ -270,7 +270,7 @@ const _client = {
     strartListen : function(callBack) {
         client.on('data',function(data){
             //console.log("receiveData_old:" + new Buffer(data).toString('hex'));
-            var receiveData = dataformat.report2hex(new Buffer(data).toString('hex'));
+            var receiveData = Buffer.from(data,'binary').toString('hex');
             //console.log("receiveData_new:" + receiveData);
             callBack(receiveData);
             clientSyn = false;
@@ -295,7 +295,7 @@ const _client = {
             clientSyn = true;
             callBack_receive = callBack;
             //console.log("sendData:" + new Buffer(read).toString('hex'));
-            client.write(new Buffer(data));
+            client.write(Buffer.from(data,'binary'));
         }
     }
 }

@@ -127,13 +127,13 @@ function FillString(t, c, n, b) {
 function HexToSingle(t) {
     t = t.replace(/\s+/g, "");
     if (t == "") {
-        return "";
+        return 0;
     }
     if (t == "00000000") {
-        return "0";
+        return 0;
     }
     if ((t.length > 8) || (isNaN(parseInt(t, 16)))) {
-        return "Error";
+        return -1; //应该是ERROR，但暂时设置成-1，以便跟踪
     }
     if (t.length < 8) {
         t = FillString(t, "0", 8, true);
@@ -168,11 +168,11 @@ function HexToSingle(t) {
 }
 function SingleToHex_Arr(t) {
     if (t == "") {
-        return "";
+        return [0,0,0,0];
     }
     t = parseFloat(t);
     if (isNaN(t) == true) {
-        return "Error";
+        return [0,0,0,0]; //应该是ERROR，但暂时设置成0，以便跟踪
     }
     if (t == 0) {
         return [0,0,0,0];
