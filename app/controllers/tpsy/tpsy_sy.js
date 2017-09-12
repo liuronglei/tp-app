@@ -7,8 +7,6 @@ var webService = require("../../controllers/tpsy/webservice");
 var getValue_plc = require("../../controllers/tpsy/getValue_plc");
 var property = JSON.parse(fs.readFileSync('app/config/config_webservice.json', 'utf8'));
 //var dataformat = require('../../utils/dataformat');
-var normalCount = require('electron').remote.getGlobal('sharedObject').normalCount;
-var ngCount = require('electron').remote.getGlobal('sharedObject').ngCount;
 var url = property.URL;
 var checkResultArr = [];
 /*var url = "http://221.178.135.214:8099/Service1.asmx?wsdl";
@@ -244,6 +242,8 @@ function updataCountShow() {
                 $('#sy_ngdxsl').text(result.recordset[i].ngcount);
             }
         });
+        var normalCount = require('electron').remote.getGlobal('sharedObject').normalCount;
+        var ngCount = require('electron').remote.getGlobal('sharedObject').ngCount;
         $('#sy_yxdxsl').text(normalCount);
         $('#sy_yxngdxsl').text(ngCount);
     }, 1000);

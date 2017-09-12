@@ -192,7 +192,7 @@ function dcCsv() {
         var filePath = path.join(property.FILESAVE_PATH, (fileNameArr.join("_")+".csv"));
         fs.writeFile(filePath, str, function (err) {
             if (err) throw err;
-            alert('数据导出成功');
+            alert('数据导出成功，导出文件为：' + filePath);
         });
     });
 }
