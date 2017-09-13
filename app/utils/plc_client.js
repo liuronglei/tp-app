@@ -162,8 +162,8 @@ const plc_client = {
     //PLC数据接收
     dataReceive : function() {
         _client.strartListen(function(hexStr) {
-            if(hexStr == null || hexStr.length < 22 || hexStr.substring(16,22) != "000000") {
-                //正常返回报文第9、10、11个字都必须为0，不然就是异常
+            if(hexStr == null || hexStr.length < 22 || hexStr.substring(18,22) != "0000") {
+                //正常返回报文第10、11个字都必须为0，不然就是异常
                 if(callBack_receive != null) {
                     callBack_receive(true, hexStr);
                     callBack_receive = null;
