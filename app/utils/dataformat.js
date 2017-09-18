@@ -63,7 +63,7 @@ const dataformat = {
         return SingleToHex_Arr(value.toString());
     },
     bytes2float : function(value){
-        return HexToSingle(value.reverse().join(" "));
+        return HexToSingle(dataformat.bytes2hex(value.reverse()));
     },
     hex2float : function(value) {
         return HexToSingle(dataformat.bytes2hex(dataformat.hex2bytes(value).reverse()));
