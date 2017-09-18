@@ -90,6 +90,11 @@ function comboboxInit() {
 }
 /* 查询数据 */
 function select_All(){
+    $.messager.progress({
+        title:'请稍候',
+        msg:'正在查询中...',
+        text:''
+    });
     var batch =$('#combobox_pc').combobox('getValue');
     var ng_reason = $('#combobox_ngyy').combobox('getValue');
     var scgd = $('#combobox_scgd').combobox('getValue');
@@ -103,6 +108,7 @@ function select_All(){
         }
         setFirstPage("#ng_table");
         $('#ng_table').datagrid("loadData", result.recordset);
+        $.messager.progress('close');
         //dataGrid_Init(result.recordset);
     });
 }
@@ -164,7 +170,7 @@ function pagerFilter(data){
 /* 导出csv文件 */
 function dcCsv() {
     $.messager.progress({
-        title:'请稍后',
+        title:'请稍候',
         msg:'正在导出中...',
         text:''
     });
