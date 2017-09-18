@@ -49,6 +49,17 @@ function getSvgContent(initContentMap, obj, u, p_empty) {
 	];
 }
 
+function setFirstPage(ids){
+	var opts = $(ids).datagrid('options');
+	var pager = $(ids).datagrid('getPager');
+	opts.pageNumber = 1;
+	opts.pageSize = opts.pageSize;
+	pager.pagination('refresh',{
+		pageNumber:1,
+		pageSize:opts.pageSize
+	});
+}
+
 function getIByPU(p,u) {
 	return p/u/Math.sqrt(3);
 }

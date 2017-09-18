@@ -103,7 +103,9 @@ function select_All(){
             console.log(error);
             return;
         }
-        dataGrid_Init(result.recordset);
+        setFirstPage("#ng_table");
+        $('#ng_table').datagrid("loadData", result.recordset);
+        //dataGrid_Init(result.recordset);
     });
 }
 

@@ -14,6 +14,10 @@ const plc = {
     start: function() {
         plc_client.dataReceive();
     },
+    //初始化读写标记
+    initFlag: function() {
+        plc_client.initFlag();
+    },
     //获得条码标记位内容
     readBarCodeFlag : function(callBack) {
         plc_client.read("D", property.ADDRESS_FLAG_BARCODE, 2, function(error,hexStr) {
@@ -39,6 +43,17 @@ const plc = {
     //获得封箱标记位内容
     readBoxFlag : function(callBack) {
         plc_client.read("D", property.ADDRESS_FLAG_BOX, 2, function(error,hexStr) {
+            var flag = false;
+            var tempStr = hexStr.substring(index_fix, index_fix + len_double);
+            if(property.FLAG_TRUE == tempStr) {
+                flag = true;
+            }
+            callBack(flag);
+        });
+    },
+    //获得初始化标记位内容
+    readInitFlag : function(callBack) {
+        plc_client.read("D", property.ADDRESS_FLAG_INIT, 2, function(error,hexStr) {
             var flag = false;
             var tempStr = hexStr.substring(index_fix, index_fix + len_double);
             if(property.FLAG_TRUE == tempStr) {
@@ -76,12 +91,14 @@ const plc = {
         });
     },
     //外观扫码标记位重置
-    resetBarCodeFlag : function() {
+    resetBarCodeFlag : function(callBack) {
         plc_client.writeByte("D", property.ADDRESS_FLAG_BARCODE, 2, plc_client.getFlagByte(0),function(error,hexStr){
             if(error) {
                 console.log("error to write flag resetBarCodeFlag");
+                callBack(true);
                 //plc.resetBarCodeFlag();
             } else {
+                callBack(false);
                 /*
                 plc.readBarCodeFlag(function(flag){
                     //扫码结束标记位
@@ -95,29 +112,35 @@ const plc = {
         });
     },
     //电性能检测完成标记位重置
-    resetCheckFlag : function() {
+    resetCheckFlag : function(callBack) {
         plc_client.writeByte("D", property.ADDRESS_FLAG_CHECK, 2, plc_client.getFlagByte(0),function(error,hexStr){
             if(error) {
                 console.log("error to write flag resetCheckFlag");
-                //plc.resetCheckFlag();
+                callBack(true);
             } else {
-                /*
-                plc.readCheckFlag(function(flag){
-                    if(flag) {
-                        plc.resetCheckFlag();
-                        console.log("error to write flag resetCheckFlag 2");
-                    }
-                });
-                 */
+                callBack(false);
             }
         });
     },
     //封箱完成标记位重置
-    resetBoxFlag : function() {
+    resetBoxFlag : function(callBack) {
         plc_client.writeByte("D", property.ADDRESS_FLAG_BOX, 2, plc_client.getFlagByte(0),function(error,hexStr){
             if(error) {
                 console.log("error to write flag resetBoxFlag");
-                plc.resetBoxFlag();
+                callBack(true);
+            } else {
+                callBack(false);
+            }
+        });
+    },
+    //初始化完成标记位重置
+    resetInitFlag : function(callBack) {
+        plc_client.writeByte("D", property.ADDRESS_FLAG_INIT, 2, plc_client.getFlagByte(0),function(error,hexStr){
+            if(error) {
+                console.log("error to write flag resetInitFlag");
+                callBack(true);
+            } else {
+                callBack(false);
             }
         });
     },

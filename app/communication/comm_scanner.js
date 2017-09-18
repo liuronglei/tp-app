@@ -22,6 +22,8 @@ var serialPort = new SerialPort(property.PRINT_PORT, {
     //buffersize:1024,
     //highWaterMark:16,
 }, function() {});
+var isSleep = false;
+var barCode = "";
 const scanner = {
     start : function(callBack) {
         serialPort.open(function(error) {
@@ -37,8 +39,17 @@ const scanner = {
             if(data == "") {
                 return;
             }
-            console.log('boxCode:---' + data + "---");
-            callBack(data);
+            if(!isSleep) {
+                isSleep = true;
+                barCode = data;
+                setTimeout(function() {
+                    isSleep = false;
+                    console.log('boxCode:---' + barCode + "---");
+                    callBack(data);
+                }, 200);
+            } else {
+                barCode += data;
+            }
         })
     },
     close : function(callBack) {

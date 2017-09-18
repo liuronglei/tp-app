@@ -6,11 +6,13 @@ const ipcMain = require('electron').ipcMain;
 const m_cssz = require(path.join(__dirname, 'app/models/m_cssz'))
 const fileread = require(path.join(__dirname, 'app/utils/fileread'))
 const dataformat = require(path.join(__dirname,'app/utils/dataformat'));
+const m_barcode = require(path.join(__dirname, 'app/models/m_barcode'))
 var property_ocv = JSON.parse(fs.readFileSync(path.join(__dirname, 'app/config/config_ocv.json'), 'utf8'));
 var property_plc = JSON.parse(fs.readFileSync(path.join(__dirname, 'app/config/config_plc.json'), 'utf8'));
 var isWinOpening = false;
 const timerRun = 200;
-const timeInterval = 2500;
+const timerInit = 1000;
+const timeInterval = 2000;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -182,17 +184,20 @@ function updateCssz() {
         if(hashmap.get("sjsx") == "1" && (typeof global.sharedObject.excelMap == "undefined" || global.sharedObject.excelMap == null)) {
             saveOcvData();
         }
-        //参数设置完成后，启动PLC标记位监听，并打开窗口
-        schedulePLC_barCode(timerRun);
-        schedulePLC_check(timerRun);
-        schedulePLC_box(timerRun);
+        //如果窗口未打开
         if(!isWinOpening) {
+            //打开窗口
             isWinOpening = true;
             createWindow();
+            //启动PLC标记位监听
+            startPLC_barCode();
+            schedulePLC_init();
+            schedulePLC_check();
+            schedulePLC_box();
         }
         //判断是否需要扫描箱号
         if(hashmap.get("sfsmxh") == "1") {
-            scanner.start(function(){});
+            scanner.start(function(){}); //如果已经启动，会报一个已经启动的错误，不影响
         } else {
             scanner.close(function(){});
         }
@@ -214,10 +219,6 @@ updateCssz();
 var plc = require(path.join(__dirname, 'app/communication/comm_plc'));
 plc.start();
 
-//启动后，要清空扫码数据表
-const m_barcode = require(path.join(__dirname, 'app/models/m_barcode'))
-m_barcode.clearData(function(){});
-
 //定义错误声音输出
 var errorTimeoutObj;
 function errorVoice(count) {
@@ -233,6 +234,26 @@ function doErrorVoice() {
 function doClearBox() {
     clearInterval(boxTimer);
     boxProcess();
+}
+
+//初始化处理（PLC重启后，刚开机调用）
+function initProcess() {
+    //初始化读写标记
+    //plc.initFlag();
+    //初始化共享变量
+    global.sharedObject.normalBarArr = new Array();
+    global.sharedObject.checkBarCodeArr = new Array();
+    global.sharedObject.checkIndex = 0;
+    global.sharedObject.barCodeNum = 0;
+    global.sharedObject.isFillOcvData = false;
+    global.sharedObject.barCodeIndex = 0;
+    //初始化扫码、检测计数
+    count_bar = 0;
+    count_check = 0;
+    //停止扫码监听
+    stopPLC_barCode();
+    //一定时间后（避免清空的时候，还在查询状态，从而导致可能的报错），清空扫码数据表后，重启扫码监听
+    setTimeout(startPLC_barCode, timerRun);
 }
 
 function fillOcvData(currentBarCodeArr) {
@@ -318,9 +339,6 @@ function barCodeProcess() {
 
 //电性能检测结束处理
 function checkProcess() {
-    //重置标记位
-    plc.resetCheckFlag();
-    schedulePLC_check(timerRun);
     //判断距离上一次处理的时间差
     var newDate = new Date();
     var oldDate = global.sharedObject.lastProcessDate[1];
@@ -388,13 +406,13 @@ function checkProcess() {
                     var nz = nzArr[i];
                     if(typeof nzArr[i] != "undefined" && nzArr[i] != null && nzArr[i] != "") nz = nzArr[i].toFixed(3);
                     var dy = dyArr[i];
-                    if(typeof dyArr[i] != "undefined" && dyArr[i] != null && dyArr[i] != "") dy = dyArr[i].toFixed(3);
+                    if(typeof dyArr[i] != "undefined" && dyArr[i] != null && dyArr[i] != "") dy = dyArr[i].toFixed(4);
                     if (csszMap.get("sjsx") == "1") {
                         var barInfo = excelMap.get(checkBarCode);
                         if (barInfo != null) {
                             rl = barInfo[1];
                             ocv4 = (parseFloat(barInfo[2]) / 1000).toFixed(3);
-                            dyc = (parseFloat(barInfo[2]) / 1000 - dyArr[i]).toFixed(3);
+                            dyc = (parseFloat(barInfo[2]) / 1000 - dyArr[i]).toFixed(4);
                         }
                     }
                     //开始组建NG和正常列表
@@ -434,8 +452,8 @@ function checkProcess() {
                     var fillObj = {
                         dx: checkBarCode,
                         rl: rl == "null" ? "----" : rl,
-                        nz: nzArr[i].toFixed(3),
-                        dy: dyArr[i].toFixed(3),
+                        nz: nz,
+                        dy: dy,
                         ocv4: ocv4 == "null" ? "----" : ocv4,
                         dyc: dyc == "null" ? "----" : dyc,
                         result: ng_reason == "" ? "√" : ng_reason,
@@ -460,9 +478,6 @@ const print = require(path.join(__dirname, 'app/communication/comm_print'));
 //封箱结束处理
 var getValue_plc = require(path.join(__dirname, 'app/controllers/tpsy/getValue_plc'));
 function boxProcess() {
-    //重置标记位
-    plc.resetBoxFlag();
-    schedulePLC_box(timerRun);
     //判断距离上一次处理的时间差
     var newDate = new Date();
     var oldDate = global.sharedObject.lastProcessDate[2];
@@ -530,19 +545,20 @@ function casenumPrint(printData) {
     print.write(print.getData_TP(printData));
 }
 
-//定时取PLC数据（每200ms），如果发现标记你位被设置，则进行相应处理
+//开始扫码监听，定时取数据库数据
 var barCodeTimer;
-function schedulePLC_barCode(runTime) {
+function startPLC_barCode() {
+    //先清空扫码数据表
+    m_barcode.clearData(function(){
+        //数据清理完成后，启动扫码监听
+        schedulePLC_barCode();
+    });
+}
+function stopPLC_barCode() {
+    clearInterval(barCodeTimer);
+}
+function schedulePLC_barCode() {
     barCodeTimer = setInterval(function() {
-        /* 不读取PLC标记位，而是从数据库中进行判断
-        plc.readBarCodeFlag(function(flag){
-            //扫码结束标记位
-            if(flag) {
-                clearInterval(barCodeTimer);
-                barCodeProcess();
-            }
-        });
-        */
         m_barcode.queryLastIndex(function (error, results, fields) {
             if (error) throw error;
             if(results.length > 0){
@@ -555,52 +571,57 @@ function schedulePLC_barCode(runTime) {
                 }
             }
         });
-    }, runTime);
+    }, timerRun);
 }
 
-/*
-function schedulePLC_check(runTime) {
+//开始电性能检测监听，定时取标记位
+function schedulePLC_check() {
     plc.readCheckFlag(function(flag){
         //电性能检测结束标记位
-        if(flag) checkProcess();
-        setTimeout(schedulePLC_check, runTime);
+        if(flag) {
+            //重置标记位
+            plc.resetCheckFlag(function(error) {
+                setTimeout(schedulePLC_check, timerRun);
+                if(!error) checkProcess();
+            });
+        } else {
+            setTimeout(schedulePLC_check, timerRun);
+        }
     });
 }
-function schedulePLC_box(runTime) {
+//开始箱号打印监听，定时取标记位
+function schedulePLC_box() {
     plc.readBoxFlag(function(flag){
         //封箱标记位
-        if(flag) boxProcess();
-        setTimeout(schedulePLC_box, runTime);
+        if(flag) {
+            //重置标记位
+            plc.resetBoxFlag(function(error) {
+                setTimeout(schedulePLC_box, timerRun);
+                if(!error) boxProcess();
+            });
+        } else {
+            setTimeout(schedulePLC_box, timerRun);
+        }
     });
 }
-*/
-
-var checkTimer;
-function schedulePLC_check(runTime) {
-    checkTimer = setInterval(function() {
-        plc.readCheckFlag(function(flag){
-            //电性能检测结束标记位
-            if(flag) {
-                clearInterval(checkTimer);
-                checkProcess();
-            }
-        });
-    }, runTime);
-}
-var boxTimer;
-function schedulePLC_box(runTime) {
-    boxTimer = setInterval(function() {
-        plc.readBoxFlag(function(flag){
-            //封箱标记位
-            if(flag) {
-                clearInterval(boxTimer);
-                boxProcess();
-            }
-        });
-    }, runTime);
+//开始初始化监听，定时取标记位
+function schedulePLC_init() {
+    plc.readInitFlag(function(flag){
+        //初始化标记位
+        if(flag) {
+            //重置标记位
+            plc.resetInitFlag(function(error) {
+                setTimeout(schedulePLC_init, timerInit);
+                if(!error) initProcess();
+            });
+        } else {
+            setTimeout(schedulePLC_init, timerInit);
+        }
+    });
 }
 
 //定时取PLC数据（每200ms），如果发现标记你位被设置，则进行相应处理
+/*
 function schedulePLC(runTime) {
     setInterval(function() {
         //获取3个标记位
@@ -614,6 +635,7 @@ function schedulePLC(runTime) {
         });
     }, runTime);
 }
+*/
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
