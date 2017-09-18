@@ -143,13 +143,13 @@ function sycsInit() {
         $('#sy_sjsx').text(hashMap.get("sjsx")==1 ? " 是" : "否");
         $('#ng_table_sy').datagrid({
             columns: [[
-                {field:'dx',title:'电芯条码'},
-                {field:'dy',title:'电压'+"("+hashMap.get('dyfw').replace(";","-")+")"},
-                {field:'nz',title:'内阻'+"("+hashMap.get('nzfw').replace(";","-")+")"},
-                {field:'rl',title:'容量'+"("+hashMap.get('rlfw').replace(";","-")+")"},
-                {field:'dyc',title:'电压差'+"("+hashMap.get('dycfw').replace(";","-")+")"},
-                {field:'ocv4',title:'ocv4'},
-                {field:'result',title:'结果'}
+                {field:'dx',title:'电芯条码',width : 180},
+                {field:'dy',title:'电压'+"("+hashMap.get('dyfw').replace(";","-")+")",width : 130},
+                {field:'nz',title:'内阻'+"("+hashMap.get('nzfw').replace(";","-")+")",width : 120},
+                {field:'rl',title:'容量'+"("+hashMap.get('rlfw').replace(";","-")+")",width : 120},
+                {field:'dyc',title:'电压差'+"("+hashMap.get('dycfw').replace(";","-")+")",width : 130},
+                {field:'ocv4',title:'ocv4',width : 100},
+                {field:'result',title:'结果',width : 100}
             ]]
         });
         $('#sy_ngdxsl').text(0);

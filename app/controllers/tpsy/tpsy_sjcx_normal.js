@@ -64,7 +64,6 @@ function comboboxInit() {
                 value.selected = true;
             }
             data.push(value);
-
         }
         if(!contains){
             value = {value: csszMap.get("scgd") ,text: csszMap.get("scgd"),selected : true};
@@ -181,6 +180,11 @@ function pagerFilter(data){
 
 /* 导出csv文件 */
 function dcCsv() {
+    $.messager.progress({
+        title:'请稍后',
+        msg:'正在导出中...',
+        text:''
+    });
     var property = JSON.parse(fs.readFileSync('app/config/config_filesave.json', 'utf8'));
     var cxTime = new Date();
     var date=cxTime.getFullYear()+"_"+(cxTime.getMonth()+1)+"_"+cxTime.getDate()+"_"+cxTime.getHours()+"_"+cxTime.getMinutes()+"_"+cxTime.getSeconds();
@@ -190,7 +194,7 @@ function dcCsv() {
     var ygh = $('#combobox_ygh_normal').combobox('getValue');
     var kssj = $('#dd_star_normal').datetimebox('getValue');
     var jjsj = $('#dd_end_normal').datetimebox('getValue');
-    m_sjcx_normal.query_selectAll_casenum(casenum, batch,scgd,ygh,kssj,jjsj, function (error, result) {
+    m_sjcx_normal.query_select(batch,casenum,scgd,ygh,kssj,jjsj, function (error, result) {
         if (error) {
             console.log(error);
             return;
@@ -206,11 +210,13 @@ function dcCsv() {
                 dcbatch= "";
             }
         }
+
         var fileNameArr = [dcbatch,date];
         var filePath = path.join(property.FILESAVE_PATH, (fileNameArr.join("_")+".csv"));
         fs.writeFile(filePath, str, function (err) {
             if (err) throw err;
-            alert('数据导出成功');
+            $.messager.progress('close');
+            alert('数据导出成功，导出文件为：' + filePath);
         });
     });
 }

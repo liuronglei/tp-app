@@ -1763,7 +1763,7 @@
 }
 .datagrid-header .datagrid-cell {
   height: auto;
-  width:122px;
+  text-align: center;
 }
 .datagrid-header .datagrid-cell span {
   font-size: 12px;
