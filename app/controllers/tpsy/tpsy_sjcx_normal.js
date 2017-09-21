@@ -4,7 +4,7 @@ var csszMap = require('electron').remote.getGlobal('sharedObject').csszMap;
 
 $(document).ready(function () {
     window.setTimeout('comboboxInit();',500);
-    $('#btn_qd_normal').click(select_All);
+    $('#btn_cx_normal').click(select_All);
     $('#btn_dc_normal').click(dcCsv);
 });
 
