@@ -152,6 +152,7 @@ function setBit(len,arr) {
 function getFlagByte(value) {
     var flagByte = new Array();
     var dataByteArr = dataformat.hex2bytes(dataformat.int2hex(value));
+    dataByteArr = dataByteArr.reverse();
     flagByte[flagByte.length]=dataByteArr[0];
     flagByte[flagByte.length]=dataByteArr.length>1 ? dataByteArr[1] : 0x00;
     flagByte[flagByte.length]=dataByteArr.length>2 ? dataByteArr[2] : 0x00;
@@ -227,6 +228,9 @@ const plc_client = {
         var read = getReadSet(Area,Address,len);
         _client.write(read,callBack);
     },
+    initFlag : function() {
+        _client.initFlag();
+    }
     /* M区域数据目前没有使用，先注释掉
      getFlag : function(Area,Address,len,callBack) {
      var read = message_base_read_flag.slice(0);  //克隆报文
@@ -252,7 +256,8 @@ const plc_client = {
 }
 /***********************客户端相关方法************************/
 var client= new net.Socket();
-client.setEncoding('binary');
+var encodeing = 'binary';
+client.setEncoding(encodeing);
 //连接到服务端
 client.connect(parseInt(property.PLC_PORT),property.PLC_IP,function(){
     console.log('connected');
@@ -270,7 +275,7 @@ const _client = {
     strartListen : function(callBack) {
         client.on('data',function(data){
             //console.log("receiveData_old:" + new Buffer(data).toString('hex'));
-            var receiveData = Buffer.from(data,'binary').toString('hex');
+            var receiveData = Buffer.from(data,encodeing).toString('hex');
             //console.log("receiveData_new:" + receiveData);
             callBack(receiveData);
             clientSyn = false;
@@ -284,19 +289,21 @@ const _client = {
             if(typeof count == "undefined") {
                 count = 0;
             }
-            if(count >= 30) {
-                console.log("sendData: Timeout!!!!!!!" );
-                callBack_receive = callBack;
-                client.write(new Buffer(data));
-            } else {
-                setTimeout(function(){_client.write(data,callBack,++count);},10);
+            if(count >= 100) {
+                console.log("sendData: countTime: --" + count);
+                //callBack_receive = callBack;
+                //client.write(Buffer.from(data,encodeing));
             }
+            setTimeout(function(){_client.write(data,callBack,++count);},10);
         } else {
             clientSyn = true;
             callBack_receive = callBack;
             //console.log("sendData:" + new Buffer(read).toString('hex'));
-            client.write(Buffer.from(data,'binary'));
+            client.write(Buffer.from(data,encodeing));
         }
+    },
+    initFlag : function() {
+        clientSyn = false;
     }
 }
 module.exports = plc_client;
