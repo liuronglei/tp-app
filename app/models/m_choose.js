@@ -11,7 +11,8 @@ const m_choose = {
             '\telse (select top 1 checknum+1 from d_cell_ng where cellnum=\''+dataArr.dx+'\') end as checknum) as t2\n' +
             'on t1.cellnum=t2.cellnum and t2.cellnum != \'Fail\'\n' +
             'when matched \n' +
-            'then update set t1.checknum=t2.checknum,t1.ng_reason=t2.ng_reason,t1.creattime = t2.creattime\n' +
+            'then update set t1.checknum=t2.checknum,t1.ng_reason=t2.ng_reason,t1.creattime = t2.creattime,t1.equiptmentnum = t2.equiptmentnum,t1.workernum = t2.workernum' +
+            't1.productionorder = t2.productionorder,t1.batch = t2.batch,t1.voltage=t2.voltage,t1.resistance=t2.resistance,t1.voltagedifference = t2.voltagedifference\n' +
             'when not matched\n' +
             'then insert (cellnum,equiptmentnum,workernum,productionorder,batch,voltage,voltage_min,voltage_max,resistance,resistance_min,resistance_max,\n' +
             'volume,volume_min,volume_max,ocv4,voltagedifference,voltagedifference_min,voltagedifference_max,grade,grade_min,grade_max,creattime,ng_reason,checknum) \n' +
@@ -28,7 +29,8 @@ const m_choose = {
             '\telse (select top 1 checknum+1 from d_cell_ng where cellnum=\''+dataArr.dx+'\') end as checknum) as t2\n' +
             'on t1.cellnum=t2.cellnum\n' +
             'when matched \n' +
-            'then update set t1.checknum=t2.checknum,t1.creattime = t2.creattime\n' +
+            'then update set t1.casenum = t2.casenum,t1.checknum=t2.checknum,t1.creattime = t2.creattime,t1.equiptmentnum = t2.equiptmentnum,t1.workernum = t2.workernum' +
+            't1.productionorder = t2.productionorder,t1.batch = t2.batch,t1.voltage=t2.voltage,t1.resistance=t2.resistance,t1.voltagedifference = t2.voltagedifference,t1.binningnum = t2.binningnum\n' +
             'when not matched\n' +
             'then insert (casenum,cellnum,equiptmentnum,workernum,productionorder,batch,voltage,voltage_min,voltage_max,resistance,resistance_min,resistance_max,\n' +
             'volume,volume_min,volume_max,ocv4,voltagedifference,voltagedifference_min,voltagedifference_max,grade,grade_min,grade_max,binningnum,creattime,checknum) \n' +
