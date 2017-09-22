@@ -80,8 +80,9 @@ global.sharedObject = {
     isFillOcvData: false,
     lastProcessDate: [null, null, null],
     barCodeIndex: 0,
-    normalCount: 0, //本次运行正常电芯数量
-    ngCount: 0,     //本次运行NG电芯数量
+    normalCount: 0,         //本次运行正常电芯数量
+    ngCount: 0,             //本次运行NG电芯数量
+    scheduleBarCode: false, //是否正在监听扫码
 };
 
 function getBarCodePre() {
@@ -190,7 +191,6 @@ function updateCssz() {
             isWinOpening = true;
             createWindow();
             //启动PLC标记位监听
-            startPLC_barCode();
             schedulePLC_init();
             schedulePLC_check();
             schedulePLC_box();
@@ -246,14 +246,17 @@ function initProcess() {
     global.sharedObject.checkIndex = 0;
     global.sharedObject.barCodeNum = 0;
     global.sharedObject.isFillOcvData = false;
-    global.sharedObject.barCodeIndex = 0;
+    //如果正在监听扫码，则将标记置为false，让监听程序内部自动初始化，否则，启动监听
+    if(global.sharedObject.scheduleBarCode) {
+        global.sharedObject.scheduleBarCode = false;
+    } else {
+        startPLC_barCode();
+    }
+    //初始化条码前缀
+    preStr = getBarCodePre();
     //初始化扫码、检测计数
     count_bar = 0;
     count_check = 0;
-    //停止扫码监听
-    stopPLC_barCode();
-    //一定时间后（避免清空的时候，还在查询状态，从而导致可能的报错），清空扫码数据表后，重启扫码监听
-    setTimeout(startPLC_barCode, timerRun);
 }
 
 function fillOcvData(currentBarCodeArr) {
@@ -289,7 +292,7 @@ function fillOcvData(currentBarCodeArr) {
 }
 
 //外观检测结束处理
-function barCodeProcess() {
+function barCodeProcess(callBack) {
     //plc.resetBarCodeFlag();
     //判断距离上一次处理的时间差
     /* （暂时不判断时间差）
@@ -316,7 +319,7 @@ function barCodeProcess() {
             var barCode = results[i].barcode;
             if(barCode != property_plc.BARCODE_MISS){
                 if(csszMap.get("sfsm") != "1")  {
-                    barCode = preStr + " " + dataformat.fillZero(global.sharedObject.barCodeNum, 6);
+                    barCode = preStr + " " + dataformat.fillZero(global.sharedObject.barCodeNum, 8);
                 }
             }
             if(barCode == property_plc.BARCODE_FAIL){
@@ -332,8 +335,8 @@ function barCodeProcess() {
         plc.writeBarCodeFlag(barCodeFlag);
         //如果参数设置勾选了OCV筛选，则需要传递OCV数据给PLC
         fillOcvData(currentBarCodeArr);
-        //结束后，重新开始循环
-        schedulePLC_barCode(timerRun);
+        //结束后，调用回调函数
+        callBack();
     });
 }
 
@@ -439,7 +442,8 @@ function checkProcess() {
                         dj_min: "null",
                         dj_max: "null",
                         zxs: csszMap.get("zxs"),
-                        ng_reason: ng_reason
+                        ng_reason: ng_reason,
+                        checkindex: i+1
                     };
                     if (ng_reason != "") {
                         global.sharedObject.ngCount++;
@@ -546,32 +550,40 @@ function casenumPrint(printData) {
 }
 
 //开始扫码监听，定时取数据库数据
-var barCodeTimer;
 function startPLC_barCode() {
     //先清空扫码数据表
     m_barcode.clearData(function(){
         //数据清理完成后，启动扫码监听
-        schedulePLC_barCode();
+        global.sharedObject.scheduleBarCode = true;
+        schedulePLC_barCode(function() {
+            global.sharedObject.barCodeIndex = 0;
+            startPLC_barCode();
+        });
     });
 }
-function stopPLC_barCode() {
-    clearInterval(barCodeTimer);
-}
-function schedulePLC_barCode() {
-    barCodeTimer = setInterval(function() {
-        m_barcode.queryLastIndex(function (error, results, fields) {
-            if (error) throw error;
-            if(results.length > 0){
-                var barCodeIndex = global.sharedObject.barCodeIndex;
-                var lastIndex = parseInt(results[0].lastindex);
-                if(lastIndex >= barCodeIndex + property_plc.CHECK_NUM_SINGLE) {
-                    global.sharedObject.barCodeIndex = barCodeIndex + property_plc.CHECK_NUM_SINGLE;
-                    //clearInterval(barCodeTimer);
-                    barCodeProcess();
-                }
+function schedulePLC_barCode(stopCallBack) {
+    if(!global.sharedObject.scheduleBarCode) {
+        stopCallBack();
+        return;
+    }
+    var isProcess = false;
+    m_barcode.queryLastIndex(function (error, results, fields) {
+        if (error) throw error;
+        if(results.length > 0){
+            var barCodeIndex = global.sharedObject.barCodeIndex;
+            var lastIndex = parseInt(results[0].lastindex);
+            if(lastIndex >= barCodeIndex + property_plc.CHECK_NUM_SINGLE) {
+                global.sharedObject.barCodeIndex = barCodeIndex + property_plc.CHECK_NUM_SINGLE;
+                isProcess = true;
+                barCodeProcess(function() {
+                    //等待处理完成后，重新开始扫码监听
+                    setTimeout(function() {schedulePLC_barCode(stopCallBack)}, timerRun);
+                });
             }
-        });
-    }, timerRun);
+        }
+        //如果不需要处理，则直接重新开始扫码监听
+        if(!isProcess) setTimeout(function() {schedulePLC_barCode(stopCallBack)}, timerRun);
+    });
 }
 
 //开始电性能检测监听，定时取标记位
