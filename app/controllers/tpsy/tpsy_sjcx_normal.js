@@ -83,7 +83,15 @@ function comboboxInit() {
         }
         $('#combobox_ygh_normal').combobox("loadData",data);
     });
-    m_sjcx_normal.query_select( pc,xh,scgd,ygh,kssj,jjsj, function (error, result) {
+    var searchCondition = {
+        batch : pc,
+        casenum : xh,
+        scgd : scgd,
+        ygh : ygh,
+        kssj : kssj,
+        jjsj : jjsj
+    };
+    m_sjcx_normal.query_select( searchCondition, function (error, result) {
         if (error) {
             console.log(error);
             return;
@@ -117,7 +125,15 @@ function select_All(){
         }
         $('#combobox_xh_normal').combobox("loadData",data);
     });
-    m_sjcx_normal.query_select(batch,casenum,scgd,ygh,kssj,jjsj, function (error, result) {
+    var searchCondition = {
+        batch : batch,
+        casenum : casenum,
+        scgd : scgd,
+        ygh : ygh,
+        kssj : kssj,
+        jjsj : jjsj
+    };
+    m_sjcx_normal.query_select(searchCondition, function (error, result) {
         if (error) {
             console.log(error);
             return;
@@ -133,20 +149,20 @@ function select_All(){
 function dataGrid_Init(dataArr) {
     $('#normal_table').datagrid({loadFilter:pagerFilter}).datagrid({
         columns: [[
-            {field:'batch',title:'批次'},
-            {field:'casenum',title:'箱号'},
             {field:'cellnum',title:'电芯条码'},
+            {field:'productionorder',title:'生产工单'},
+            {field:'batch',title:'批次'},
             {field:'volume',title:'容量'+"("+csszMap.get('rlfw').replace(";","-")+")"},
             {field:'resistance',title:'内阻'+"("+csszMap.get('nzfw').replace(";","-")+")"},
             {field:'voltage',title:'电压'+"("+csszMap.get('dyfw').replace(";","-")+")"},
             {field:'ocv4',title:'ocv4'},
             {field:'voltagedifference',title:'电压差'+"("+csszMap.get('dycfw').replace(";","-")+")"},
-            {field:'checknum',title:'检测次数'},
+            {field:'casenum',title:'箱号'},
             {field:'binningnum',title:'装箱数'},
             {field:'equiptmentnum',title:'设备号'},
             {field:'workernum',title:'操作人员工号'},
-            {field:'productionorder',title:'生产工单'},
-            {field:'grade',title:'等级'+"("+csszMap.get('djfw').replace(";","-")+")"},
+            {field:'checknum',title:'检测次数'},
+            {field:'checkindex',title:'探针序号'},
             {field:'creattime',title:'创建时间'}
         ]],
         data : dataArr
@@ -192,37 +208,55 @@ function dcCsv() {
         text:''
     });
     var property = JSON.parse(fs.readFileSync('app/config/config_filesave.json', 'utf8'));
-    var cxTime = new Date();
-    var date=cxTime.getFullYear()+"_"+(cxTime.getMonth()+1)+"_"+cxTime.getDate()+"_"+cxTime.getHours()+"_"+cxTime.getMinutes()+"_"+cxTime.getSeconds();
     var casenum = $('#combobox_xh_normal').combobox('getValue');
     var batch = $('#combobox_pc_normal').combobox('getValue');
     var scgd = $('#combobox_scgd_normal').combobox('getValue');
     var ygh = $('#combobox_ygh_normal').combobox('getValue');
     var kssj = $('#dd_star_normal').datetimebox('getValue');
     var jjsj = $('#dd_end_normal').datetimebox('getValue');
-    m_sjcx_normal.query_select(batch,casenum,scgd,ygh,kssj,jjsj, function (error, result) {
+    var searchCondition = {
+        batch : batch,
+        casenum : casenum,
+        scgd : scgd,
+        ygh : ygh,
+        kssj : kssj,
+        jjsj : jjsj
+    };
+    m_sjcx_normal.query_select(searchCondition, function (error, result) {
         if (error) {
             console.log(error);
             return;
         }
-        var str = "箱号"+","+"电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "内阻" + ","  + "容量" + "," + "Ocv4" + "," + "电压差" + "," + "等级" + "," +"装箱数"+  "," + "创建时间"   + "," + "检测次数" + "\n";
-        var dcbatch = result.recordset[0].batch;
+        var str = "箱号"+","+"电芯条码" + "," + "设备号" + "," + "操作人员工号" + "," + "生产工单" + "," + "批次" + "," + "电压" + "," + "内阻" + ","  + "容量" + "," + "Ocv4" + "," + "电压差" + "," + "等级" + "," +"装箱数"+  "," + "创建时间"   + "," + "检测次数"+"," + "探针序号" + "\n";
         for (var i = 0; i < result.recordset.length; i++) {
             for (var key in result.recordset[i]) {
                 str = str + (result.recordset[i][key]) + ",";
             }
             str = str + "\n";
-            if(batch == ""){
-                dcbatch= "";
-            }
         }
-
-        var fileNameArr = [dcbatch,date];
-        var filePath = path.join(property.FILESAVE_PATH, (fileNameArr.join("_")+".csv"));
+        var filePath = path.join(property.FILESAVE_PATH, getExportFileName(searchCondition));
         fs.writeFile(filePath, str, function (err) {
             if (err) throw err;
             $.messager.progress('close');
             alert('数据导出成功，导出文件为：' + filePath);
         });
     });
+}
+
+function getExportFileName(searchCondition) {
+    var cxTime = new Date();
+    var date=cxTime.getFullYear()+"_"+(cxTime.getMonth()+1)+"_"+cxTime.getDate()+"_"+cxTime.getHours()+"_"+cxTime.getMinutes()+"_"+cxTime.getSeconds();
+    var fileNameArr = new Array();
+    if(!isEmptyStr(searchCondition.scgd)) {
+        fileNameArr.push(searchCondition.scgd);
+    } else {
+        fileNameArr.push('all');
+    }
+    if(!isEmptyStr(searchCondition.batch)) {
+        fileNameArr.push(searchCondition.batch);
+    } else {
+        fileNameArr.push('all');
+    }
+    fileNameArr.push(date);
+    return fileNameArr.join("_")+".csv";
 }

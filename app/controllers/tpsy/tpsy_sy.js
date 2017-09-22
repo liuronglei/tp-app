@@ -149,7 +149,7 @@ function sycsInit() {
                 {field:'rl',title:'容量'+"("+hashMap.get('rlfw').replace(";","-")+")",width : 120},
                 {field:'dyc',title:'电压差'+"("+hashMap.get('dycfw').replace(";","-")+")",width : 130},
                 {field:'ocv4',title:'ocv4',width : 100},
-                {field:'result',title:'结果',width : 100}
+                {field:'result',title:'结果',width : 120}
             ]]
         });
         $('#sy_ngdxsl').text(0);

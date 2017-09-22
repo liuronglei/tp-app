@@ -27,7 +27,8 @@ const getValue_plc = {
                 dj_min : dataArr_addNG[i].dj_min,
                 dj_max : dataArr_addNG[i].dj_max,
                 creattime : date,
-                ng_reason : dataArr_addNG[i].ng_reason
+                ng_reason : dataArr_addNG[i].ng_reason,
+                checkindex : dataArr_addNG[i].checkindex
                 };
             choose_dx.add_ng(dataArr);
         }
@@ -61,6 +62,7 @@ const getValue_plc = {
                 dj_max : dataArr_addNoraml[i].dj_max,
                 zxs : dataArr_addNoraml[i].zxs,
                 creattime : date,
+                checkindex : dataArr_addNoraml[i].checkindex
             }
 
             choose_dx.add_normal(dataArr);

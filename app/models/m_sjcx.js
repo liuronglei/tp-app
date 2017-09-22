@@ -1,27 +1,27 @@
 var query = require("../utils/sqlserver");
 
 const m_sjcx = {
-    query_select : function (ng_reason,batch,scgd,ygh,kssj,jjsj,callback) {
+    query_select : function (searchCondition,callback) {
         var sql = 'select cellnum,equiptmentnum,workernum,productionorder,batch,' +
             'voltage,resistance,volume,ocv4,voltagedifference,grade,' +
-            'CONVERT(varchar(100), creattime, 20) as creattime,ng_reason,checknum from d_cell_ng where 1=1';
-        if(batch != null && batch != "") {
-            sql += " and batch='" + batch + "'";
+            'CONVERT(varchar(100), creattime, 20) as creattime,ng_reason,checknum,checkindex from d_cell_ng where 1=1';
+        if(!isEmptyStr(searchCondition.batch)) {
+            sql += " and batch='" + searchCondition.batch + "'";
         }
-        if(ng_reason != null && ng_reason != "") {
-            sql += " and ng_reason like '%" + ng_reason + "%'";
+        if(!isEmptyStr(searchCondition.ng_reason)) {
+            sql += " and ng_reason like '%" + searchCondition.ng_reason + "%'";
         }
-        if(scgd != null && scgd != "") {
-            sql += " and productionorder ='" + scgd + "'";
+        if(!isEmptyStr(searchCondition.scgd)) {
+            sql += " and productionorder ='" + searchCondition.scgd + "'";
         }
-        if(ygh != null && ygh != "") {
-            sql += " and workernum ='" + ygh + "'";
+        if(!isEmptyStr(searchCondition.ygh)) {
+            sql += " and workernum ='" + searchCondition.ygh + "'";
         }
-        if(kssj != null && kssj != ""){
-            sql += " and creattime>=CONVERT(datetime,'"+kssj+"',20)";
+        if(!isEmptyStr(searchCondition.kssj)){
+            sql += " and creattime>=CONVERT(datetime,'"+searchCondition.kssj+"',20)";
         }
-        if(jjsj != null && jjsj != ""){
-            sql += " and creattime<=CONVERT(datetime,'"+jjsj+"',20)";
+        if(!isEmptyStr(searchCondition.jjsj)){
+            sql += " and creattime<=CONVERT(datetime,'"+searchCondition.jjsj+"',20)";
         }
         query(sql,callback);
     },
