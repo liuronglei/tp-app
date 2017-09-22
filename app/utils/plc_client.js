@@ -217,9 +217,12 @@ const plc_client = {
     //PLC数据写入（整数）
     writeInt : function(Area,Address,len,data,callBack) {
         var set = getWriteSet(Area,Address,len);
-        var dataByteArr = getFlagByte(data);
-        for(var i=0; i<dataByteArr.length; i++) {
-            set[set.length] = dataByteArr[i];
+        for(var i=0; i<data.length; i++) {
+            var data_byte = getFlagByte(data[i]);
+            set[set.length]=data_byte[0];
+            set[set.length]=data_byte[1];
+            set[set.length]=data_byte[2];
+            set[set.length]=data_byte[3];
         }
         _client.write(set,callBack);
     },
@@ -290,7 +293,7 @@ const _client = {
                 count = 0;
             }
             if(count >= 100) {
-                console.log("sendData: countTime: --" + count);
+                if(count%50 == 0) console.log("sendData: countTime: --" + count);
                 //callBack_receive = callBack;
                 //client.write(Buffer.from(data,encodeing));
             }

@@ -109,7 +109,7 @@ const plc = {
                 });
                 */
             }
-        });
+        });d
     },
     //电性能检测完成标记位重置
     resetCheckFlag : function(callBack) {
@@ -165,7 +165,7 @@ const plc = {
         plc_client.writeFloat("D", property.ADDRESS_DYSX, 2, [parseFloat(dyfwArr[1])], function(){}); //电压上限
         plc_client.writeFloat("D", property.ADDRESS_NZXX, 2, [parseFloat(nzfwArr[0])], function(){}); //内阻下限
         plc_client.writeFloat("D", property.ADDRESS_NZSX, 2, [parseFloat(nzfwArr[1])], function(){}); //内阻上限
-        plc_client.writeInt("D", property.ADDRESS_ZCZXS, 2, parseInt(zxs), function(){}); //正常装箱数
+        plc_client.writeInt("D", property.ADDRESS_ZCZXS, 2, [parseInt(zxs)], function(){}); //正常装箱数
         plc_client.writeByte("D", property.ADDRESS_SJSX, 2, sjsx == "1" ? plc_client.getFlagByte(1) : plc_client.getFlagByte(0), function(){}); //OCV勾选
         plc_client.writeByte("D", property.ADDRESS_SFSM, 2, sfsm != "1" ? plc_client.getFlagByte(1) : plc_client.getFlagByte(0), function(){}); //是否扫码勾选
     },
