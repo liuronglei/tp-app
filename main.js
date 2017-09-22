@@ -11,7 +11,7 @@ var property_ocv = JSON.parse(fs.readFileSync(path.join(__dirname, 'app/config/c
 var property_plc = JSON.parse(fs.readFileSync(path.join(__dirname, 'app/config/config_plc.json'), 'utf8'));
 var isWinOpening = false;
 const timerRun = 200;
-const timerInit = 1000;
+const timerInit = 500;
 const timeInterval = 2000;
 
 // Keep a global reference of the window object, if you don't, the window will
