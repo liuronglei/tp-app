@@ -29,10 +29,10 @@ const m_sjcx = {
         query('select batch from d_cell_ng group by batch',callback);
     },
     query_selectAll_ygh :function (pc,callback) {
-        query('select workernum from d_cell_ng where batch='+pc+' group by workernum',callback);
+        query('select workernum from d_cell_ng group by workernum',callback);
     },
     query_selectAll_scgd : function (pc,callback) {
-        query('select productionorder from d_cell_ng where batch='+pc+' group by productionorder',callback);
+        query('select productionorder from d_cell_ng group by productionorder',callback);
     }
 };
 
