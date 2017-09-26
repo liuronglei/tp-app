@@ -2,16 +2,16 @@
  * Created by Administrator on 2017/9/5 0005.
  */
 var fs = require('fs');
-/*var path = require('path');
+var path = require('path');
 var __rootdir = global.sharedObject.rootdir;
 var plc_client = require(path.join(__rootdir,'app/utils/plc_client'));
-var lower_machine = require(path.join(__rootdir,'app/utils/lower_machine'));
 var dataformat = require(path.join(__rootdir,'app/utils/dataformat'));
-var property = JSON.parse(fs.readFileSync(path.join(__rootdir,'app/config/config_plc.json'), 'utf8'));*/
-var plc_client = require('../utils/plc_client');
+var lower_machine = require(path.join(__rootdir,'app/communication/lower_machine'));
+var property = JSON.parse(fs.readFileSync(path.join(__rootdir,'app/config/config_plc.json'), 'utf8'));
+/*var plc_client = require('../utils/plc_client');
 var lower_machine = require('../communication/lower_machine');
 var dataformat = require('../utils/dataformat');
-var property = JSON.parse(fs.readFileSync('app/config/config_plc.json'));
+var property = JSON.parse(fs.readFileSync('app/config/config_plc.json'));*/
 
 /*var data = [];
 // 容量OCV数据模拟
