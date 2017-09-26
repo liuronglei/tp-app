@@ -57,16 +57,16 @@ app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
-    app.quit()
-}
+        app.quit()
+    }
 })
 
 app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
-    createWindow()
-}
+        createWindow()
+    }
 })
 
 //保存全局变量
@@ -631,33 +631,3 @@ function schedulePLC_init() {
         }
     });
 }
-
-//定时取PLC数据（每200ms），如果发现标记你位被设置，则进行相应处理
-/*
-function schedulePLC(runTime) {
-    setInterval(function() {
-        //获取3个标记位
-        plc.readAllFlag(function(flagArr){
-            //扫码结束标记位
-            if(flagArr[0]) barCodeProcess();
-            //电性能检测结束标记位
-            if(flagArr[1]) checkProcess();
-            //封箱标记位
-            if(flagArr[2]) boxProcess();
-        });
-    }, runTime);
-}
-*/
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-//箱号扫码
-//天鹏MES
-//显示到界面
-//取到外观数据（条码）
-//（获取PCI标记）根据条码获取到PLC检测数据
-//NG数据入库
-//（获取PCI标记）封箱
-//生成箱号
-//正常数据入库，天鹏MES

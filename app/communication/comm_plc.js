@@ -7,8 +7,6 @@ var __rootdir = global.sharedObject.rootdir;
 var dataformat = require(path.join(__rootdir,'app/utils/dataformat'));
 var property = JSON.parse(fs.readFileSync(path.join(__rootdir,'app/config/config_plc.json'), 'utf8'));
 var plc_client = require(path.join(__rootdir,'app/utils/plc_client'));
-const index_fix = 22; //报文返回内容起始下标值
-const len_double = 8; //双字16进制位数
 const plc = {
     //开始监听
     start: function() {
@@ -22,7 +20,7 @@ const plc = {
     readBarCodeFlag : function(callBack) {
         plc_client.read("D", property.ADDRESS_FLAG_BARCODE, 2, function(error,hexStr) {
             var flag = false;
-            var tempStr = hexStr.substring(index_fix, index_fix + len_double);
+            var tempStr = hexStr;
             if(property.FLAG_TRUE == tempStr) {
                 flag = true;
             }
@@ -33,7 +31,7 @@ const plc = {
     readCheckFlag : function(callBack) {
         plc_client.read("D", property.ADDRESS_FLAG_CHECK, 2, function(error,hexStr) {
             var flag = false;
-            var tempStr = hexStr.substring(index_fix, index_fix + len_double);
+            var tempStr = hexStr;
             if(property.FLAG_TRUE == tempStr) {
                 flag = true;
             }
@@ -44,7 +42,7 @@ const plc = {
     readBoxFlag : function(callBack) {
         plc_client.read("D", property.ADDRESS_FLAG_BOX, 2, function(error,hexStr) {
             var flag = false;
-            var tempStr = hexStr.substring(index_fix, index_fix + len_double);
+            var tempStr = hexStr;
             if(property.FLAG_TRUE == tempStr) {
                 flag = true;
             }
@@ -55,65 +53,35 @@ const plc = {
     readInitFlag : function(callBack) {
         plc_client.read("D", property.ADDRESS_FLAG_INIT, 2, function(error,hexStr) {
             var flag = false;
-            var tempStr = hexStr.substring(index_fix, index_fix + len_double);
+            var tempStr = hexStr;
             if(property.FLAG_TRUE == tempStr) {
                 flag = true;
             }
             callBack(flag);
         });
     },
-    //获得所有标记位内容
-    readAllFlag : function(callBack) {
-        plc_client.read("D", property.ADDRESS_FLAG, 6, function(error,hexStr) {
-            var flagArr = [false, false, false];
-            var tempStr = hexStr.substring(index_fix, index_fix + len_double);
-            if(property.FLAG_TRUE == tempStr) {
-                flagArr[0] = true;
-            }
-            tempStr = hexStr.substring(index_fix + len_double, index_fix + len_double*2);
-            if(property.FLAG_TRUE == tempStr) {
-                flagArr[1] = true;
-            }
-            tempStr = hexStr.substring(index_fix + len_double*2, index_fix + len_double*3);
-            if(property.FLAG_TRUE == tempStr) {
-                flagArr[2] = true;
-            }
-            callBack(flagArr);
-        });
-    },
     //将扫码完成置为1（PLC获取该标记位后，读取由上位机写入的OCV数据）
     finishOcvFlag : function() {
-        plc_client.writeByte("D", property.ADDRESS_OCVWC, 2, plc_client.getFlagByte(1),function(error,hexStr){
+        plc_client.writeInt("D", property.ADDRESS_OCVWC, 2, [1],function(error,hexStr){
             if(error) {
                 console.log("error to write flag finishOcvFlag");
-                //plc.finishOcvFlag();
             }
         });
     },
     //外观扫码标记位重置
     resetBarCodeFlag : function(callBack) {
-        plc_client.writeByte("D", property.ADDRESS_FLAG_BARCODE, 2, plc_client.getFlagByte(0),function(error,hexStr){
+        plc_client.writeInt("D", property.ADDRESS_FLAG_BARCODE, 2, [0],function(error,hexStr){
             if(error) {
                 console.log("error to write flag resetBarCodeFlag");
                 callBack(true);
-                //plc.resetBarCodeFlag();
             } else {
                 callBack(false);
-                /*
-                plc.readBarCodeFlag(function(flag){
-                    //扫码结束标记位
-                    if(flag) {
-                        plc.resetBarCodeFlag();
-                        console.log("error to write flag resetBarCodeFlag 2");
-                    }
-                });
-                */
             }
-        });d
+        });
     },
     //电性能检测完成标记位重置
     resetCheckFlag : function(callBack) {
-        plc_client.writeByte("D", property.ADDRESS_FLAG_CHECK, 2, plc_client.getFlagByte(0),function(error,hexStr){
+        plc_client.writeInt("D", property.ADDRESS_FLAG_CHECK, 2, [0],function(error,hexStr){
             if(error) {
                 console.log("error to write flag resetCheckFlag");
                 callBack(true);
@@ -124,7 +92,7 @@ const plc = {
     },
     //封箱完成标记位重置
     resetBoxFlag : function(callBack) {
-        plc_client.writeByte("D", property.ADDRESS_FLAG_BOX, 2, plc_client.getFlagByte(0),function(error,hexStr){
+        plc_client.writeInt("D", property.ADDRESS_FLAG_BOX, 2, [0],function(error,hexStr){
             if(error) {
                 console.log("error to write flag resetBoxFlag");
                 callBack(true);
@@ -135,7 +103,7 @@ const plc = {
     },
     //初始化完成标记位重置
     resetInitFlag : function(callBack) {
-        plc_client.writeByte("D", property.ADDRESS_FLAG_INIT, 2, plc_client.getFlagByte(0),function(error,hexStr){
+        plc_client.writeInt("D", property.ADDRESS_FLAG_INIT, 2, [0],function(error,hexStr){
             if(error) {
                 console.log("error to write flag resetInitFlag");
                 callBack(true);
@@ -166,30 +134,13 @@ const plc = {
         plc_client.writeFloat("D", property.ADDRESS_NZXX, 2, [parseFloat(nzfwArr[0])], function(){}); //内阻下限
         plc_client.writeFloat("D", property.ADDRESS_NZSX, 2, [parseFloat(nzfwArr[1])], function(){}); //内阻上限
         plc_client.writeInt("D", property.ADDRESS_ZCZXS, 2, [parseInt(zxs)], function(){}); //正常装箱数
-        plc_client.writeByte("D", property.ADDRESS_SJSX, 2, sjsx == "1" ? plc_client.getFlagByte(1) : plc_client.getFlagByte(0), function(){}); //OCV勾选
-        plc_client.writeByte("D", property.ADDRESS_SFSM, 2, sfsm != "1" ? plc_client.getFlagByte(1) : plc_client.getFlagByte(0), function(){}); //是否扫码勾选
+        plc_client.writeInt("D", property.ADDRESS_SJSX, 2, sjsx == "1" ? [1] : [0], function(){}); //OCV勾选
+        plc_client.writeInt("D", property.ADDRESS_SFSM, 2, sfsm != "1" ? [1] : [0], function(){}); //是否扫码勾选
     },
     //写入电芯扫码结果
     writeBarCodeFlag : function(data, count) {
-        plc_client.writeBinary("D", property.ADDRESS_FLAG_BARCODE_RESULT, 2, data, function(){});
-        //写入之后读取一下，看看有没有问题，避免写入失败
-        plc_client.read("D", property.ADDRESS_FLAG_BARCODE_RESULT, 2, function(error,hexStr) {
-            var flag = false;
-            var tempStr = hexStr.substring(index_fix, index_fix + len_double);
-            if(parseInt(tempStr.substring(2,4) + tempStr.substring(0,2),16) >= parseInt("1000000000000000",2)) {
-                flag = true;
-            }
-            if(!flag) {
-                if(typeof count == "undefined") {
-                    count = 0;
-                }
-                if(count >= 10) {
-                    console.log("sendBarCodeFlag: Timeout!!!!!!!" );
-                } else {
-                    setTimeout(function(){plc.writeBarCodeFlag(data, ++count);},10);
-                }
-            }
-        });
+        var value = parseInt(data, 2);
+        plc_client.writeInt("D", property.ADDRESS_FLAG_BARCODE_RESULT, 2, [value], function(){});
     },
     //写入电芯OCV数据
     writeBarInfo : function(rlArr,ocv4Arr) {
@@ -205,8 +156,6 @@ const plc = {
     //获取电性能检测结果数据
     readCheckInfo : function(callBack) {
         plc_client.read("D", property.ADDRESS_CHECKDATA, 116, function(error,hexStr) {
-            //console.log('-------' + hexStr.length + '---------');
-            var index_fix = 22; //报文返回内容起始下标值
             var len = 8;        //双字16进制位数
             var single_len = 4; //单字16进制位数
             var errorFlag = "0100";
@@ -219,38 +168,38 @@ const plc = {
             var dycztArr = new Array(property.CHECK_NUM_SINGLE);
             //D4000开始，获取内阻和电压检测值
             for(var i=0; i<nzArr.length; i++) {
-                var tempStr = hexStr.substring(index_fix + len*i, index_fix + len*(i+1));
-                nzArr[i] = dataformat.hex2float(tempStr);
+                var tempStr = hexStr.substring(len*i, len*(i+1));
+                nzArr[i] = dataformat.hex2float_r(tempStr);
             }
             for(var i=0; i<dyArr.length; i++) {
-                var tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE+i), index_fix + len*(property.CHECK_NUM_SINGLE+i+1));
-                dyArr[i] = Math.abs(dataformat.hex2float(tempStr));
+                var tempStr = hexStr.substring(len*(property.CHECK_NUM_SINGLE+i), len*(property.CHECK_NUM_SINGLE+i+1));
+                dyArr[i] = Math.abs(dataformat.hex2float_r(tempStr));
             }
             //D4056开始，获取NG状态标记位，标记位为1个单字
             //中间4个双字是容量范围和电压差范围，所以要跳过
             for(var i=0; i<zztArr.length; i++) {
-                var tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*i,
-                    index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(i+1));
+                var tempStr = hexStr.substring(len*(property.CHECK_NUM_SINGLE*2+4) + single_len*i,
+                    len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(i+1));
                 zztArr[i] = tempStr == errorFlag ? false : true;
             }
             for(var i=0; i<dyztArr.length; i++) {
-                var tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE+i),
-                    index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE+i+1));
+                var tempStr = hexStr.substring(len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE+i),
+                    len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE+i+1));
                 dyztArr[i] = tempStr == errorFlag ? false : true;
             }
             for(var i=0; i<nzztArr.length; i++) {
-                var tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*2+i),
-                    index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*2+i+1));
+                var tempStr = hexStr.substring(len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*2+i),
+                    len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*2+i+1));
                 nzztArr[i] = tempStr == errorFlag ? false : true;
             }
             for(var i=0; i<rlztArr.length; i++) {
-                var tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*3+i),
-                    index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*3+i+1));
+                var tempStr = hexStr.substring(len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*3+i),
+                    len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*3+i+1));
                 rlztArr[i] = tempStr == errorFlag ? false : true;
             }
             for(var i=0; i<dycztArr.length; i++) {
-                var tempStr = hexStr.substring(index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*4+i),
-                    index_fix + len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*4+i+1));
+                var tempStr = hexStr.substring(len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*4+i),
+                    len*(property.CHECK_NUM_SINGLE*2+4) + single_len*(property.CHECK_NUM_SINGLE*4+i+1));
                 dycztArr[i] = tempStr == errorFlag ? false : true;
             }
             callBack(nzArr,dyArr,zztArr,dyztArr,nzztArr,rlztArr,dycztArr);
