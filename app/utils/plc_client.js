@@ -141,13 +141,13 @@ const plc_client = {
     },
     //PLC数据写入（整数）
     writeInt : function(Area,Address,len,data,callBack) {
+        var dataLength = 2 * len / data.length;
         var set = getWriteSet(Area,Address,len);
         for(var i=0; i<data.length; i++) {
             var data_byte = getFlagByte(data[i]);
-            set[set.length]=data_byte[0];
-            set[set.length]=data_byte[1];
-            set[set.length]=data_byte[2];
-            set[set.length]=data_byte[3];
+            for(var j=0; j<dataLength; j++) {
+                set[set.length]=data_byte[j];
+            }
         }
         _client.write(set,callBack);
     },
