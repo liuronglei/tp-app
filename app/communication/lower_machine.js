@@ -129,17 +129,10 @@ var lower_machinel = {
         plc_client.writeInt("D", property.ADDRESS_RESULTDATA + property.CHECK_NUM_SINGLE * 3, 12, rlztArr, function () {});
         plc_client.writeInt("D", property.ADDRESS_RESULTDATA + property.CHECK_NUM_SINGLE * 4, 12, dycztArr, function () {});
         plc_client.writeInt("D", property.ADDRESS_FLAG_CHECK, 2, [1], function (error, hexStr) {
-            if (error) {
-                console.log("check not completed");
-                setTimeout(lower_machinel.boxProcess,2000);
-                //plc.finishOcvFlag();
+            if (!error) {
+                setTimeout(lower_machinel.boxProcess,1000);
             }
         });
-        /*console.log(zztArr);
-         console.log(dyztArr);
-         console.log(nzztArr);
-         console.log(rlztArr);
-         console.log(dycztArr);*/
     },
     boxProcess :function () {
         //判断正常电芯数是否可以封箱，可以则把封箱标记位置为1
