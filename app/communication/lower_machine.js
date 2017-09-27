@@ -56,7 +56,8 @@ var lower_machinel = {
     finishOcv : function (callBack) {
         var flag = false;
         plc_client.read("D", property.ADDRESS_FLAG_BARCODE_RESULT, 2, function(error,hexStr) {
-            if(parseInt(hexStr.substring(2,4) + hexStr.substring(0,2),16) >= parseInt("1000000000000000",2)) {
+            var num = dataformat.hex2int_r(hexStr);
+            if(num >= parseInt("1000000000000000",2)) {
                 flag = true;
                 plc_client.writeInt("D", property.ADDRESS_FLAG_BARCODE_RESULT, 2, [0],function(error,hexStr){
                     if(!error) callBack(flag);

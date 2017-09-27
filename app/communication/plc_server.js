@@ -6,6 +6,7 @@ var Hashmap = require('../utils/hashmap');
 var timeout = 20000;//超时
 var listenPort = 2002;//监听端口
 var hashmap = new Hashmap.Map();
+var encodeing = 'binary';
 
 const plc_server = {
     startServer : function () {
@@ -24,7 +25,7 @@ const plc_server = {
             // 我们获得一个连接 - 该连接自动关联一个socket对象
             console.log('connect: ' +
                 socket.remoteAddress + ':' + socket.remotePort);
-            socket.setEncoding('binary');
+            socket.setEncoding(encodeing);
             //超时事件
             //  socket.setTimeout(timeout,function(){
             //    console.log('连接超时');
@@ -81,7 +82,7 @@ const plc_server = {
                     //指令
                     //子指令
                 ];
-                var data = Buffer.from(data).toString('hex');
+                var data = Buffer.from(data, encodeing).toString('hex');
                 var requestlength_hex = parseInt(data[requstlength]+data[requstlength+1],16);
                 var dataLength = parseInt(data[read_bit_1]+data[read_bit_1+1],16);
                 var dataAdress = 0;
@@ -124,10 +125,10 @@ const plc_server = {
                             message_base_red_normal.push(parseInt(getValue(dataArea,dataAdress_originally)[1],16));
                             dataAdress_originally++;
                         }
-                        socket.write(Buffer.from(message_base_red_normal));
+                        socket.write(Buffer.from(message_base_red_normal,encodeing));
                     }
                     else{
-                        socket.write(Buffer.from(message_base_red_error));
+                        socket.write(Buffer.from(message_base_red_error,encodeing));
                     }
                 }
                 //写入数据操作
@@ -143,10 +144,10 @@ const plc_server = {
                         }
                     }
                     if(requestlength_hex - 12 == dataLength*2) {
-                        socket.write(Buffer.from(message_base_write_normal));
+                        socket.write(Buffer.from(message_base_write_normal,encodeing));
                     }
                     else{
-                        socket.write(Buffer.from(message_base_write_error));
+                        socket.write(Buffer.from(message_base_write_error,encodeing));
                     }
                 }
                 //console.log('recv:' + data);
