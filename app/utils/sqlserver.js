@@ -4,7 +4,12 @@ const config = {
     password: '123456',
     server: 'localhost',
     database: 'tenpower',
-    port:1433
+    port:1433,
+    /*pool: {
+        min: 0,
+        max: 10,
+        idleTimeoutMillis: 3000
+    }*/
 };
 
 //执行sql,返回数据.
@@ -33,6 +38,7 @@ const query = function (sql, callBack) {
                         return;
                     }
                     callBack(err, result);
+                    connection.close();
                 });
             });
         });
