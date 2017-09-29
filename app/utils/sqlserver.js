@@ -3,16 +3,26 @@ const config = {
     user: 'sa',
     password: '123456',
     server: 'localhost',
-    database: 'tenpower',
+    database: 'TianPeng',
     port:1433,
-    /*pool: {
-        min: 0,
+    pool: {
         max: 10,
+        min: 0,
         idleTimeoutMillis: 3000
-    }*/
+    }
 };
+var pool = new mssql.ConnectionPool(config);
+const query = function (sql, callBack) {
+    pool.connect(function(err) {
+        pool.request().query(sql, function(err, result) {
+            callBack(err, result);
+        });
+    });
+};
+module.exports = query;
 
 //执行sql,返回数据.
+/*
 const query = function (sql, callBack) {
     var connection = new mssql.ConnectionPool(config, function (err) {
         if (err) {
@@ -21,7 +31,7 @@ const query = function (sql, callBack) {
         }
         var ps = new mssql.PreparedStatement(connection);
         ps.prepare(sql, function (err) {
-            //alert(sql);
+            //console.log(sql);
             if (err){
                 console.log(err);
                 return;
@@ -44,5 +54,4 @@ const query = function (sql, callBack) {
         });
     });
 };
-
-module.exports = query;
+ */
