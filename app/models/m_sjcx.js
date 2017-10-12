@@ -1,7 +1,7 @@
 var query = require("../utils/sqlserver");
 
 const m_sjcx = {
-    query_select : function (searchCondition,callback) {
+    query_select : function (searchCondition,callBack) {
         var sql = 'select cellnum,equiptmentnum,workernum,productionorder,batch,' +
             'voltage,resistance,volume,ocv4,voltagedifference,grade,' +
             'CONVERT(varchar(100), creattime, 20) as creattime,ng_reason,checknum,checkindex from d_cell_ng where 1=1';
@@ -9,7 +9,7 @@ const m_sjcx = {
             sql += " and batch='" + searchCondition.batch + "'";
         }
         if(!isEmptyStr(searchCondition.ng_reason)) {
-            sql += " and ng_reason like '%" + searchCondition.ng_reason + "%'";
+            sql += " and ng_reason like '% "+ searchCondition.ng_reason +" %'";
         }
         if(!isEmptyStr(searchCondition.scgd)) {
             sql += " and productionorder ='" + searchCondition.scgd + "'";
@@ -23,16 +23,27 @@ const m_sjcx = {
         if(!isEmptyStr(searchCondition.jjsj)){
             sql += " and creattime<=CONVERT(datetime,'"+searchCondition.jjsj+"',20)";
         }
-        query(sql,callback);
+        query(sql,callBack);
     },
-    query_selectAll_batch :function (callback) {
-        query('select batch from d_cell_ng group by batch',callback);
+    selectall_batch :function (callBack) {
+        query('select batch from d_cell_ng group by batch',callBack);
     },
-    query_selectAll_ygh :function (pc,callback) {
-        query('select workernum from d_cell_ng group by workernum',callback);
+    selectall_ygh :function (pc,callBack) {
+        query('select workernum from d_cell_ng group by workernum',callBack);
     },
-    query_selectAll_scgd : function (pc,callback) {
-        query('select productionorder from d_cell_ng group by productionorder',callback);
+    selectall_scgd : function (pc,callBack) {
+        query('select productionorder from d_cell_ng group by productionorder',callBack);
+    },
+    //电芯替换页面用
+    select_all: function (dx,callBack) {
+        query('select casenum,cellnum,equiptmentnum,workernum,productionorder,batch,' +
+          'voltage,resistance,volume,ocv4,voltagedifference,grade,CONVERT(varchar(100), creattime, 20) as creattime,' +
+          'binningnum,checknum,checkindex from d_cell_normal where cellnum = \''+dx+'\'',callBack);
+    },
+    updateBarcode : function (json_replace,callBack) {
+        query('update d_cell_normal set casenum = \''+json_replace.casenum+'\',' +
+          'productionorder = \''+json_replace.productionorder+'\',batch = \''+json_replace.batch+'\' ' +
+          'where cellnum = \''+json_replace.cellnum+'\'',callBack)
     }
 };
 

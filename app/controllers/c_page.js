@@ -24,8 +24,8 @@ const c_page = {
         ipc.send('newWin-ping-event', arg);
         //easyui窗口组件方式
     },
-    regScanBarCode : function (callBack) {
-        ipc.on('scanBarCode-pong-event', function(event, arg) {
+    regScanCasenum : function (callBack) {
+        ipc.on('scanCasenum-pong-event', function(event, arg) {
             callBack(arg);
         });
     },
@@ -60,6 +60,11 @@ const c_page = {
     },
     doQlfx : function () {
         ipc.send('clearBox-ping-event');
+    },
+    regScanBarCode : function (callBack) {
+        ipc.on('scanBarCode-pong-event', function(event, arg) {
+          callBack(arg);
+        });
     },
     /*
      * 打开万克LOGO指定的页面
