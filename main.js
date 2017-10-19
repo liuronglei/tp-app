@@ -1,18 +1,18 @@
-const {app, globalShortcut, BrowserWindow} = require('electron')
-const path = require('path')
-const url = require('url')
-const fs = require('fs')
+const {app, globalShortcut, BrowserWindow} = require('electron');
+const path = require('path');
+const url = require('url');
+const fs = require('fs');
 const ipcMain = require('electron').ipcMain;
-const m_cssz = require(path.join(__dirname, 'app/models/m_cssz'))
-const fileread = require(path.join(__dirname, 'app/utils/fileread'))
+const m_cssz = require(path.join(__dirname, 'app/models/m_cssz'));
+const fileread = require(path.join(__dirname, 'app/utils/fileread'));
 const dataformat = require(path.join(__dirname,'app/utils/dataformat'));
-const m_barcode = require(path.join(__dirname, 'app/models/m_barcode'))
+const m_barcode = require(path.join(__dirname, 'app/models/m_barcode'));
 var property_ocv = JSON.parse(fs.readFileSync(path.join(__dirname, 'app/config/config_ocv.json'), 'utf8'));
 var property_plc = JSON.parse(fs.readFileSync(path.join(__dirname, 'app/config/config_plc.json'), 'utf8'));
 var isWinOpening = false;
 const timerRun = 200;
 const timerInit = 500;
-const timeInterval = 2000;
+//const timeInterval = 2000;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -32,8 +32,8 @@ function createWindow () {
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'app/views/tpsy/tpsy_sy.html'),
         protocol: 'file:',
-        slashes: true
-    }))
+        slashes: true,
+    }));
 
     // Open the DevTools.
     //win.webContents.openDevTools()
@@ -78,44 +78,15 @@ global.sharedObject = {
     checkIndex: 0,
     barCodeNum: 0,
     isFillOcvData: false,
-    lastProcessDate: [null, null, null],
+    //lastProcessDate: [null, null, null],
     barCodeIndex: 0,
     normalCount: 0,         //本次运行正常电芯数量
     ngCount: 0,             //本次运行NG电芯数量
     scheduleBarCode: false, //是否正在监听扫码
 };
 
-function getBarCodePre() {
-    var date = new Date();
-    var seperator1 = "";
-    var seperator2 = "";
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var seconds = date.getSeconds();
-    if (month >= 1 && month <= 9) {
-        month = "0" + month;
-    }
-    if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-    }
-    if (hours >= 0 && hours <= 9) {
-        hours = "0" + hours;
-    }
-    if (minutes >= 0 && minutes <= 9) {
-        minutes = "0" + minutes;
-    }
-    if (seconds >= 0 && seconds <= 9) {
-        seconds = "0" + seconds;
-    }
-
-    var currentdate = year + seperator1 + month + seperator1 + strDate
-        + " " + hours + seperator2 + minutes + seperator2 + seconds;
-    return currentdate;
-}
-var preStr = getBarCodePre();
+//条码前缀字符串
+var preStr = dataformat.getNowFormatDate("", "");
 
 //接收界面参数设置消息，更新参数设置
 ipcMain.on('updateCssz-ping-event',(event) => {
@@ -146,7 +117,12 @@ ipcMain.on('clearBox-ping-event',(event) => {
 
 //串口发送箱号给渲染进程
 function scan_barcode(arg) {
-    win.webContents.send('scanBarCode-pong-event', arg)
+    win.webContents.send('scanBarCode-pong-event', arg);
+}
+
+//串口发送箱号给渲染进程
+function scan_casenum(arg) {
+    win.webContents.send('scanCasenum-pong-event', arg);
 }
 
 //NG数据入库
@@ -172,7 +148,12 @@ function send_casenum(dataArr) {
 //开始扫码枪监听
 const scanner = require(path.join(__dirname, 'app/communication/comm_scanner'));
 scanner.receive(function(barCode) {
-    scan_barcode(barCode);
+    var r = /^\+?[0-9][0-9]*$/;
+    if(r.test(barCode)) {
+        scan_casenum(barCode);
+    } else {
+        scan_barcode(barCode);
+    }
 });
 
 //参数设置全局变量保存
@@ -204,6 +185,7 @@ function updateCssz() {
     });
 }
 
+//扫码和检测次数统计，用于后台输出，监控，程序稳定后可删除
 var count_bar = 0;
 var count_check = 0;
 
@@ -253,12 +235,13 @@ function initProcess() {
         startPLC_barCode();
     }
     //初始化条码前缀
-    preStr = getBarCodePre();
+    preStr = dataformat.getNowFormatDate("", "");
     //初始化扫码、检测计数
     count_bar = 0;
     count_check = 0;
 }
 
+//填充Ocv数据
 function fillOcvData(currentBarCodeArr) {
     var csszMap = global.sharedObject.csszMap;
     if(csszMap.get("sjsx") == "1" && csszMap.get("sfsm") == "1") {
@@ -343,6 +326,7 @@ function barCodeProcess(callBack) {
 //电性能检测结束处理
 function checkProcess() {
     //判断距离上一次处理的时间差
+    /*
     var newDate = new Date();
     var oldDate = global.sharedObject.lastProcessDate[1];
     if(oldDate != null && newDate-oldDate<timeInterval) {
@@ -351,6 +335,7 @@ function checkProcess() {
     }
     console.log("checkCount:" + (++count_check));
     global.sharedObject.lastProcessDate[1] = newDate;
+    */
     plc.readCheckInfo(function(nzArr,dyArr,zztArr,dyztArr,nzztArr,rlztArr,dycztArr) {
         //保存电性能能检测结果列表
         var csszMap = global.sharedObject.csszMap;
@@ -483,6 +468,7 @@ const print = require(path.join(__dirname, 'app/communication/comm_print'));
 var getValue_plc = require(path.join(__dirname, 'app/controllers/tpsy/getValue_plc'));
 function boxProcess() {
     //判断距离上一次处理的时间差
+    /*
     var newDate = new Date();
     var oldDate = global.sharedObject.lastProcessDate[2];
     if(oldDate != null && newDate-oldDate<timeInterval) {
@@ -490,6 +476,7 @@ function boxProcess() {
         return;
     }
     global.sharedObject.lastProcessDate[2] = newDate;
+     */
     getValue_plc.select_casenum(function(casenum) {
         var csszMap = global.sharedObject.csszMap;
         var scgd = csszMap.get("scgd");

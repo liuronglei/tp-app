@@ -35,6 +35,7 @@ const message_base_read = [
     0xA8,//软元件代码 18
     0x11,0x00,//软元件点数 19-20 //0x02 字
 ];
+const len_single = 4;
 const len_1=7;//数据长度位置
 const len_2=8;//数据长度位置
 const area=18;//区域
@@ -163,6 +164,26 @@ const plc_client = {
     read : function(Area,Address,len,callBack) {
         var read = getReadSet(Area,Address,len);
         _client.write(read,callBack);
+    },
+    readFloat : function(Area,Address,len,callBack) {
+        var read = getReadSet(Area,Address,len);
+        _client.write(read,function(error, hexStr) {
+            if(error) {
+                callBack(error, -1);
+            } else {
+                //浮点型数据按照双字来读
+                var len_float = len_single * 2;
+                var size = hexStr.length/len_float;
+                if(hexStr.length % len_float != 0 || len/size != 2) {
+                    callBack(true, -1);
+                } else {
+                    var returnValue = new Array();
+                    for(var i=0; i<size; i++) {
+                        returnValue.push();
+                    }
+                }
+            }
+        });
     },
     initFlag : function() {
         _client.initFlag();
