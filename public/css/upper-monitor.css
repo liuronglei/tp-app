@@ -234,3 +234,23 @@
     top: 436px;
     left: 21px;
 }
+
+/* 电芯替换页面 */
+.dxth-top-query{
+    height:10%;
+    width:100%;
+}
+.dxth-top-query:after{
+    display: block;
+    content: 'clear';
+    clear: both;
+    line-height: 0;
+    visibility: hidden;
+}
+.dxth-top-condition{
+    margin: 0 25px 0 25px;
+    float:left;
+}
+.dxth_datagrid{
+    margin-top: 20px;
+}

@@ -1,0 +1,41 @@
+<script type="text/javascript" src="../../controllers/tpsy/tpsy_dxth.js" ></script>
+
+<div>
+    <div class="dxth-top-query">
+        <div class="dxth-top-condition">
+            <span>待替换电芯条码：</span>
+            <input id="dxth_textbox_oldBarcode" class="easyui-textbox" name="state" style="height:30px;width:200px;" />
+        </div>
+
+        <a id="dxth_query_old" href="#" class="easyui-linkbutton" style="width:150px;height:30px;float:right;margin-right:25px;">查询</a>
+    </div>
+    <div id="dxth_table">
+        <div class="dxth_datagrid">
+            <table id="dxth_oldBarcode" class="easyui-datagrid" title="待替换电芯条码" data-options="
+                        rownumbers:true,
+                        singleSelect:true,
+                        autoRowHeight:false"
+                        style="width:980px;height:180px">
+            </table>
+        </div>
+        <div class="dxth-top-query">
+            <div class="dxth-top-condition">
+                <span>新替换电芯条码：</span>
+                <input id="dxth_textbox_newBarcode" class="easyui-textbox" name="state" style="height:30px;width:200px;" />
+            </div>
+            <a id="dxth_query_new" href="#" class="easyui-linkbutton" style="width:150px;height:30px;float:right;margin-right:25px;">查询</a>
+        </div>
+        <div class="dxth_datagrid">
+            <table id="dxth_newBarcode" class="easyui-datagrid" title="新替换电芯条码" data-options="
+                        rownumbers:true,
+                        singleSelect:true,
+                        autoRowHeight:false"
+                        style="width:980px;height:180px">
+            </table>
+        </div>
+    </div>
+    <div>
+        <a id="dxth_change" href="#" class="easyui-linkbutton" style="width:150px;height:30px;float:left;margin:0 30px 0 620px">替换</a>
+        <a id="dxth_reset" href="#" class="easyui-linkbutton" style="width:150px;height:30px;float:left">重置</a>
+    </div>
+</div>
