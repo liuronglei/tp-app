@@ -25,13 +25,13 @@ const m_sjcx = {
         }
         query(sql,callBack);
     },
-    selectall_batch :function (callBack) {
+    query_selectAll_batch :function (callBack) {
         query('select batch from d_cell_ng group by batch',callBack);
     },
-    selectall_ygh :function (pc,callBack) {
+    query_selectAll_ygh :function (pc,callBack) {
         query('select workernum from d_cell_ng group by workernum',callBack);
     },
-    selectall_scgd : function (pc,callBack) {
+    query_selectAll_scgd : function (pc,callBack) {
         query('select productionorder from d_cell_ng group by productionorder',callBack);
     },
     //电芯替换页面用
