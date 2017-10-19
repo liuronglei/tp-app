@@ -11,8 +11,8 @@ var electron = require('electron');
 //var dataformat = require('../../utils/dataformat');
 var url = property.URL;
 var checkResultArr = [];
-/*var url = "http://221.178.135.214:8099/Service1.asmx?wsdl";
-var count = 0;*/
+//var url = "http://221.178.135.214:8099/Service1.asmx?wsdl";
+//var count = 0;
 $(document).ready(function () {
     fillCombobox();
     updataCountShow();
@@ -216,8 +216,7 @@ function judgeNormal() {
         };
         var json = JSON.stringify(Json_Check);
         //上传天鹏MES返回对应箱号信息
-        webService.check(url,json,function (error,result) {
-            if(error) throw error;
+        webService.check(url,json,function (result) {
             //将历史检测结果记录下来
             if(checkResultArr == "" || arg!="undefined" && arg !=checkResultArr[0].arg){
                 checkResultArr.unshift({arg:arg,ret :result.ret,Msg :result.Msg});
@@ -295,8 +294,7 @@ function sealingDispose() {
             }]
         };
         var json = JSON.stringify(Json_Upload);
-        webService.upload(url,json,function (error,result) {
-            if(error) throw error;
+        webService.upload(url,json,function (result) {
             if(result.ret == 0){
                 console.log('case update : sccu')
             }
