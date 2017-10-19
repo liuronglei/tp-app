@@ -1,5 +1,5 @@
 /**
- * 扫码枪串口通信
+ * 通讯相关_扫码枪串口通信
  * @type {SerialPort|exports|module.exports}
  */
 var SerialPort = require("serialport");  //引入模块
@@ -13,7 +13,7 @@ var serialPort = new SerialPort(property.PRINT_PORT, {
     parity: 'none',   //奇偶校验
     stopBits: property.PRINT_STOPBITS,   //停止位,
     parser: SerialPort.parsers.Readline,
-    //autoOpen: false,
+    autoOpen: false,
     //rtscts: true,
     //xon:true,
     //xoff:true,
@@ -27,28 +27,29 @@ var barCode = "";
 const scanner = {
     start : function(callBack) {
         serialPort.open(function(error) {
+            if(error) console.log(error);
             callBack(error);
         });
     },
     receive : function(callBack) {
         serialPort.on('data',function(data){
-            data = new Buffer(data).toString();
-            var data = data.replace(/\ +/g, ""); //去掉空格
-            data = data.replace(/[ ]/g, "");    //去掉空格
-            data = data.replace(/[\r\n]/g, "")
-            if(data == "") {
+            var returnData = new Buffer(data).toString();
+            returnData = returnData.replace(/\ +/g, ""); //去掉空格
+            returnData = returnData.replace(/[ ]/g, "");    //去掉空格
+            returnData = returnData.replace(/[\r\n]/g, "");
+            if(returnData == "") {
                 return;
             }
             if(!isSleep) {
                 isSleep = true;
-                barCode = data;
+                barCode = returnData;
                 setTimeout(function() {
                     isSleep = false;
                     console.log('boxCode:---' + barCode + "---");
-                    callBack(data);
+                    callBack(barCode);
                 }, 200);
             } else {
-                barCode += data;
+                barCode += returnData;
             }
         })
     },

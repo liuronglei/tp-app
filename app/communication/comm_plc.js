@@ -1,4 +1,5 @@
 /**
+ * 通讯相关_PLC通讯
  * Created by liurong on 2017/8/10.
  */
 var fs = require('fs');
@@ -125,6 +126,7 @@ const plc = {
         var sjsx = csszHashMap.get('sjsx');
         var sfsm = csszHashMap.get('sfsm');
         var zxs = csszHashMap.get('zxs');
+        var sfdyxh = csszHashMap.get('sfdyxh');
         plc_client.writeFloat("D", property.ADDRESS_RLXX, 2, [parseFloat(rlfwArr[0])], function(){}); //容量下限
         plc_client.writeFloat("D", property.ADDRESS_RLSX, 2, [parseFloat(rlfwArr[1])], function(){}); //容量上限
         plc_client.writeFloat("D", property.ADDRESS_DYCXX, 2, [parseFloat(dycfwArr[0])], function(){}); //压差下限
@@ -136,9 +138,10 @@ const plc = {
         plc_client.writeInt("D", property.ADDRESS_ZCZXS, 2, [parseInt(zxs)], function(){}); //正常装箱数
         plc_client.writeInt("D", property.ADDRESS_SJSX, 2, sjsx == "1" ? [1] : [0], function(){}); //OCV勾选
         plc_client.writeInt("D", property.ADDRESS_SFSM, 2, sfsm != "1" ? [1] : [0], function(){}); //是否扫码勾选
+        plc_client.writeInt("D", property.ADDRESS_FLAG_PRINT, 2, sfdyxh != "1" ? [1] : [0], function(){}); //是否打印箱号
     },
     //写入电芯扫码结果
-    writeBarCodeFlag : function(data, count) {
+    writeBarCodeFlag : function(data) {
         var value = parseInt(data, 2);
         plc_client.writeInt("D", property.ADDRESS_FLAG_BARCODE_RESULT, 2, [value], function(){});
     },

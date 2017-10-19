@@ -1,11 +1,12 @@
 ﻿/**
- * 打印机串口通信
+ * 通讯相关_打印机串口通信
  * @type {string}
  */
 var SerialPort = require("serialport");  //引入模块
 var fs = require('fs');
 var path = require('path');
 var __rootdir = global.sharedObject.rootdir;
+var dataformat = require(path.join(__rootdir,'app/utils/dataformat'));
 var property = JSON.parse(fs.readFileSync(path.join(__rootdir,'app/config/config_print.json'), 'utf8'));
 
 const lineStart = 10;
@@ -70,36 +71,6 @@ const printData = ''
     + 'BARCODE 460,100,"128",96,1,0,3,5,"data_tm"\n'
     //开始打印
     + 'PRINT 1,1\n';
-function getNowFormatDate() {
-    var date = new Date();
-    var seperator1 = "-";
-    var seperator2 = ":";
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var seconds = date.getSeconds();
-    if (month >= 1 && month <= 9) {
-        month = "0" + month;
-    }
-    if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-    }
-    if (hours >= 0 && hours <= 9) {
-        hours = "0" + hours;
-    }
-    if (minutes >= 0 && minutes <= 9) {
-        minutes = "0" + minutes;
-    }
-    if (seconds >= 0 && seconds <= 9) {
-        seconds = "0" + seconds;
-    }
-
-    var currentdate = year + seperator1 + month + seperator1 + strDate
-        + " " + hours + seperator2 + minutes + seperator2 + seconds;
-    return currentdate;
-}
 var serialPort = new SerialPort(property.PRINT_PORT, {
     baudRate: property.PRINT_BAUDRATE,  //波特率
     dataBits: property.PRINT_DATABITS,    //数据位
@@ -120,7 +91,7 @@ const print = {
         for(var key in dataJson) {
             returnData = returnData.replace('data_' + key, dataJson[key]);
         }
-        returnData = returnData.replace('data_sj', getNowFormatDate());
+        returnData = returnData.replace('data_sj', dataformat.getNowFormatDate("-", ":"));
         return printSet + returnData;
     }
 }

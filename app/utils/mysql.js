@@ -1,3 +1,7 @@
+/**
+ * 数据库工具类_mysql
+ * Created by liurong on 2017/8/10.
+ */
 const mysql = require("mysql");
 
 const pool = mysql.createPool({
